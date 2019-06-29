@@ -5,9 +5,9 @@
     <color name="colorAccent">#62A8BD</color>
     <color name="White">#FFFFFF</color>
     <color name="Surface">#121212</color>
-    <color name="colorSwipeRefresh">#FFFFFF</color>
-    <color name="Red">#b00020</color>
+    <color name="colorSwipeRefresh">#202020</color>
+    <color name="Red">#cf6679</color>
     <color name="Yellow">#fff356</color>
-    <color name="Green">#54ff05</color>
+    <color name="Green">#36f725</color>
     <color name="Orange">#f2851f</color>
 </resources>

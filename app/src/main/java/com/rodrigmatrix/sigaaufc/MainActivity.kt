@@ -24,11 +24,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         val apiSigaa = ApiSigaa()
         launch {
             val cookie = apiSigaa.getCookie()
             println("cookie $cookie")
-            apiSigaa.login(cookie)
+            //apiSigaa.login(cookie, , )
         }
     }
 

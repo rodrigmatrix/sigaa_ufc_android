@@ -1,0 +1,18 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:navigationBarColor">@color/Surface</item>
+        <item name="android:statusBarColor">@color/colorSwipeRefresh</item>
+        <item name="elevation">1dp</item>
+        <item name="cardElevation">3dp</item>
+        <item name="backgroundColor">@color/Surface</item>
+        <item name="elevationOverlaysEnabled">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+</resources>
