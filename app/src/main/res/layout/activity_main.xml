@@ -18,20 +18,13 @@
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="60dp"
-                android:paddingRight="60dp"
-                android:paddingTop="40dp"
-                android:paddingBottom="40dp"
                 android:layout_gravity="center"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="8dp"
                 app:cardElevation="?attr/cardElevation"
                 app:cardCornerRadius="6dp"
                 app:cardUseCompatPadding="true">
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="329dp"
+                    android:layout_gravity="center"
                     android:layout_height="319dp">
 
                 <ProgressBar
@@ -39,15 +32,13 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
                         android:indeterminate="true"
                         android:max="100"
                         android:minWidth="200dp"
                         android:minHeight="50dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"/>
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/login_field"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

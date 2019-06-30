@@ -109,7 +109,7 @@ class ApiSigaa {
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/paginaInicial.do")
+                .header("Referer", "https://si3.ufc.br/sigaa/pag-inaInicial.do")
                 .build()
             var response = client.newCall(request).execute()
             if(response.isSuccessful){

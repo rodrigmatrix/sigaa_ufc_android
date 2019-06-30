@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         setContentView(R.layout.activity_main)
         val apiSigaa = ApiSigaa()
         var cookie = ""
-        var loginR = ""
-        var passwordR = ""
+        var loginR = "rodrigmatrix"
+        var passwordR = "iphone5s"
         launch(handler){
             cookie = apiSigaa.getCookie()
             progressLogin?.isVisible = false

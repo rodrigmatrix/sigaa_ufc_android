@@ -19,3 +19,14 @@ data class Student(
     var hasSavedData: Boolean,
     var lastUpdate: String
 )
+
+@Entity(tableName = "classes")
+data class Classes(
+    @PrimaryKey
+    var id: Int,
+    var turmaId: Int,
+    var name: String,
+    var days: String,
+    var attendance: Int,
+    var missed: Int
+)

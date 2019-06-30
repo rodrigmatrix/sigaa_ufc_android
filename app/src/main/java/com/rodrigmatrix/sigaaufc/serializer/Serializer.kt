@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
+import com.rodrigmatrix.sigaaufc.persistence.Classes
 import org.jsoup.Jsoup
 
 class Serializer {
@@ -14,26 +15,40 @@ class Serializer {
     }
 
     fun parseClasses(response: String?){
+        var classes = mutableListOf<Classes>()
+        var turmaId = mutableListOf<String>()
+        var names = mutableListOf<String>()
+        var periodsList = mutableListOf<String>()
         Jsoup.parse(response).run {
-            select("input[value]").forEach {
-                if(it.attr("name").contains("idTurma")){
-                    println(it.attr("value"))
+            select("input[value]").forEach {name ->
+                if(name.attr("name").contains("idTurma")){
+                    turmaId.add(name.attr("value"))
+                    //println(name.attr("value"))
                 }
             }
             var elements = getElementsByClass("descricao")
             var periods = getElementsByClass("info")
-            var count = 1
+
+
             elements.forEach {
-                var names = it.select("a[id]")
-                names.forEach { name ->
-                    println(name.text())
+                var el = it.select("a[id]")
+                el.forEach { name ->
+                    //println(name.text())
+                    names.add(name.text())
                 }
             }
+            var count = 1
             periods.forEach { period ->
                 if(count % 2 == 0){
-                    println(period.text())
+                    periodsList.add(period.text())
                 }
                 count++
+            }
+            var id = 1
+            for(it in turmaId){
+                classes.add(Classes(id, turmaId[id-1].toInt(), names[id-1], periodsList[id-1], 0, 0))
+                println(classes[id-1])
+                id++
             }
             var studentName = select("div[class=nome_usuario]")
             println(studentName.text())
