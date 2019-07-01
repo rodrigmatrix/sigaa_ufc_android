@@ -32,19 +32,24 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="center">
+
+            <ImageView
+                    android:layout_width="280dp"
+                    android:layout_height="143dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/cartao_ru" />
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
-                    android:text="Para visualizar o saldo e histórico do cartão, digite o número e matrícula atrelada ao aluno">
+                    android:text="Para visualizar o saldo e histórico do cartão, digite o número e matrícula atrelada ao aluno.">
 
             </TextView>
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/card_number_field"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="294dp"
-                    android:layout_height="85dp"
-                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="87dp"
                     android:hint="Número do cartão"
                     app:errorEnabled="true">
 
@@ -59,9 +64,8 @@
             <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/matricula_number_field"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="294dp"
-                    android:layout_height="85dp"
-                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="87dp"
                     android:hint="Matrícula"
                     app:errorEnabled="true">
 

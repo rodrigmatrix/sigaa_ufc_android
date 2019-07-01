@@ -71,10 +71,11 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
+
     private fun dialogData(triple: Triple<String, Pair<String, Int>, MutableList<HistoryRU>>){
         MaterialAlertDialogBuilder(add_card_activity.context)
             .setTitle("Confirme o cartão")
-            .setMessage("Este cartão pertenca à: ${triple.second.first}?")
+            .setMessage("Este cartão pertence à ${triple.second.first}?")
             .setPositiveButton("Sim"){ _, _ ->
                 saveData(triple)
             }

@@ -62,6 +62,8 @@ class Serializer {
         }
     }
 
+    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
+
     fun parseRU(response: String?): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{
         when {
             response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> {
@@ -75,7 +77,7 @@ class Serializer {
                 var elem = HistoryRU(1, "", "", "", "")
                 Jsoup.parse(response).run {
                     var operations = select("td[nowrap=nowrap]")
-                    var name = operations[1].text()
+                    var name = operations[1].text().toLowerCase().capitalizeWords()
                     var credits = operations[3].text().toInt()
                     var count = 1
                     for((index, it) in operations.withIndex()){

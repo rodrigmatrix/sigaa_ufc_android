@@ -21,7 +21,7 @@ abstract class StudentsDatabase : RoomDatabase() {
 
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext,
-                StudentsDatabase::class.java, "student.db")
+                StudentsDatabase::class.java, "database.db")
                 .build()
     }
 }
