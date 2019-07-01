@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.api
 
+import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -122,8 +123,8 @@ class ApiSigaa {
         return classes
     }
 
-    suspend fun getRU(matricula: String, numeroCartao: String){
-
+    suspend fun getRU(matricula: String, numeroCartao: String): Triple<String, Int, MutableList<HistoryRU>>{
+        var triple = Triple("Tempo de conexão expirou", 1, mutableListOf<HistoryRU>())
         var formBody = FormBody.Builder()
             .add("codigoCartao", numeroCartao)
             .add("matriculaAtreladaCartao", matricula)
@@ -138,12 +139,13 @@ class ApiSigaa {
                 .url("https://si3.ufc.br/public/restauranteConsultarSaldo.do")
                 .post(formBody)
                 .build()
-            var response = client.newCall(request).execute()
+            val response = client.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
                 val serializer = Serializer()
-                serializer.parseRU(res)
+                triple = serializer.parseRU(res)
             }
         }
+        return triple
     }
 }

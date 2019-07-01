@@ -62,10 +62,14 @@ class Serializer {
         }
     }
 
-    fun parseRU(response: String?){
+    fun parseRU(response: String?): Triple<String, Int, MutableList<HistoryRU>>{
         when {
-            response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> println("matricula obrigatoria")
-            response!!.contains("Não existem dados a serem exibidos") -> println("nao existem dados a serem exibidos")
+            response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> {
+                return Triple("Matrícula não encontrada", 1, mutableListOf())
+            }
+            response!!.contains("Não existem dados a serem exibidos") -> {
+                return Triple("Não existem dados a serem exibidos", 1, mutableListOf())
+            }
             response!!.contains("Refeições disponíveis") -> {
                 var history = mutableListOf<HistoryRU>()
                 var elem = HistoryRU(1, "", "", "", "")
@@ -94,14 +98,10 @@ class Serializer {
                             }
                         }
                     }
-                    println(credits)
-                    history.forEach {
-                        println(it)
-                    }
-
+                    return Triple("Success", credits.toInt(), history)
                 }
             }
         }
-
+        return Triple("Error", 1, mutableListOf())
     }
 }
