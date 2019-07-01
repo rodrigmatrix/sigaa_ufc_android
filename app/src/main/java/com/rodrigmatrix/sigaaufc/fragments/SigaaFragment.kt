@@ -14,7 +14,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class SigaaFragment : Fragment(), CoroutineScope {
-    private var job: Job = Job()
+    private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 

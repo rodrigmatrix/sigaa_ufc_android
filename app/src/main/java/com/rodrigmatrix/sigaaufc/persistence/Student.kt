@@ -30,3 +30,13 @@ data class Classes(
     var attendance: Int,
     var missed: Int
 )
+
+@Entity(tableName = "historyru")
+data class HistoryRU(
+    @PrimaryKey
+    var id: Int,
+    var date: String,
+    var time: String,
+    var operation: String,
+    var content: String
+)

@@ -80,11 +80,11 @@ class ApiSigaa {
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .build()
+        val request = Request.Builder()
+            .url("https://si3.ufc.br/sigaa/paginaInicial.do")
+            .header("Cookie", "JSESSIONID=$cookie")
+            .build()
         withContext(Dispatchers.IO){
-            val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/paginaInicial.do")
-                .header("Cookie", "JSESSIONID=$cookie")
-                .build()
             var response = client.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
@@ -120,5 +120,30 @@ class ApiSigaa {
             }
         }
         return classes
+    }
+
+    suspend fun getRU(matricula: String, numeroCartao: String){
+
+        var formBody = FormBody.Builder()
+            .add("codigoCartao", numeroCartao)
+            .add("matriculaAtreladaCartao", matricula)
+            .build()
+        val client = OkHttpClient().newBuilder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .build()
+        withContext(Dispatchers.IO){
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/public/restauranteConsultarSaldo.do")
+                .post(formBody)
+                .build()
+            var response = client.newCall(request).execute()
+            if(response.isSuccessful){
+                val res = response.body?.string()
+                val serializer = Serializer()
+                serializer.parseRU(res)
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import com.rodrigmatrix.sigaaufc.persistence.Classes
+import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
 import org.jsoup.Jsoup
 
 class Serializer {
@@ -62,8 +63,45 @@ class Serializer {
     }
 
     fun parseRU(response: String?){
-        var creditos = response?.split("<td nowrap=\"nowrap\">Créditos:</td>\n" + "\t\t\t\t\t\t<td nowrap=\"nowrap\">")
-        creditos = creditos!![1].split("</td>")
-        println(creditos)
+        when {
+            response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> println("matricula obrigatoria")
+            response!!.contains("Não existem dados a serem exibidos") -> println("nao existem dados a serem exibidos")
+            response!!.contains("Refeições disponíveis") -> {
+                var history = mutableListOf<HistoryRU>()
+                var elem = HistoryRU(1, "", "", "", "")
+                Jsoup.parse(response).run {
+                    var operations = select("td[nowrap=nowrap]")
+                    var credits = operations[3].text()
+                    var count = 1
+                    for((index, it) in operations.withIndex()){
+                        if(index >= 4){
+                            when(count){
+                                1 -> {
+                                    elem.id = index
+                                    elem.date = it.text().removeRange(10, it.text().length)
+                                    elem.time = it.text().removeRange(0, 10)
+                                    count++
+                                }
+                                2 -> {
+                                    elem.operation = it.text()
+                                    count++
+                                }
+                                3 -> {
+                                    elem.content = it.text()
+                                    history.add(HistoryRU(index, elem.date, elem.time, elem.operation, elem.content))
+                                    count = 1
+                                }
+                            }
+                        }
+                    }
+                    println(credits)
+                    history.forEach {
+                        println(it)
+                    }
+
+                }
+            }
+        }
+
     }
 }
