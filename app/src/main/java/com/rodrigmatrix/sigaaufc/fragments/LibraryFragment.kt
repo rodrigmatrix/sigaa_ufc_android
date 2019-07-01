@@ -12,9 +12,6 @@ import androidx.core.content.ContextCompat
 import com.rodrigmatrix.sigaaufc.R
 import kotlinx.android.synthetic.main.fragment_library.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class LibraryFragment : Fragment() {
 
     override fun onCreateView(
