@@ -1,15 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorBackgroundFloating">@color/colorPrimary</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

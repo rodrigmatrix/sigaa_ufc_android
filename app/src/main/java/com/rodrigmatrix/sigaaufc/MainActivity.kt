@@ -1,52 +1,49 @@
 package com.rodrigmatrix.sigaaufc
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.core.view.isVisible
-import com.rodrigmatrix.sigaaufc.api.ApiSigaa
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 
-class MainActivity : AppCompatActivity(), CoroutineScope {
-    private var job: Job = Job()
+class MainActivity : AppCompatActivity() {
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val apiSigaa = ApiSigaa()
-        var cookie = ""
-        var loginR = "rodrigmatrix"
-        var passwordR = "iphone5s"
-        launch(handler){
-            cookie = apiSigaa.getCookie()
-            progressLogin?.isVisible = false
-            println("cookie $cookie")
-        }
-        login_btn.setOnClickListener {
-            if(cookie != "") {
-                progressLogin.isVisible = true
-                val login = login_input.text.toString()
-                val password = password_input.text.toString()
-                launch(handler) {
-                    apiSigaa.login(cookie, loginR, passwordR)
-                    progressLogin.isVisible = false
-                }
-            }
-        }
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_sigaa, R.id.nav_ru, R.id.nav_library,
+                R.id.nav_settings, R.id.nav_about),
+            drawerLayout
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 
-    private val handler = CoroutineExceptionHandler { _, throwable ->
-        Log.e("Exception", ":$throwable")
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
 }

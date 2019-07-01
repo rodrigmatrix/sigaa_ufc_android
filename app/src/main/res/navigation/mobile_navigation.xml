@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mobile_navigation"
+        app:startDestination="@+id/nav_sigaa">
+
+    <fragment
+            android:id="@+id/nav_sigaa"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.SigaaFragment"
+            android:label="Login"
+            tools:layout="@layout/fragment_sigaa">
+        <action
+                android:id="@+id/action_nav_sigaa_to_nav_ru"
+                app:destination="@id/nav_ru"
+                app:enterAnim="@anim/nav_default_pop_enter_anim"
+                app:exitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_classes"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.ClassesFragment"
+            android:label="Disciplinas"
+            tools:layout="@layout/fragment_classes"/>
+
+    <fragment
+            android:id="@+id/nav_ru"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.RestauranteUniversiarioFragment"
+            android:label="Restaurante Universitário"
+            tools:layout="@layout/fragment_restaurante_universiario" >
+        <action
+                android:id="@+id/action_nav_ru_to_nav_sigaa"
+                app:destination="@id/nav_sigaa"
+                app:enterAnim="@anim/nav_default_pop_enter_anim"
+                app:exitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/nav_library"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.LibraryFragment"
+            android:label="Biblioteca"
+            tools:layout="@layout/fragment_library" />
+
+    <fragment
+            android:id="@+id/nav_settings"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.SettingsFragment"
+            android:label="Configurações"
+            tools:layout="@layout/fragment_settings" />
+
+    <fragment
+            android:id="@+id/nav_about"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.InfoFragment"
+            android:label="Sobre"
+            tools:layout="@layout/fragment_info" />
+</navigation>
