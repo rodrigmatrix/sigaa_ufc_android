@@ -4,6 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".AddCardActivity">
     <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
@@ -13,11 +14,74 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 app:title="Adicionar cartão"
-                app:titleTextColor="@color/White"
+                app:titleTextColor="@color/colorText"
                 android:background="?attr/backgroundColor"
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="?attr/cardElevation"/>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:text="Para visualizar o saldo e histórico do cartão, digite o número e matrícula atrelada ao aluno">
+
+            </TextView>
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="294dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:hint="Número do cartão"
+                    app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/card_number_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="294dp"
+                    android:layout_height="75dp"
+                    android:gravity="center"
+                    android:hint="Matrícula"
+                    app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/matricula_number_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/add_card_button"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="120dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="right"
+                    android:text="Adicionar"
+                    android:textColorLink="@color/colorPrimary"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
 </LinearLayout>

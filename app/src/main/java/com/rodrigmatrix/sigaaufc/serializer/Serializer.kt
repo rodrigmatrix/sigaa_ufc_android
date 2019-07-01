@@ -62,20 +62,21 @@ class Serializer {
         }
     }
 
-    fun parseRU(response: String?): Triple<String, Int, MutableList<HistoryRU>>{
+    fun parseRU(response: String?): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{
         when {
             response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> {
-                return Triple("Matrícula não encontrada", 1, mutableListOf())
+                return Triple("Matrícula não encontrada", Pair("", 0), mutableListOf())
             }
             response!!.contains("Não existem dados a serem exibidos") -> {
-                return Triple("Não existem dados a serem exibidos", 1, mutableListOf())
+                return Triple("Não existem dados a serem exibidos", Pair("", 0), mutableListOf())
             }
             response!!.contains("Refeições disponíveis") -> {
                 var history = mutableListOf<HistoryRU>()
                 var elem = HistoryRU(1, "", "", "", "")
                 Jsoup.parse(response).run {
                     var operations = select("td[nowrap=nowrap]")
-                    var credits = operations[3].text()
+                    var name = operations[1].text()
+                    var credits = operations[3].text().toInt()
                     var count = 1
                     for((index, it) in operations.withIndex()){
                         if(index >= 4){
@@ -98,10 +99,10 @@ class Serializer {
                             }
                         }
                     }
-                    return Triple("Success", credits.toInt(), history)
+                    return Triple("Success", Pair(name, credits), history)
                 }
             }
         }
-        return Triple("Error", 1, mutableListOf())
+        return Triple("Error", Pair("", 1), mutableListOf())
     }
 }

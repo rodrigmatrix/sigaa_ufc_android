@@ -123,8 +123,8 @@ class ApiSigaa {
         return classes
     }
 
-    suspend fun getRU(matricula: String, numeroCartao: String): Triple<String, Int, MutableList<HistoryRU>>{
-        var triple = Triple("Tempo de conexão expirou", 1, mutableListOf<HistoryRU>())
+    suspend fun getRU(matricula: String, numeroCartao: String): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{
+        var triple = Triple("Tempo de conexão expirou", Pair("", 1), mutableListOf<HistoryRU>())
         var formBody = FormBody.Builder()
             .add("codigoCartao", numeroCartao)
             .add("matriculaAtreladaCartao", matricula)

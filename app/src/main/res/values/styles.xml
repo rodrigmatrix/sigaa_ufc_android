@@ -7,6 +7,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorBackgroundFloating">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="cardElevation">8dp</item>
+        <item name="elevation">6dp</item>
+        <item name="backgroundColor">@color/White</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

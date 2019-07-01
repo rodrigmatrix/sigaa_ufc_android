@@ -7,16 +7,16 @@
         tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:layout_width="match_parent">
 
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
+                app:titleTextColor="@color/colorText"
+                android:background="?attr/backgroundColor"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorSurface"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                android:elevation="?attr/cardElevation"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

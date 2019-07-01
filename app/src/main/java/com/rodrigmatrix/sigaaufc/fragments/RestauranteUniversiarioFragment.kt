@@ -43,7 +43,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
                 Snackbar.make(view, triple.first, Snackbar.LENGTH_LONG).show()
             }
             else{
-                println(triple.third)
+                println(triple)
             }
         }
         add_card.setOnClickListener {
