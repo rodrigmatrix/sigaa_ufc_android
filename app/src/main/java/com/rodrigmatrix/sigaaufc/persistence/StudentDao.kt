@@ -19,28 +19,25 @@ interface StudentDao {
 
 
 
-//    @Query("SELECT * FROM classes")
-//    fun getClasses(): MutableList<Class>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertClass(studentClass: Class)
-//
-//    @Query("DELETE FROM classes")
-//    fun deleteClasses()
-//
-//
-//
+    @Query("SELECT * FROM classes")
+    fun getClasses(): MutableList<Class>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertClass(studentClass: Class)
+
+    @Query("DELETE FROM classes")
+    fun deleteClasses()
+
+
+
 //    @Query("SELECT * FROM news WHERE classId LIKE :id")
 //    fun getNews(id: String): MutableList<News>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertNews(news: News)
-//
-//    @Query("DELETE FROM news")
-//    fun deleteNews()
-//
-//    @Query("DELETE FROM news WHERE classId LIKE :id")
-//    fun deleteNewsFromClass(id: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertRU(historyRU: HistoryRU)
+
+    @Query("DELETE FROM historyru")
+    fun deleteHistoryRU()
 //
 //
 //

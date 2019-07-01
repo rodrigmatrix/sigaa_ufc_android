@@ -1,6 +1,6 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
-import com.rodrigmatrix.sigaaufc.persistence.Classes
+import com.rodrigmatrix.sigaaufc.persistence.Class
 import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
 import org.jsoup.Jsoup
 
@@ -16,7 +16,7 @@ class Serializer {
     }
 
     fun parseClasses(response: String?){
-        var classes = mutableListOf<Classes>()
+        var classes = mutableListOf<Class>()
         var turmaId = mutableListOf<String>()
         var names = mutableListOf<String>()
         var periodsList = mutableListOf<String>()
@@ -47,7 +47,7 @@ class Serializer {
             }
             var id = 1
             for(it in turmaId){
-                classes.add(Classes(id, turmaId[id-1].toInt(), names[id-1], periodsList[id-1], 0, 0))
+                classes.add(Class(id, turmaId[id-1].toInt(), names[id-1], periodsList[id-1], 0, 0))
                 println(classes[id-1])
                 id++
             }
@@ -68,7 +68,7 @@ class Serializer {
                 return Triple("Matrícula não encontrada", Pair("", 0), mutableListOf())
             }
             response!!.contains("Não existem dados a serem exibidos") -> {
-                return Triple("Não existem dados a serem exibidos", Pair("", 0), mutableListOf())
+                return Triple("Matrícula ou cartão não encontrados", Pair("", 0), mutableListOf())
             }
             response!!.contains("Refeições disponíveis") -> {
                 var history = mutableListOf<HistoryRU>()
@@ -103,6 +103,6 @@ class Serializer {
                 }
             }
         }
-        return Triple("Error", Pair("", 1), mutableListOf())
+        return Triple("Erro ao converter dados", Pair("", 1), mutableListOf())
     }
 }

@@ -5,6 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:id="@+id/add_card_activity"
         tools:context=".AddCardActivity">
     <com.google.android.material.appbar.AppBarLayout
             android:layout_height="wrap_content"
@@ -39,9 +40,10 @@
 
             </TextView>
             <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/card_number_field"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="294dp"
-                    android:layout_height="75dp"
+                    android:layout_height="85dp"
                     android:gravity="center"
                     android:hint="Número do cartão"
                     app:errorEnabled="true">
@@ -50,13 +52,15 @@
                         android:id="@+id/card_number_input"
                         android:layout_width="match_parent"
                         android:layout_height="55dp"
-                        android:inputType="number" />
+                        android:inputType="number"
+                        />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/matricula_number_field"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="294dp"
-                    android:layout_height="75dp"
+                    android:layout_height="85dp"
                     android:gravity="center"
                     android:hint="Matrícula"
                     app:errorEnabled="true">

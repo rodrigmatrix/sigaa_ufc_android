@@ -17,11 +17,15 @@ data class Student(
     var matricula: String,
     var theme: String,
     var hasSavedData: Boolean,
-    var lastUpdate: String
+    var lastUpdate: String,
+    var creditsRU: Int,
+    var nameRU: String,
+    var matriculaRU: String,
+    var cardRU: String
 )
 
 @Entity(tableName = "classes")
-data class Classes(
+data class Class(
     @PrimaryKey
     var id: Int,
     var turmaId: Int,

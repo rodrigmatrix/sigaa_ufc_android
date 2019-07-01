@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.room.Room
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.AddCardActivity
 
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.api.ApiSigaa
+import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
 import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
@@ -23,38 +25,44 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
     private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
+    private lateinit var database: StudentsDatabase
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        database = Room.databaseBuilder(
+            view!!.context,
+            StudentsDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+        var student = database.studentDao().getStudent()
+        if(student.cardRU != ""){
+            println("exibir dados")
+        }
+        else{
+            println("exibir erro sem dados ru")
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        add_card.setOnClickListener {
+            val intent = Intent(context, AddCardActivity::class.java)
+            this.startActivity(intent)
+        }
+    }
+    private val handler = CoroutineExceptionHandler { _, throwable ->
+        Log.e("Exception", ":$throwable")
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_restaurante_universiario, container, false)
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val apiSigaa = ApiSigaa()
-        launch(handler) {
-            var triple = apiSigaa.getRU("0421757", "0087438388")
-            if(triple.first != "Success"){
-                Snackbar.make(view, triple.first, Snackbar.LENGTH_LONG).show()
-            }
-            else{
-                println(triple)
-            }
-        }
-        add_card.setOnClickListener {
-            val intent = Intent(context, AddCardActivity::class.java)
-            this.startActivity(intent)
-        }
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    private val handler = CoroutineExceptionHandler { _, throwable ->
-        Log.e("Exception", ":$throwable")
-    }
 
 }

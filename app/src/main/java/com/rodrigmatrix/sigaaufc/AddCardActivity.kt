@@ -1,11 +1,22 @@
 package com.rodrigmatrix.sigaaufc
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.room.Room
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.api.ApiSigaa
+import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.Student
+import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
 import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.coroutines.*
+import org.jetbrains.anko.contentView
 import kotlin.coroutines.CoroutineContext
 
 class AddCardActivity : AppCompatActivity(), CoroutineScope {
@@ -16,6 +27,7 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         super.onDestroy()
         job.cancel()
     }
+    lateinit var database: StudentsDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_card)
@@ -23,20 +35,84 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         toolbar.setNavigationOnClickListener {
             this.finish()
         }
+        database = Room.databaseBuilder(
+            applicationContext,
+            StudentsDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+        var student = database.studentDao().getStudent()
+        card_number_input.setText(student.cardRU)
+        matricula_number_input.setText(student.matriculaRU)
         add_card_button.setOnClickListener {
-            launch(handler){
-                val api = ApiSigaa()
-                if(isValid()){
-
+            if(isValid()){
+                add_card_activity.hideKeyboard()
+                launch(handler){
+                    val api = ApiSigaa()
+                    var triple = api.getRU(card_number_input.text.toString(), matricula_number_input.text.toString())
+                    println(triple)
+                    if(triple.first == "Success"){
+                        runOnUiThread {
+                            dialogData(triple)
+                        }
+                    }
+                    else{
+                        runOnUiThread {
+                            Snackbar.make(add_card_activity, triple.first, Snackbar.LENGTH_LONG).show()
+                        }
+                    }
                 }
             }
         }
 
     }
-    private fun isValid(): Boolean{
-        if(card_number_input.){
+    private fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
 
+    private fun dialogData(triple: Triple<String, Pair<String, Int>, MutableList<HistoryRU>>){
+        MaterialAlertDialogBuilder(add_card_activity.context)
+            .setTitle("Confirme o cartão")
+            .setMessage("Este cartão pertenca à: ${triple.second.first}?")
+            .setPositiveButton("Sim"){ _, _ ->
+                saveData(triple)
+            }
+            .setNegativeButton("Não"){_, _ ->}
+            .show()
+    }
+
+    private fun saveData(triple: Triple<String, Pair<String, Int>, MutableList<HistoryRU>>){
+        var student = database.studentDao().getStudent()
+        student.creditsRU = triple.second.second
+        student.nameRU = triple.second.first
+        student.cardRU = card_number_input.text.toString()
+        student.matriculaRU = matricula_number_input.text.toString()
+        database.studentDao().deleteHistoryRU()
+        triple.third.forEach {
+            database.studentDao().insertRU(it)
         }
+        database.studentDao().insertStudent(student)
+        println("call finish")
+        this.finish()
+    }
+    private fun isValid(): Boolean{
+        var isValid = true
+        if(card_number_input.text.toString().isEmpty()){
+            card_number_field.error = "Digite o número do cartão"
+            isValid = false
+        }
+        else{
+            card_number_field.error = null
+        }
+        if(matricula_number_input.text.toString().isEmpty()){
+            isValid = false
+            matricula_number_field.error = "Digite a matrícula"
+        }
+        else{
+            matricula_number_field.error = null
+        }
+        return isValid
     }
     private val handler = CoroutineExceptionHandler { _, throwable ->
         Log.e("Exception", ":$throwable")

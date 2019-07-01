@@ -9,12 +9,16 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
+import androidx.room.Room
+import com.rodrigmatrix.sigaaufc.persistence.Student
+import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-
+    private lateinit var database: StudentsDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -34,6 +38,32 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        database = Room.databaseBuilder(
+            applicationContext,
+            StudentsDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+        var student = database.studentDao().getStudent()
+        if(student == null){
+            database.studentDao().insertStudent(Student(0, "", "", "", "", "", "", "",
+                "", "default", false, "", 0, "", "", ""))
+        }
+        else{
+//            when (student.theme) {
+//                "light" -> {
+//                    setDefaultNightMode(MODE_NIGHT_NO)
+//                }
+//                "dark" -> {
+//                    setDefaultNightMode(MODE_NIGHT_YES)
+//                }
+//                "default" -> {
+//                    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+//                }
+//            }
+        }
+        setDefaultNightMode(MODE_NIGHT_NO)
+        //setDefaultNightMode(MODE_NIGHT_YES)
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
