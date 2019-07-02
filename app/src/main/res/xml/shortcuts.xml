@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+            android:shortcutId="ru"
+            android:enabled="true"
+            android:icon="@drawable/ic_credit_card"
+            android:shortcutShortLabel="@string/ru_shortcut"
+            android:shortcutLongLabel="@string/ru_long_shortcut"
+            tools:targetApi="n_mr1">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.example.myapplication"
+                android:targetClass="com.example.myapplication.ComposeActivity" />
+    </shortcut>
+    <shortcut
+            android:shortcutId="compose"
+            android:enabled="true"
+            android:icon="@drawable/ic_local_library"
+            android:shortcutShortLabel="@string/library_shortcut"
+            android:shortcutLongLabel="@string/library_shortcut"
+            tools:targetApi="n_mr1">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.example.myapplication"
+                android:targetClass="com.example.myapplication.ComposeActivity" />
+    </shortcut>
+    <shortcut
+            android:shortcutId="sigaa"
+            android:enabled="true"
+            android:icon="@drawable/ic_school"
+            android:shortcutShortLabel="@string/sigaa_shortcut"
+            android:shortcutLongLabel="@string/sigaa_shortcut"
+            tools:targetApi="n_mr1">
+        <intent
+                android:action="com.rodrigmatrix.SIGAA"
+                android:targetPackage="com.rodrigmatrix.sigaaufc.fragments"
+                android:targetClass="com.rodrigmatrix.sigaaufc.fragments.SigaaFragment"/>
+    </shortcut>
+</PreferenceScreen>
