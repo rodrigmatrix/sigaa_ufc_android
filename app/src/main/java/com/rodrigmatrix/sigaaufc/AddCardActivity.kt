@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.room.Room
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -35,6 +36,7 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         toolbar.setNavigationOnClickListener {
             this.finish()
         }
+        progress_add_card.isVisible = false
         database = Room.databaseBuilder(
             applicationContext,
             StudentsDatabase::class.java, "database.db")
@@ -47,6 +49,9 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         add_card_button.setOnClickListener {
             if(isValid()){
                 add_card_activity.hideKeyboard()
+                progress_add_card.isVisible = true
+                add_card_button.isEnabled = false
+                add_credits_button.isEnabled = false
                 launch(handler){
                     val api = ApiSigaa()
                     var triple = api.getRU(card_number_input.text.toString(), matricula_number_input.text.toString())
@@ -59,10 +64,16 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
                     else{
                         runOnUiThread {
                             Snackbar.make(add_card_activity, triple.first, Snackbar.LENGTH_LONG).show()
+                            progress_add_card.isVisible = false
+                            add_card_button.isEnabled = true
+                            add_credits_button.isEnabled = false
                         }
                     }
                 }
             }
+        }
+        add_credits_button.setOnClickListener {
+            Snackbar.make(add_card_activity, "Esse recurso estará disponível em breve", Snackbar.LENGTH_LONG).show()
         }
 
     }
@@ -81,6 +92,9 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
             }
             .setNegativeButton("Não"){_, _ ->}
             .show()
+        add_card_button.isEnabled = true
+        add_credits_button.isEnabled = true
+        progress_add_card.isVisible = false
     }
 
     private fun saveData(triple: Triple<String, Pair<String, Int>, MutableList<HistoryRU>>){

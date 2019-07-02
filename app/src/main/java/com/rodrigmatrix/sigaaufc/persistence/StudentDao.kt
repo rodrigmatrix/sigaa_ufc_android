@@ -30,8 +30,8 @@ interface StudentDao {
 
 
 
-//    @Query("SELECT * FROM news WHERE classId LIKE :id")
-//    fun getNews(id: String): MutableList<News>
+    @Query("SELECT * FROM historyru")
+    fun getHistoryRU(): MutableList<HistoryRU>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRU(historyRU: HistoryRU)

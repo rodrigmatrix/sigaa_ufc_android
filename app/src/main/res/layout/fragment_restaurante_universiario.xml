@@ -3,15 +3,30 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/coordinator"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".fragments.RestauranteUniversiarioFragment">
 
 
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <include
+            layout="@layout/no_card_error"
+            android:id="@+id/no_card"
+            tools:visibility="invisible"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"/>
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/ru_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:id="@+id/recyclerView_ru"/>
 
-    </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_card"
             android:layout_width="wrap_content"

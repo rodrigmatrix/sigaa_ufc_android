@@ -7,15 +7,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.AddCardActivity
 
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.adapters.RestauranteUniversitarioAdapter
 import com.rodrigmatrix.sigaaufc.api.ApiSigaa
 import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
+import kotlinx.android.synthetic.main.activity_add_card.*
+import kotlinx.android.synthetic.main.fragment_library.*
 import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*
+import org.jetbrains.anko.support.v4.runOnUiThread
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -41,22 +48,70 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             .build()
         var student = database.studentDao().getStudent()
         if(student.cardRU != ""){
-            println("exibir dados")
+            recyclerView_ru.layoutManager = LinearLayoutManager(context)
+            recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
+            ru_refresh?.isVisible = true
+            no_card?.isVisible = false
         }
         else{
-            println("exibir erro sem dados ru")
+            ru_refresh?.isVisible = false
+            no_card?.isVisible = true
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ru_refresh.setColorSchemeResources(R.color.colorPrimary)
+        ru_refresh.setProgressBackgroundColorSchemeColor(ContextCompat.getColor(view.context, R.color.colorSwipeRefresh))
         add_card.setOnClickListener {
             val intent = Intent(context, AddCardActivity::class.java)
             this.startActivity(intent)
         }
+        database = Room.databaseBuilder(
+            view.context,
+            StudentsDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+        loadData()
+        ru_refresh.setOnRefreshListener {
+            loadData()
+        }
+    }
+
+    private fun loadData(){
+        launch(handler){
+            runOnUiThread {
+                ru_refresh.isRefreshing = true
+            }
+            val api = ApiSigaa()
+            var student = database.studentDao().getStudent()
+            if(student.cardRU != ""){
+                var triple = api.getRU(student.cardRU, student.matriculaRU)
+                if(triple.first == "Success"){
+                    database.studentDao().deleteHistoryRU()
+                    triple.third.forEach {
+                        database.studentDao().insertRU(it)
+                    }
+                    runOnUiThread {
+                        recyclerView_ru.layoutManager = LinearLayoutManager(context)
+                        recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
+                        ru_refresh.isRefreshing = false
+                    }
+                }
+                else{
+                    runOnUiThread {
+                        Snackbar.make(add_card_activity, triple.first, Snackbar.LENGTH_LONG).show()
+                        ru_refresh.isRefreshing = false
+                    }
+                }
+            }
+        }
     }
     private val handler = CoroutineExceptionHandler { _, throwable ->
         Log.e("Exception", ":$throwable")
+        ru_refresh?.isRefreshing = false
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
