@@ -13,9 +13,13 @@
         <action
                 android:id="@+id/action_nav_sigaa_to_nav_ru"
                 app:destination="@id/nav_ru"
-                app:enterAnim="@anim/nav_default_pop_enter_anim"
-                app:exitAnim="@anim/nav_default_pop_exit_anim"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
                 app:popUpToInclusive="true" />
+        <deepLink
+                android:id="@+id/deepLink"
+                android:autoVerify="true"
+                app:uri="https://si3.ufc.br/sigaa/verTelaLogin.do" />
     </fragment>
 
     <fragment
@@ -32,8 +36,8 @@
         <action
                 android:id="@+id/action_nav_ru_to_nav_sigaa"
                 app:destination="@id/nav_sigaa"
-                app:enterAnim="@anim/nav_default_pop_enter_anim"
-                app:exitAnim="@anim/nav_default_pop_exit_anim"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
                 app:popUpToInclusive="true" />
     </fragment>
 

@@ -11,9 +11,14 @@
         <item name="elevation">1dp</item>
         <item name="cardElevation">8dp</item>
         <item name="backgroundColor">@color/colorSwipeRefresh</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="elevationOverlaysEnabled">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/colorPrimary</item>
     </style>
 
 </resources>

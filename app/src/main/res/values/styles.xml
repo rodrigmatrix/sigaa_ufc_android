@@ -9,18 +9,13 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="cardElevation">8dp</item>
         <item name="elevation">6dp</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="backgroundColor">@color/White</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/colorPrimary</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 </resources>
