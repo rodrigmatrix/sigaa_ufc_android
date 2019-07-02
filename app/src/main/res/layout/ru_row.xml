@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
 
         android:layout_width="match_parent"
@@ -8,51 +9,82 @@
         android:gravity="center"
         android:layout_gravity="center">
     <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_history"
             android:layout_width="match_parent"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
+            android:layout_marginLeft="45dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="100dp"
+            app:cardCornerRadius="12dp"
+            android:clickable="true"
             android:layout_gravity="center"
-            app:cardElevation="8dp">
-        <LinearLayout
+            app:cardElevation="2dp"
+            android:focusable="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-            <TextView
-                    android:id="@+id/operation_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:text="Utilização do Cartão"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_marginBottom="8dp"/>
+
             <TextView
                     android:id="@+id/content_text"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
+                    android:layout_marginStart="95dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="85dp"
+                    android:text="Refeição: Almoço"
                     android:textAlignment="center"
-                    android:layout_marginBottom="8dp"
-                    android:text="Refeição: Almoço"/>
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.233"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                     android:id="@+id/date_text"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="112dp"
+                    android:layout_marginBottom="28dp"
+                    android:text="Data: 24-06-2019"
                     android:textColor="@color/colorPrimary"
-                    android:textAlignment="center"
-                    android:layout_marginBottom="4dp"
-                    android:text="Data: 24-06-2019"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/image_ru" />
+
             <TextView
                     android:id="@+id/time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
                     android:layout_gravity="center"
-                    android:text="Hora: 12:59:46"/>
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="128dp"
+                    android:text="Hora: 12:59:46"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/image_ru"
+                    app:layout_constraintTop_toBottomOf="@+id/content_text" />
 
-        </LinearLayout>
+            <ImageView
+                    android:id="@+id/image_ru"
+                    android:layout_width="50dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="36dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginBottom="26dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:srcCompat="@drawable/lunch" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
 

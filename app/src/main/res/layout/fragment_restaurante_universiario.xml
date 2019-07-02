@@ -15,18 +15,104 @@
             android:layout_width="match_parent"
             android:layout_gravity="center"
             android:layout_height="match_parent"/>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/ru_refresh"
+    <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center">
-        <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            android:orientation="vertical">
+        <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_view_ru"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="180dp"
+                app:cardCornerRadius="12dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/gradient_card"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
                 android:layout_gravity="center"
-                android:id="@+id/recyclerView_ru"/>
+                app:cardElevation="12dp">
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_card"
+                    android:gravity="center"/>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Restaurante Universitário"
+                        android:textColor="#3D3B3B"
+                        android:textSize="20sp"
+                        android:layout_marginRight="6dp"
+                        app:layout_constraintBottom_toTopOf="@+id/card_holder_text"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/imageView2"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.24000001" />
+
+                <TextView
+                        android:id="@+id/card_holder_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="Nome do Aluno"
+                        android:textColor="#2A2828"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                        android:id="@+id/credits_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="54dp"
+                        android:text="0 Créditos"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                        android:textColor="#2A2828"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+                <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="58dp"
+                        android:layout_height="55dp"
+                        android:layout_marginStart="28dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="47dp"
+                        android:src="@drawable/ufc_logo"
+                        app:layout_constraintBottom_toTopOf="@+id/credits_text"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/ru_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    tools:visibility="invisible"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:id="@+id/recyclerView_ru"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </LinearLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_card"
             android:layout_width="wrap_content"

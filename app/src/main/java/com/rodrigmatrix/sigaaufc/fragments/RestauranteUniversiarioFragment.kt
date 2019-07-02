@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -38,6 +39,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
         job.cancel()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         database = Room.databaseBuilder(
@@ -48,6 +50,9 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             .build()
         var student = database.studentDao().getStudent()
         if(student.cardRU != ""){
+            card_view_ru.isVisible = true
+            card_holder_text.text = student.nameRU
+            credits_text.text = "${student.creditsRU} Créditos"
             recyclerView_ru.layoutManager = LinearLayoutManager(context)
             recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
             ru_refresh?.isVisible = true
@@ -55,6 +60,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             ru_refresh?.isRefreshing = false
         }
         else{
+            card_view_ru.isVisible = false
             ru_refresh?.isVisible = false
             no_card?.isVisible = true
             ru_refresh?.isRefreshing = false

@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -14,11 +15,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.room.Room
 import com.rodrigmatrix.sigaaufc.persistence.Student
 import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
+import kotlinx.android.synthetic.main.nav_header_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var database: StudentsDatabase
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,6 +51,27 @@ class MainActivity : AppCompatActivity() {
                 "", "default", false, "", 0, "", "", ""))
         }
         else{
+            when {
+                student.name != "" -> {
+                    navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.name.split(" ")[0]}"
+                    navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matricula}"
+                }
+                student.nameRU != "" -> {
+                    navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.nameRU.split(" ")[0]}"
+                    navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matriculaRU}"
+                }
+                //            when (student.theme) {
+                //                "light" -> {
+                //                    setDefaultNightMode(MODE_NIGHT_NO)
+                //                }
+                //                "dark" -> {
+                //                    setDefaultNightMode(MODE_NIGHT_YES)
+                //                }
+                //                "default" -> {
+                //                    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+                //                }
+                //            }
+            }
 //            when (student.theme) {
 //                "light" -> {
 //                    setDefaultNightMode(MODE_NIGHT_NO)
@@ -59,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
         }
-        //setDefaultNightMode(MODE_NIGHT_NO)
+        setDefaultNightMode(MODE_NIGHT_NO)
         //setDefaultNightMode(MODE_NIGHT_YES)
     }
 

@@ -18,7 +18,6 @@ class SigaaFragment : Fragment(), CoroutineScope {
     private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
-    private val FIRST = "com.rodrigmatrix.SIGAA"
 
     override fun onDestroy() {
         super.onDestroy()

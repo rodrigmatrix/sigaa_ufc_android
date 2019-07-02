@@ -130,9 +130,9 @@ class ApiSigaa {
             .add("matriculaAtreladaCartao", matricula)
             .build()
         val client = OkHttpClient().newBuilder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(40, TimeUnit.SECONDS)
+            .writeTimeout(40, TimeUnit.SECONDS)
+            .readTimeout(40, TimeUnit.SECONDS)
             .build()
         withContext(Dispatchers.IO){
             val request = Request.Builder()

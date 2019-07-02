@@ -24,15 +24,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:id="@+id/student_name_menu_text"
             android:textColor="@color/colorText"
-            android:text="Olá Rodrigo"
+            android:text="Olá Aluno"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-            android:id="@+id/textView"
+            android:id="@+id/matricula_menu_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorText"
-            android:text="Matrícula: 421757" />
+            android:text="" />
 
 </LinearLayout>
