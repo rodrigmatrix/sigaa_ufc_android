@@ -7,21 +7,26 @@
         tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:background="?attr/backgroundColor"
-            app:elevation="0dp">
+            android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
+                android:background="?attr/backgroundColor"
+                android:elevation="12dp"
+                tools:title="Restaurante Universitário"
                 android:layout_width="match_parent"
                 app:titleTextColor="@color/colorPrimary"
-                android:layout_height="?attr/actionBarSize"
-               />
+                android:layout_height="?attr/actionBarSize"/>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <include layout="@layout/content_main" />
+    <include
+            android:visibility="invisible"
+            tools:visibility="visible"
+            layout="@layout/no_card_error"/>
+    <include
+            tools:visibility="invisible"
+            layout="@layout/content_main"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
