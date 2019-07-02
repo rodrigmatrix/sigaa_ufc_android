@@ -25,13 +25,13 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:text="Utilização do Cartão"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/colorPrimary"
                     android:layout_marginBottom="8dp"/>
             <TextView
                     android:id="@+id/content_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/colorPrimary"
                     android:textAlignment="center"
                     android:layout_marginBottom="8dp"
                     android:text="Refeição: Almoço"/>
@@ -40,7 +40,7 @@
                     android:id="@+id/date_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/colorPrimary"
                     android:textAlignment="center"
                     android:layout_marginBottom="4dp"
                     android:text="Data: 24-06-2019"/>
@@ -48,7 +48,7 @@
                     android:id="@+id/time_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorText"
+                    android:textColor="@color/colorPrimary"
                     android:layout_gravity="center"
                     android:text="Hora: 12:59:46"/>
 

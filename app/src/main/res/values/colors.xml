@@ -3,8 +3,9 @@
     <color name="colorPrimary">#62A8BD</color>
     <color name="colorPrimaryDark">#62A8BD</color>
     <color name="colorAccent">#62A8BD</color>
-    <color name="colorText">#62A8BD</color>
+    <color name="colorText">#121212</color>
     <color name="White">#FFFFFF</color>
+    <color name="colorTextSecondary">#7d7d7d</color>
     <color name="Surface">#121212</color>
     <color name="colorSwipeRefresh">#FFFFFF</color>
     <color name="Red">#b00020</color>

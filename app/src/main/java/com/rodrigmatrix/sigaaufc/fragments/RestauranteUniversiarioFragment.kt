@@ -52,10 +52,12 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
             ru_refresh?.isVisible = true
             no_card?.isVisible = false
+            ru_refresh?.isRefreshing = false
         }
         else{
             ru_refresh?.isVisible = false
             no_card?.isVisible = true
+            ru_refresh?.isRefreshing = false
         }
 
     }

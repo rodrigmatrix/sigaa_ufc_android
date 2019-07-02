@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:layout_gravity="center">
 
-    <ImageView
-            android:layout_width="232dp"
-            android:layout_height="145dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_credit_card" />
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nenhum cartão adicionado"
+            android:textAlignment="center"
+            android:layout_marginBottom="20dp"
+            android:textColor="@color/colorText"
+            android:textSize="30sp" />
 
     <TextView
             android:layout_width="match_parent"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Nenhum cartão adicionado. Adicione um cartão no ícone abaixo"
+            android:text="Adicione um cartão no ícone abaixo"
             android:textAlignment="center"
-            android:textColor="@color/colorText" />
+            android:layout_marginBottom="40dp"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="18sp" />
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="145dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_credit_card" />
+
+
 
 </LinearLayout>

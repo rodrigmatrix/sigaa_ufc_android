@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
         }
-        //setDefaultNightMode(MODE_NIGHT_NO)
+        setDefaultNightMode(MODE_NIGHT_NO)
         //setDefaultNightMode(MODE_NIGHT_YES)
     }
 

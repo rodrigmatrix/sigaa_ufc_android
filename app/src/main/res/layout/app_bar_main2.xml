@@ -13,7 +13,7 @@
         <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                app:titleTextColor="@color/colorText"
+                app:titleTextColor="@color/colorPrimary"
                 android:background="?attr/backgroundColor"
                 android:layout_height="?attr/actionBarSize"
                 android:elevation="?attr/cardElevation"/>

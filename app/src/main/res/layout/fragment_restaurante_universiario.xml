@@ -12,7 +12,7 @@
             layout="@layout/no_card_error"
             android:id="@+id/no_card"
             tools:visibility="invisible"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_gravity="center"
             android:layout_height="match_parent"/>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_credit_card"
+            android:src="@drawable/ic_add"
             android:layout_gravity="bottom|end">
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
