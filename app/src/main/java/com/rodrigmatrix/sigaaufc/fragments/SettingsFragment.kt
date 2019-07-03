@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.fragments
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -28,6 +29,7 @@ class SettingsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         database = Room.databaseBuilder(
@@ -39,9 +41,18 @@ class SettingsFragment : Fragment() {
         var student = database.studentDao().getStudent()
         var selected = 1
         when(student.theme){
-            "light" -> selected = 0
-            "dark" -> selected = 1
-            "default" -> selected = 2
+            "light" -> {
+                selected = 0
+                selected_theme_text.text = "Light"
+            }
+            "dark" -> {
+                selected = 1
+                selected_theme_text.text = "Dark"
+            }
+            "default" -> {
+                selected = 2
+                selected_theme_text.text = "Automático"
+            }
         }
         var items = resources.getStringArray(R.array.theme_array)
         theme_button.setOnClickListener {
@@ -51,16 +62,22 @@ class SettingsFragment : Fragment() {
                     when(item){
                         0 -> {
                             student.theme = "light"
+                            selected = 0
+                            selected_theme_text.text = "Light"
                             database.studentDao().insertStudent(student)
                             setDefaultNightMode(MODE_NIGHT_NO)
                         }
                         1 -> {
                             student.theme = "dark"
+                            selected_theme_text.text = "Dark"
+                            selected = 1
                             database.studentDao().insertStudent(student)
                             setDefaultNightMode(MODE_NIGHT_YES)
                         }
                         2 -> {
                             student.theme = "default"
+                            selected = 2
+                            selected_theme_text.text = "Automático"
                             database.studentDao().insertStudent(student)
                             setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
 

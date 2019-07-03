@@ -55,11 +55,11 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             .build()
         var student = database.studentDao().getStudent()
         if(student.cardRU != ""){
-            card_view_ru.isVisible = true
-            card_holder_text.text = student.nameRU
-            credits_text.text = "${student.creditsRU} créditos"
-            recyclerView_ru.layoutManager = LinearLayoutManager(context)
-            recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
+            card_view_ru?.isVisible = true
+            card_holder_text?.text = student.nameRU
+            credits_text?.text = "${student.creditsRU} créditos"
+            recyclerView_ru?.layoutManager = LinearLayoutManager(context)
+            recyclerView_ru?.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
             ru_refresh?.isVisible = true
             no_card?.isVisible = false
             ru_refresh?.isRefreshing = false
@@ -88,7 +88,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             .allowMainThreadQueries()
             .build()
         loadData()
-        ru_refresh.setOnRefreshListener {
+        ru_refresh?.setOnRefreshListener {
             loadData()
         }
     }
@@ -108,15 +108,15 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
                         database.studentDao().insertRU(it)
                     }
                     runOnUiThread {
-                        recyclerView_ru.layoutManager = LinearLayoutManager(context)
-                        recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
-                        ru_refresh.isRefreshing = false
+                        recyclerView_ru?.layoutManager = LinearLayoutManager(context)
+                        recyclerView_ru?.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
+                        ru_refresh?.isRefreshing = false
                     }
                 }
                 else{
                     runOnUiThread {
                         Snackbar.make(add_card_activity, triple.first, Snackbar.LENGTH_LONG).show()
-                        ru_refresh.isRefreshing = false
+                        ru_refresh?.isRefreshing = false
                     }
                 }
             }
