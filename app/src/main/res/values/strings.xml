@@ -30,4 +30,10 @@
     <string name="ru_shortcut">Créditos RU</string>
     <string name="ru_long_shortcut">RU</string>
     <string name="library_shortcut">Biblioteca</string>
+
+    <string-array name="theme_array">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Automático (Android Q)</item>
+    </string-array>
 </resources>

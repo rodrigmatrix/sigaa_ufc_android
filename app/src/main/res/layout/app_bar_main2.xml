@@ -8,12 +8,12 @@
 
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:elevation="12dp">
 
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:background="?attr/backgroundColor"
-                android:elevation="12dp"
                 tools:title="Restaurante Universitário"
                 android:layout_width="match_parent"
                 app:titleTextColor="@color/colorPrimary"

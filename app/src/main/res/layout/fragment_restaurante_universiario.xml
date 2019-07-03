@@ -22,19 +22,14 @@
         <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_view_ru"
                 android:clickable="true"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="180dp"
                 app:cardCornerRadius="12dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_gravity="center"
-                app:cardElevation="12dp">
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/gradient_card"
-                    android:gravity="center"/>
+                app:cardElevation="6dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -44,16 +39,16 @@
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:text="Restaurante Universitário"
-                        android:textColor="#3D3B3B"
+                        android:textColor="@color/colorText"
                         android:textSize="20sp"
-                        android:layout_marginRight="6dp"
                         app:layout_constraintBottom_toTopOf="@+id/card_holder_text"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintHorizontal_bias="0.25"
                         app:layout_constraintStart_toEndOf="@+id/imageView2"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.24000001" />
+                        app:layout_constraintVertical_bias="0.237" />
 
                 <TextView
                         android:id="@+id/card_holder_text"
@@ -62,7 +57,7 @@
                         android:layout_marginLeft="40dp"
                         android:layout_marginBottom="16dp"
                         android:text="Nome do Aluno"
-                        android:textColor="#2A2828"
+                        android:textColor="@color/colorText"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -76,7 +71,7 @@
                         android:layout_marginTop="54dp"
                         android:text="0 Créditos"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                        android:textColor="#2A2828"
+                        android:textColor="@color/colorText"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
@@ -87,7 +82,7 @@
                         android:id="@+id/imageView2"
                         android:layout_width="58dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="28dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginBottom="47dp"
                         android:src="@drawable/ufc_logo"
@@ -119,7 +114,7 @@
             android:backgroundTint="@color/colorPrimary"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_add"
-            android:layout_gravity="bottom|end">
+            android:layout_gravity="bottom|right">
 
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 

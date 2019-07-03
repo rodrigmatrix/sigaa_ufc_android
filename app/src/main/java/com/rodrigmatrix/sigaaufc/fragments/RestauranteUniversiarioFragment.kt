@@ -39,6 +39,11 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
         job.cancel()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        println("limpou backstack")
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
@@ -52,7 +57,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
         if(student.cardRU != ""){
             card_view_ru.isVisible = true
             card_holder_text.text = student.nameRU
-            credits_text.text = "${student.creditsRU} Créditos"
+            credits_text.text = "${student.creditsRU} créditos"
             recyclerView_ru.layoutManager = LinearLayoutManager(context)
             recyclerView_ru.adapter = RestauranteUniversitarioAdapter(database.studentDao().getHistoryRU())
             ru_refresh?.isVisible = true

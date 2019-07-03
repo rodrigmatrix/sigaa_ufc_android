@@ -12,10 +12,7 @@
             tools:layout="@layout/fragment_sigaa">
         <action
                 android:id="@+id/action_nav_sigaa_to_nav_ru"
-                app:destination="@id/nav_ru"
-                app:enterAnim="@anim/nav_default_enter_anim"
-                app:exitAnim="@anim/nav_default_exit_anim"
-                app:popUpToInclusive="true" />
+                app:destination="@id/nav_ru" />
         <deepLink
                 android:id="@+id/deepLink"
                 android:autoVerify="true"
@@ -35,10 +32,7 @@
             tools:layout="@layout/fragment_restaurante_universiario" >
         <action
                 android:id="@+id/action_nav_ru_to_nav_sigaa"
-                app:destination="@id/nav_sigaa"
-                app:enterAnim="@anim/nav_default_enter_anim"
-                app:exitAnim="@anim/nav_default_exit_anim"
-                app:popUpToInclusive="true" />
+                app:destination="@id/nav_sigaa" />
     </fragment>
 
     <fragment

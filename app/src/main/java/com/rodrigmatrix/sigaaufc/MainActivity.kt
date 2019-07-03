@@ -60,32 +60,19 @@ class MainActivity : AppCompatActivity() {
                     navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.nameRU.split(" ")[0]}"
                     navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matriculaRU}"
                 }
-                //            when (student.theme) {
-                //                "light" -> {
-                //                    setDefaultNightMode(MODE_NIGHT_NO)
-                //                }
-                //                "dark" -> {
-                //                    setDefaultNightMode(MODE_NIGHT_YES)
-                //                }
-                //                "default" -> {
-                //                    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
-                //                }
-                //            }
             }
-//            when (student.theme) {
-//                "light" -> {
-//                    setDefaultNightMode(MODE_NIGHT_NO)
-//                }
-//                "dark" -> {
-//                    setDefaultNightMode(MODE_NIGHT_YES)
-//                }
-//                "default" -> {
-//                    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
-//                }
-//            }
+            when(student.theme){
+                "light" -> {
+                    setDefaultNightMode(MODE_NIGHT_NO)
+                }
+                "dark" -> {
+                    setDefaultNightMode(MODE_NIGHT_YES)
+                }
+                "default" -> {
+                    setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+                }
+            }
         }
-        setDefaultNightMode(MODE_NIGHT_NO)
-        //setDefaultNightMode(MODE_NIGHT_YES)
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
