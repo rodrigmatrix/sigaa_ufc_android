@@ -3,6 +3,7 @@ package com.rodrigmatrix.sigaaufc.serializer
 import com.rodrigmatrix.sigaaufc.persistence.Class
 import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
 import org.jsoup.Jsoup
+import java.text.Normalizer
 
 class Serializer {
 
@@ -12,11 +13,12 @@ class Serializer {
             response.contains("Menu Principal") -> "Menu Principal"
             response.contains("Usuário e/ou senha inválidos") -> "Aluno não encontrado"
             response.contains("Por favor, aguarde enquanto carregamos as suas") -> "Menu Principal"
-            else -> "Erro Login"
+            response.contains("Tentativa de acesso por aplicativo externo. Operação negada") -> "Tentativa de acesso por aplicativo externo."
+            else -> "Erro ao efetuar login. Verifique os seus dados"
         }
     }
 
-    fun parseClasses(response: String?){
+    fun parseClasses(response: String?): MutableList<Class>{
         var classes = mutableListOf<Class>()
         var turmaId = mutableListOf<String>()
         var names = mutableListOf<String>()
@@ -48,7 +50,7 @@ class Serializer {
             }
             var id = 1
             for(it in turmaId){
-                classes.add(Class(id, turmaId[id-1].toInt(), names[id-1], periodsList[id-1], 0, 0))
+                classes.add(Class(id, turmaId[id-1], names[id-1], periodsList[id-1], 0, 0))
                 println(classes[id-1])
                 id++
             }
@@ -58,8 +60,9 @@ class Serializer {
             matricula = matricula!![1].split(" </td>")
             println(matricula[0])
             var curso = response?.split("<td> Curso: </td>\n" + "\t\t\t\t\t\t<td> ")
-            curso = curso?.get(1)!!.split(" </td>")
-            println(curso[0])
+            var c = Normalizer.normalize(curso?.get(1)!!.split(" </td>")[0], Normalizer.Form.NFD)
+            println(c)
+            return classes
         }
     }
 

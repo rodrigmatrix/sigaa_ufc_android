@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.api
 
+import com.rodrigmatrix.sigaaufc.persistence.Class
 import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
@@ -12,14 +13,14 @@ import java.util.concurrent.TimeUnit
 
 class ApiSigaa {
 
-
-    suspend fun getCookie(): String{
+    suspend fun getCookie(): Pair<Boolean, String>{
         val client = OkHttpClient().newBuilder()
             .connectTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
             .build()
         var cookie = ""
+        var status = false
         withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa")
@@ -27,16 +28,18 @@ class ApiSigaa {
                 .build()
             var response = client.newCall(request).execute()
             if(response != null && response.isSuccessful){
+                status = true
                 var arr = response.request.url.toString().split("jsessionid=")
                 cookie = arr[1]
             }
             else{
+                status = false
             }
         }
-        return cookie
+        return Pair(status, cookie)
     }
 
-    suspend fun login(cookie: String, login: String, password: String): String{
+    suspend fun login(cookie: String, login: String, password: String): Pair<String, MutableList<Class>>{
         val serializer  = Serializer()
         val client = OkHttpClient().newBuilder()
             .connectTimeout(10, TimeUnit.SECONDS)
@@ -44,6 +47,7 @@ class ApiSigaa {
             .readTimeout(10, TimeUnit.SECONDS)
             .build()
         var status = ""
+        var listClass = mutableListOf<Class>()
         withContext(Dispatchers.IO){
             var formBody = FormBody.Builder()
                 .add("width", "0")
@@ -51,46 +55,61 @@ class ApiSigaa {
                 .add("user.login", login)
                 .add("user.senha", password)
                 .add("entrar", "Entrar")
-                .add("javax.faces.ViewState", "j_id3")
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/logar.do?dispatch=logOn")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do%3bjsessionid=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do")
                 .post(formBody)
                 .build()
             var response = client.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
+                println(res)
                 when(serializer.loginParse(res)){
                     "Continuar" -> {
-                        redirectMenu(cookie)
-                        status = "Success"
+                        var res = redirectMenu(cookie)
+                        if(res.first != "Success"){
+                            status = res.first
+                        }
+                        else{
+                            status = "Success"
+                            listClass = res.second
+                        }
+
                     }
                     "Menu Principal" -> {
-                        status = "Success"
-                        redirectMenu(cookie)
+                        var res = redirectMenu(cookie)
+                        if(res.first != "Success"){
+                            status = res.first
+                        }
+                        else{
+                            status = "Success"
+                            listClass = res.second
+                        }
                     }
                     "Usuário e/ou senha inválidos" -> {
                         status = "Usuário ou senha inválidos"
                     }
                     else -> {
-                        status = "Erro ao efetuar login"
+                        status = serializer.loginParse(res)
                     }
                 }
             }
             else{
-                status = "Erro De Conexão"
+                status = "Erro de conexão"
             }
         }
-        return status
+        return Pair(status, listClass)
     }
-    private suspend fun redirectMenu(cookie: String){
+    private suspend fun redirectMenu(cookie: String): Pair<String, MutableList<Class>>{
         val client = OkHttpClient().newBuilder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .build()
+        var status = ""
+        var listClass = mutableListOf<Class>()
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/paginaInicial.do")
             .header("Cookie", "JSESSIONID=$cookie")
@@ -98,20 +117,30 @@ class ApiSigaa {
         withContext(Dispatchers.IO){
             var response = client.newCall(request).execute()
             if(response.isSuccessful){
+                println("redirect")
                 val res = response.body?.string()
                 if(res!!.contains("Menu Principal")){
-                    var classes = getClasses(cookie)
+                    var pair = getClasses(cookie)
+                    if(pair.first != "Success"){
+                        status = "Tempo de conexão expirou"
+                    }
+                    else{
+                        status = "Success"
+                        listClass = pair.second
+                    }
                 }
             }
         }
+        return Pair(status, listClass)
     }
-    private suspend fun getClasses(cookie: String): String?{
+    private suspend fun getClasses(cookie: String): Pair<String, MutableList<Class>>{
         val client = OkHttpClient().newBuilder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
             .readTimeout(20, TimeUnit.SECONDS)
             .build()
-        var classes = ""
+        var status = ""
+        var listClasses = mutableListOf<Class>()
         withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
@@ -122,14 +151,19 @@ class ApiSigaa {
             if(response.isSuccessful){
                 val res = response.body?.string()
                 val serializer = Serializer()
-                serializer.parseClasses(res)
-                getClass(" ", " ",cookie)
+                listClasses = serializer.parseClasses(res)
+                var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
+                viewStateId = viewStateId[1].split("\" ")
+                status = "Success"
+            }
+            else{
+                status = "Tempo de conexão expirou"
             }
         }
-        return classes
+        return Pair(status, listClasses)
     }
 
-    private suspend fun getClass(idTurma: String, id: String, cookie: String){
+    private suspend fun getClass(viewStateId: String, idTurma: String, id: Int, cookie: String){
         val client = OkHttpClient().newBuilder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
@@ -137,10 +171,10 @@ class ApiSigaa {
             .build()
         withContext(Dispatchers.IO){
             var formBody = FormBody.Builder()
-                .add("idTurma", "378807")
-                .add("form_acessarTurmaVirtualj_id_1", "form_acessarTurmaVirtualj_id_1")
-                .add("form_acessarTurmaVirtualj_id_1:turmaVirtualj_id_1", "form_acessarTurmaVirtualj_id_1:turmaVirtualj_id_1")
-                .add("javax.faces.ViewState", "j_id2")
+                .add("idTurma", idTurma)
+                .add("form_acessarTurmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id")
+                .add("form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id")
+                .add("javax.faces.ViewState", viewStateId)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf#")
@@ -152,12 +186,15 @@ class ApiSigaa {
             var response = client.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                getGrades(" ", " ", cookie)
+                //println(res)
+                var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
+                viewStateId = viewStateId[1].split("\" ")
+                getGrades(viewStateId[0], cookie)
             }
         }
     }
 
-    private suspend fun getGrades(idTurma: String, id: String, cookie: String){
+    private suspend fun getGrades(viewStateId: String, cookie: String){
         val client = OkHttpClient().newBuilder()
             .connectTimeout(20, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
@@ -168,7 +205,7 @@ class ApiSigaa {
                 .add("formMenu", "formMenu")
                 .add("formMenu:j_id_jsp_1287906063_20", "formMenu:j_id_jsp_1287906063_20")
                 .add("formMenu:j_id_jsp_1287906063_3", "formMenu:j_id_jsp_1287906063_18")
-                .add("javax.faces.ViewState", "j_id3")
+                .add("javax.faces.ViewState", viewStateId)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br//sigaa/ava/index.jsf")
@@ -180,7 +217,7 @@ class ApiSigaa {
             var response = client.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                println(res)
+                //println(res)
             }
         }
     }

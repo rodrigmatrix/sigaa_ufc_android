@@ -28,7 +28,7 @@ data class Student(
 data class Class(
     @PrimaryKey
     var id: Int,
-    var turmaId: Int,
+    var turmaId: String,
     var name: String,
     var days: String,
     var attendance: Int,

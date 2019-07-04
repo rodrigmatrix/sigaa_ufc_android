@@ -1,15 +1,22 @@
 package com.rodrigmatrix.sigaaufc.fragments
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
+import androidx.room.Room
 import com.google.android.material.snackbar.Snackbar
+import com.rodrigmatrix.sigaaufc.AddCardActivity
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.api.ApiSigaa
+import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
+import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.fragment_sigaa.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -18,6 +25,7 @@ import kotlin.coroutines.CoroutineContext
 
 class SigaaFragment : Fragment(), CoroutineScope {
     private var job = Job()
+    private lateinit var database: StudentsDatabase
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -34,35 +42,93 @@ class SigaaFragment : Fragment(), CoroutineScope {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val apiSigaa = ApiSigaa()
+        database = Room.databaseBuilder(
+            fragment_sigaa.context,
+            StudentsDatabase::class.java, "database.db")
+            .fallbackToDestructiveMigration()
+            .allowMainThreadQueries()
+            .build()
+        var student = database.studentDao().getStudent()
         var cookie = ""
-        launch(handler){
-            cookie = apiSigaa.getCookie()
-            progressLogin?.isVisible = false
-            println("cookie $cookie")
+        println(student.jsession)
+        if(student != null && student.jsession != ""){
+            progress_login.isVisible = false
+            cookie = student.jsession
+        }
+        else{
+            login_btn?.isEnabled = false
+            launch(handler){
+                var pair = apiSigaa.getCookie()
+                if(pair.first){
+                    login_btn.isEnabled = true
+                    progress_login?.isVisible = false
+                    student.jsession = pair.second
+                    database.studentDao().insertStudent(student)
+                    cookie = pair.second
+                }
+                else{
+                    login_btn.isEnabled = false
+                    progress_login?.isVisible = false
+                    Snackbar.make(fragment_sigaa, "Tempo de conexão expirou", Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
         login_btn.setOnClickListener {
             if(cookie != "") {
-                progressLogin.isVisible = true
-                var login = login_input.text.toString()
-                var password = password_input.text.toString()
-                launch{
-                    var res = apiSigaa.login(cookie, login, password)
-                    if(res != "Success"){
-                        runOnUiThread {
-                            Snackbar.make(main_activity, res, Snackbar.LENGTH_LONG).show()
-                            progressLogin.isVisible = false
+                fragment_sigaa.hideKeyboard()
+                if(isValid()){
+                    progress_login.isVisible = true
+                    login_btn.isEnabled = false
+                    var login = login_input.text.toString()
+                    var password = password_input.text.toString()
+                    launch{
+                        var res = apiSigaa.login(cookie, login, password)
+                        if(res.first != "Success"){
+                            runOnUiThread {
+                                Snackbar.make(fragment_sigaa, res.first, Snackbar.LENGTH_LONG).show()
+                                progress_login.isVisible = false
+                                login_btn.isEnabled = true
+                            }
                         }
-                    }
-                    else{
-                        runOnUiThread {
-                            progressLogin.isVisible = false
+                        else{
+                            res.second.forEach {
+                                database.studentDao().insertClass(it)
+                            }
+                            runOnUiThread {
+                                progress_login.isVisible = false
+                                login_btn.isEnabled = true
+                            }
                         }
-                    }
 
+                    }
                 }
             }
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private fun isValid(): Boolean{
+        var isValid = true
+        if(login_input.text.toString().isEmpty()){
+            login_field.error = "Digite o login"
+            isValid = false
+        }
+        else{
+            login_field.error = null
+        }
+        if(password_input.text.toString().isEmpty()){
+            isValid = false
+            password_field.error = "Digite a senha"
+        }
+        else{
+            password_field.error = null
+        }
+        return isValid
     }
     private val handler = CoroutineExceptionHandler { _, throwable ->
         Log.e("Exception", ":$throwable")
