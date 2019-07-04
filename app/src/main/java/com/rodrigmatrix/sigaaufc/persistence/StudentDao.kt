@@ -18,7 +18,6 @@ interface StudentDao {
     fun deleteStudent()
 
 
-
     @Query("SELECT * FROM classes")
     fun getClasses(): MutableList<Class>
 
@@ -27,7 +26,6 @@ interface StudentDao {
 
     @Query("DELETE FROM classes")
     fun deleteClasses()
-
 
 
     @Query("SELECT * FROM historyru")

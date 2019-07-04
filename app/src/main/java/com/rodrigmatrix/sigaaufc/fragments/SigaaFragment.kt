@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.room.Room
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.AddCardActivity
 import com.rodrigmatrix.sigaaufc.R
@@ -54,6 +55,8 @@ class SigaaFragment : Fragment(), CoroutineScope {
         if(student != null && student.jsession != ""){
             progress_login.isVisible = false
             cookie = student.jsession
+            login_input.setText(student.login)
+            password_input.setText(student.password)
         }
         else{
             login_btn?.isEnabled = false
@@ -81,7 +84,7 @@ class SigaaFragment : Fragment(), CoroutineScope {
                     login_btn.isEnabled = false
                     var login = login_input.text.toString()
                     var password = password_input.text.toString()
-                    launch{
+                    launch(handler){
                         var res = apiSigaa.login(cookie, login, password)
                         if(res.first != "Success"){
                             runOnUiThread {
@@ -97,6 +100,7 @@ class SigaaFragment : Fragment(), CoroutineScope {
                             runOnUiThread {
                                 progress_login.isVisible = false
                                 login_btn.isEnabled = true
+                                saveCredentials(login, password)
                             }
                         }
 
@@ -105,6 +109,42 @@ class SigaaFragment : Fragment(), CoroutineScope {
             }
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+    private fun saveCredentials(login: String, password: String){
+        var student = database.studentDao().getStudent()
+        if(student.login == ""){
+            runOnUiThread {
+                MaterialAlertDialogBuilder(fragment_sigaa.context)
+                    .setTitle("Salvar Dados")
+                    .setMessage("Deseja salvar seus dados de login?")
+                    .setPositiveButton("Sim"){ _, _ ->
+                        student.login = login
+                        student.password = password
+                        database.studentDao().insertStudent(student)
+                    }
+                    .setNegativeButton("Agora Não"){_, _ ->}
+                    .show()
+            }
+        }
+        else if(student.login != login){
+            runOnUiThread {
+                MaterialAlertDialogBuilder(fragment_sigaa.context)
+                    .setTitle("Atualizar Dados")
+                    .setMessage("Deseja altualizar seus dados de login salvos?")
+                    .setPositiveButton("Sim"){ _, _ ->
+                        student.login = login
+                        student.password = password
+                        database.studentDao().insertStudent(student)
+                    }
+                    .setNegativeButton("Agora Não"){_, _ ->}
+                    .show()
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        database.close()
     }
 
     private fun View.hideKeyboard() {
@@ -131,6 +171,7 @@ class SigaaFragment : Fragment(), CoroutineScope {
         return isValid
     }
     private val handler = CoroutineExceptionHandler { _, throwable ->
+        Snackbar.make(fragment_sigaa, throwable.toString(), Snackbar.LENGTH_LONG).show()
         Log.e("Exception", ":$throwable")
     }
 

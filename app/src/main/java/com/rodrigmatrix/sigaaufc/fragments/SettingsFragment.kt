@@ -87,4 +87,9 @@ class SettingsFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        database.close()
+    }
+
 }

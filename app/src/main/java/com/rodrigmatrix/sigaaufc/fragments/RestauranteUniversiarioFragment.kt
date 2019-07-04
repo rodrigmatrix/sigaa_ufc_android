@@ -35,6 +35,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+        database.close()
     }
 
 

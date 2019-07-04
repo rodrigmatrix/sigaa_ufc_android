@@ -24,10 +24,6 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
     private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
     lateinit var database: StudentsDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +91,11 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         add_card_button.isEnabled = true
         add_credits_button.isEnabled = true
         progress_add_card.isVisible = false
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
+        database.close()
     }
 
     private fun saveData(triple: Triple<String, Pair<String, Int>, MutableList<HistoryRU>>){
