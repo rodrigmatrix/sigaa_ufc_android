@@ -3,20 +3,23 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/mobile_navigation"
-        app:startDestination="@+id/nav_sigaa">
+        app:startDestination="@id/nav_login">
 
     <fragment
-            android:id="@+id/nav_sigaa"
-            android:name="com.rodrigmatrix.sigaaufc.fragments.SigaaFragment"
-            android:label="Login"
-            tools:layout="@layout/fragment_sigaa">
+            android:id="@+id/nav_login"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.LoginFragment"
+            android:label="Login">
         <action
                 android:id="@+id/action_nav_sigaa_to_nav_ru"
                 app:destination="@id/nav_ru" />
         <deepLink
                 android:id="@+id/deepLink"
-                android:autoVerify="true"
                 app:uri="https://si3.ufc.br/sigaa/verTelaLogin.do" />
+        <action
+                android:id="@+id/action_nav_login_to_nav_sigaa"
+                app:destination="@id/nav_sigaa"
+                app:popEnterAnim="@anim/nav_default_enter_anim"
+                app:popUpTo="@+id/nav_login" />
     </fragment>
 
     <fragment
@@ -32,7 +35,7 @@
             tools:layout="@layout/fragment_restaurante_universiario" >
         <action
                 android:id="@+id/action_nav_ru_to_nav_sigaa"
-                app:destination="@id/nav_sigaa" />
+                app:destination="@id/nav_login" />
     </fragment>
 
     <fragment
@@ -52,4 +55,9 @@
             android:name="com.rodrigmatrix.sigaaufc.fragments.InfoFragment"
             android:label="Sobre"
             tools:layout="@layout/fragment_info" />
+    <fragment
+            android:id="@+id/nav_sigaa"
+            android:name="com.rodrigmatrix.sigaaufc.fragments.SigaaFragment"
+            android:label="SIGAA"
+            tools:layout="@layout/fragment_sigaa" />
 </navigation>

@@ -1,89 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:id="@+id/fragment_sigaa">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fragment_sigaa"
+        tools:context=".fragments.SigaaFragment">
 
-    <ProgressBar
-            android:id="@+id/progress_login"
-            style="?android:attr/progressBarStyleHorizontal"
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:indeterminate="true"
-            android:max="100"
-            android:minWidth="200dp"
-            android:minHeight="90dp"/>
-    <ScrollView
-            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            style="@style/Widget.MaterialComponents.TabLayout"/>
+    <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-        <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center">
-
-            <ImageView
-                    android:layout_width="312dp"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginBottom="30dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/sigaa_logo" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/login_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="87dp"
-                    android:hint="Login"
-                    app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/login_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:inputType="text"
-                        />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/password_field"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="87dp"
-                    android:hint="Senha"
-                    app:errorEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/password_input"
-                        android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:inputType="textPassword" />
-            </com.google.android.material.textfield.TextInputLayout>
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:gravity="right">
-
-                <com.google.android.material.button.MaterialButton
-                        android:id="@+id/login_btn"
-                        style="@style/Widget.AppCompat.Button.Colored"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Login"
-                        android:textColorLink="@color/colorPrimary"/>
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-    </ScrollView>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </LinearLayout>

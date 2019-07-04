@@ -42,9 +42,9 @@ class ApiSigaa {
     suspend fun login(cookie: String, login: String, password: String): Pair<String, MutableList<Class>>{
         val serializer  = Serializer()
         val client = OkHttpClient().newBuilder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
             .build()
         var status = ""
         var listClass = mutableListOf<Class>()
