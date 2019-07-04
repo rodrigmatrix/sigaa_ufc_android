@@ -7,20 +7,16 @@
         android:orientation="vertical"
         android:id="@+id/add_card_activity"
         tools:context=".AddCardActivity">
-    <com.google.android.material.appbar.AppBarLayout
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
 
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 app:title="Adicionar cartão"
                 app:titleTextColor="@color/colorPrimary"
+
                 android:background="?attr/backgroundColor"
                 android:layout_height="?attr/actionBarSize"
-                android:elevation="?attr/cardElevation"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+                android:elevation="12dp"/>
     <ProgressBar
             android:id="@+id/progress_add_card"
             style="?android:attr/progressBarStyleHorizontal"

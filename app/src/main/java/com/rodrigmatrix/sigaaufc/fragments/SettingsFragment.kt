@@ -16,9 +16,6 @@ import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
 import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class SettingsFragment : Fragment() {
     lateinit var database: StudentsDatabase
     override fun onCreateView(
@@ -85,6 +82,7 @@ class SettingsFragment : Fragment() {
                     }
                     dialog.dismiss()
                 }
+                .setNegativeButton("Cancelar", null)
                 .show()
         }
     }

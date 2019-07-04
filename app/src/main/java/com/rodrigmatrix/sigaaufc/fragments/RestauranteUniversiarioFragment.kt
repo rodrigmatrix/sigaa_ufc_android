@@ -26,9 +26,7 @@ import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import kotlin.coroutines.CoroutineContext
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
     private var job = Job()
     override val coroutineContext: CoroutineContext
@@ -39,10 +37,6 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
         job.cancel()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        println("limpou backstack")
-    }
 
     @SuppressLint("SetTextI18n")
     override fun onResume() {

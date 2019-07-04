@@ -11,6 +11,7 @@ class Serializer {
             response!!.contains("value=\"Continuar") -> "Continuar"
             response.contains("Menu Principal") -> "Menu Principal"
             response.contains("Usuário e/ou senha inválidos") -> "Aluno não encontrado"
+            response.contains("Por favor, aguarde enquanto carregamos as suas") -> "Menu Principal"
             else -> "Erro Login"
         }
     }
@@ -86,7 +87,7 @@ class Serializer {
                                 1 -> {
                                     elem.id = index
                                     elem.date = it.text().removeRange(10, it.text().length)
-                                    elem.time = it.text().removeRange(0, 10)
+                                    elem.time = it.text().removeRange(0, 11)
                                     count++
                                 }
                                 2 -> {
