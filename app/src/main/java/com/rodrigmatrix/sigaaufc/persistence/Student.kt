@@ -28,6 +28,7 @@ data class Student(
 data class Class(
     @PrimaryKey
     var id: Int,
+    var isPrevious: Boolean,
     var turmaId: String,
     var name: String,
     var days: String,

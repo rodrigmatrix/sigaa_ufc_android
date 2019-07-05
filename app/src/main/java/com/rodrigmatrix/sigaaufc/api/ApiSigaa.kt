@@ -65,7 +65,6 @@ class ApiSigaa {
             var response = client.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                println(res)
                 when(serializer.loginParse(res)){
                     "Continuar" -> {
                         var res = redirectMenu(cookie)
@@ -104,9 +103,9 @@ class ApiSigaa {
     }
     private suspend fun redirectMenu(cookie: String): Pair<String, MutableList<Class>>{
         val client = OkHttpClient().newBuilder()
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
             .build()
         var status = ""
         var listClass = mutableListOf<Class>()
@@ -135,9 +134,9 @@ class ApiSigaa {
     }
     private suspend fun getClasses(cookie: String): Pair<String, MutableList<Class>>{
         val client = OkHttpClient().newBuilder()
-            .connectTimeout(20, TimeUnit.SECONDS)
-            .writeTimeout(20, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
             .build()
         var status = ""
         var listClasses = mutableListOf<Class>()
@@ -154,6 +153,35 @@ class ApiSigaa {
                 listClasses = serializer.parseClasses(res)
                 var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 viewStateId = viewStateId[1].split("\" ")
+                status = "Success"
+                println(getPreviousClasses(cookie))
+            }
+            else{
+                status = "Tempo de conexão expirou"
+            }
+        }
+        return Pair(status, listClasses)
+    }
+
+    private suspend fun getPreviousClasses(cookie: String): Pair<String, MutableList<Class>>{
+        val client = OkHttpClient().newBuilder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
+        var status = ""
+        var listClasses = mutableListOf<Class>()
+        withContext(Dispatchers.IO){
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/portais/discente/turmas.jsf")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .build()
+            var response = client.newCall(request).execute()
+            if(response.isSuccessful){
+                val res = response.body?.string()
+                val serializer = Serializer()
+                listClasses = serializer.parsePreviousClasses(res)
                 status = "Success"
             }
             else{

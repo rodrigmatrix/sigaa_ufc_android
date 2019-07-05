@@ -63,11 +63,11 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         when {
-            student.name != "" -> {
+            student?.name != "" -> {
                 navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.name.split(" ")[0]}"
                 navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matricula}"
             }
-            student.nameRU != "" -> {
+            student?.nameRU != "" -> {
                 navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.nameRU.split(" ")[0]}"
                 navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matriculaRU}"
             }

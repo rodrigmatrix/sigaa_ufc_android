@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center">
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nenhuma Disciplina encontrada"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="22sp" />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Visualize todas as suas disciplinas na opção acima"
+            android:textAlignment="center"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="13sp" />
+
+    <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="103dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_do_not_disturb" />
+
+
+
+</LinearLayout>

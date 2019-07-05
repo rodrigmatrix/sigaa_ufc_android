@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
+import android.annotation.SuppressLint
 import com.rodrigmatrix.sigaaufc.persistence.Class
 import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
 import org.jsoup.Jsoup
@@ -50,7 +51,7 @@ class Serializer {
             }
             var id = 1
             for(it in turmaId){
-                classes.add(Class(id, turmaId[id-1], names[id-1], periodsList[id-1], 0, 0))
+                classes.add(Class(id, false, turmaId[id-1], names[id-1], periodsList[id-1], 0, 0))
                 println(classes[id-1])
                 id++
             }
@@ -66,17 +67,33 @@ class Serializer {
         }
     }
 
+    fun parsePreviousClasses(response: String?): MutableList<Class>{
+        var classes = mutableListOf<Class>()
+        var turmaId = mutableListOf<String>()
+        var names = mutableListOf<String>()
+        var periodsList = mutableListOf<String>()
+        Jsoup.parse(response).run {
+            select("td").forEach { name ->
+                println(name)
+            }
+
+        }
+        classes.add(Class(1, true, "", "turma", "", 0, 0))
+        return classes
+    }
+
     private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
+    @SuppressLint("DefaultLocale")
     fun parseRU(response: String?): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{
         when {
             response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> {
                 return Triple("Matrícula não encontrada", Pair("", 0), mutableListOf())
             }
-            response!!.contains("Não existem dados a serem exibidos") -> {
+            response?.contains("Não existem dados a serem exibidos") -> {
                 return Triple("Matrícula ou cartão não encontrados", Pair("", 0), mutableListOf())
             }
-            response!!.contains("Refeições disponíveis") -> {
+            response?.contains("Refeições disponíveis") -> {
                 var history = mutableListOf<HistoryRU>()
                 var elem = HistoryRU(1, "", "", "", "")
                 Jsoup.parse(response).run {

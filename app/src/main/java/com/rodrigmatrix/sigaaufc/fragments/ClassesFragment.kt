@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 
@@ -12,6 +13,7 @@ import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.adapters.ClassesAdapter
 import com.rodrigmatrix.sigaaufc.persistence.StudentsDatabase
 import kotlinx.android.synthetic.main.fragment_classes.*
+import org.jetbrains.anko.sdk27.coroutines.onClick
 
 
 class ClassesFragment : Fragment() {
@@ -33,8 +35,46 @@ class ClassesFragment : Fragment() {
             .allowMainThreadQueries()
             .build()
         var classes = database.studentDao().getClasses()
+        var previousClasses = database.studentDao().getPreviousClasses()
         recyclerView_classes.layoutManager = LinearLayoutManager(context)
         recyclerView_classes.adapter = ClassesAdapter(classes)
+        if(classes.size == 0){
+            no_class.isVisible = true
+            recyclerView_classes.isVisible = false
+        }
+        else{
+            no_class.isVisible = false
+            recyclerView_classes.isVisible = true
+        }
+        switch_classes.setOnClickListener {
+            when(switch_classes.isChecked){
+                true -> {
+                    if(previousClasses.size == 0){
+                        no_class.isVisible = true
+                        recyclerView_classes.isVisible = false
+                    }
+                    else{
+                        no_class.isVisible = false
+                        recyclerView_classes.isVisible = true
+                        recyclerView_classes.layoutManager = LinearLayoutManager(context)
+                        recyclerView_classes.adapter = ClassesAdapter(previousClasses)
+                    }
+                }
+                false -> {
+                    if(classes.size == 0){
+                        no_class.isVisible = true
+                        recyclerView_classes.isVisible = false
+                    }
+                    else{
+                        no_class.isVisible = false
+                        recyclerView_classes.isVisible = true
+                        recyclerView_classes.layoutManager = LinearLayoutManager(context)
+                        recyclerView_classes.adapter = ClassesAdapter(classes)
+                    }
+
+                }
+            }
+        }
     }
 
 }

@@ -105,7 +105,6 @@ class LoginFragment : Fragment(), CoroutineScope {
                                 navController.navigate(R.id.nav_sigaa)
                             }
                         }
-
                     }
                 }
             }

@@ -18,8 +18,11 @@ interface StudentDao {
     fun deleteStudent()
 
 
-    @Query("SELECT * FROM classes")
+    @Query("SELECT * FROM classes where isPrevious = 0")
     fun getClasses(): MutableList<Class>
+
+    @Query("SELECT * FROM classes where isPrevious = 1")
+    fun getPreviousClasses(): MutableList<Class>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertClass(studentClass: Class)
