@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -84,6 +85,7 @@ class RestauranteUniversiarioFragment : Fragment(), CoroutineScope {
             .build()
         loadData()
         ru_refresh?.setOnRefreshListener {
+            ru_refresh?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             loadData()
         }
     }

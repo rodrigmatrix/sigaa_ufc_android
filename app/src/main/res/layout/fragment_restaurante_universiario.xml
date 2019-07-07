@@ -95,6 +95,7 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/ru_refresh"
                 android:layout_width="wrap_content"
+                android:hapticFeedbackEnabled="true"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
             <androidx.recyclerview.widget.RecyclerView

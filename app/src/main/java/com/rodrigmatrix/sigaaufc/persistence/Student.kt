@@ -27,9 +27,11 @@ data class Student(
 @Entity(tableName = "classes")
 data class Class(
     @PrimaryKey
+    var turmaId: String,
     var id: Int,
     var isPrevious: Boolean,
-    var turmaId: String,
+    var credits: String,
+    var code: String,
     var name: String,
     var days: String,
     var attendance: Int,

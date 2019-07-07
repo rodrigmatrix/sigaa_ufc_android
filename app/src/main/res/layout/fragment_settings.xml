@@ -11,19 +11,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/ripple"
             android:layout_marginTop="6dp"
             android:orientation="vertical">
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="65dp"
                 android:textSize="25dp"
                 android:text="Tema"/>
         <TextView
                 android:id="@+id/selected_theme_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="45dp"
+                android:layout_marginLeft="70dp"
                 android:textSize="13dp"
                 android:text="Dark"/>
     </LinearLayout>

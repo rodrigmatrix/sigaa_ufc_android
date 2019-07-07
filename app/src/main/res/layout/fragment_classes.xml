@@ -3,7 +3,6 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/classes_fragment"
         android:orientation="vertical"
         tools:context=".fragments.ClassesFragment">
@@ -13,8 +12,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:text="Exibir disciplinas anteriores"
-            app:useMaterialThemeColors="false" />
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Exibir disciplinas anteriores"/>
     <include
             android:id="@+id/no_class"
             layout="@layout/no_class_error"

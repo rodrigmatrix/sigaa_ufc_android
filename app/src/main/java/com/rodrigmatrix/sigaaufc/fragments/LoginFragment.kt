@@ -85,7 +85,9 @@ class LoginFragment : Fragment(), CoroutineScope {
                     var password = password_input.text.toString()
                     launch(handler){
                         var res = apiSigaa.login(cookie, login, password)
-                        if(res.first != "Success"){
+                        var resPrevious = apiSigaa.getPreviousClasses(cookie)
+                        if(res.first != "Success" || resPrevious.first != "Success"){
+                            //setar erro com o que deu erro
                             runOnUiThread {
                                 Snackbar.make(fragment_login, res.first, Snackbar.LENGTH_LONG).show()
                                 progress_login.isVisible = false
@@ -95,6 +97,9 @@ class LoginFragment : Fragment(), CoroutineScope {
                         else{
                             database.studentDao().deleteClasses()
                             res.second.forEach {
+                                database.studentDao().insertClass(it)
+                            }
+                            resPrevious.second.forEach {
                                 database.studentDao().insertClass(it)
                             }
                             runOnUiThread {

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
@@ -84,6 +85,7 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
             .setTitle("Confirme o cartão")
             .setMessage("Este cartão pertence à ${triple.second.first}?")
             .setPositiveButton("Sim"){ _, _ ->
+                add_card_activity.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
                 saveData(triple)
             }
             .setNegativeButton("Não"){_, _ ->}

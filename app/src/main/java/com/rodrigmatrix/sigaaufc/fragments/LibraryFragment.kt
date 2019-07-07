@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +33,7 @@ class LibraryFragment : Fragment() {
         library_webview?.loadUrl("https://pergamum.ufc.br/pergamum/mobile/index.php")
         swipe_library.isRefreshing = false
         swipe_library.setOnRefreshListener {
+            swipe_library.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             swipe_library.isRefreshing = true
             library_webview.reload()
             swipe_library.isRefreshing = false

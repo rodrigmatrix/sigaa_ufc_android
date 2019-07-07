@@ -51,7 +51,7 @@ class Serializer {
             }
             var id = 1
             for(it in turmaId){
-                classes.add(Class(id, false, turmaId[id-1], names[id-1], periodsList[id-1], 0, 0))
+                classes.add(Class(turmaId[id-1], id, false, "", "", names[id-1], periodsList[id-1], 0, 0))
                 println(classes[id-1])
                 id++
             }
@@ -69,16 +69,47 @@ class Serializer {
 
     fun parsePreviousClasses(response: String?): MutableList<Class>{
         var classes = mutableListOf<Class>()
-        var turmaId = mutableListOf<String>()
-        var names = mutableListOf<String>()
-        var periodsList = mutableListOf<String>()
+        var classItem = Class("",0, true, "", "", "", "", 0, 0)
+        var index = 0
+        var count = 1
         Jsoup.parse(response).run {
-            select("td").forEach { name ->
-                println(name)
+            select("td").forEach {
+                if(index >= 8){
+                    if(it.attr("class").contains("period")){
+                        count = 0
+                    }
+                    else{
+                        when(count){
+                            1 -> {
+                                classItem.code = it.text()
+                            }
+                            2 -> {
+                                classItem.name = it.text()
+                            }
+                            5 -> {
+                                classItem.credits = it.text()
+                            }
+                            6 -> {
+                                classItem.days = it.text()
+                            }
+                            7 -> {
+                                val script = it.select("a[onclick]").attr("onclick").toString()
+                                val idTurma = script.split("idTurma,")[1].split("',")[0]
+                                println(idTurma)
+                                classes.add(Class(idTurma, classes.size+1,true, classItem.credits,
+                                    classItem.code, classItem.name, classItem.days, 0, 0))
+                                count = 0
+                            }
+                        }
+                    }
+                    count++
+                }
+                index++
             }
-
         }
-        classes.add(Class(1, true, "", "turma", "", 0, 0))
+        classes.forEach {
+            println(it)
+        }
         return classes
     }
 

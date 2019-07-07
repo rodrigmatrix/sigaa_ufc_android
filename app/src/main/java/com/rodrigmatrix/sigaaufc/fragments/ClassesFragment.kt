@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.fragments
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,6 +48,7 @@ class ClassesFragment : Fragment() {
             recyclerView_classes.isVisible = true
         }
         switch_classes.setOnClickListener {
+            switch_classes.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             when(switch_classes.isChecked){
                 true -> {
                     if(previousClasses.size == 0){

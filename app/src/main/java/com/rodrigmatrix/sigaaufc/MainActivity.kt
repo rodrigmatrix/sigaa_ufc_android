@@ -62,14 +62,16 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        when {
-            student?.name != "" -> {
-                navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.name.split(" ")[0]}"
-                navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matricula}"
-            }
-            student?.nameRU != "" -> {
-                navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.nameRU.split(" ")[0]}"
-                navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matriculaRU}"
+        if(student != null){
+            when {
+                student?.name != "" -> {
+                    navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.name.split(" ")[0]}"
+                    navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matricula}"
+                }
+                student?.nameRU != "" -> {
+                    navView.getHeaderView(0).student_name_menu_text.text = "Olá ${student.nameRU.split(" ")[0]}"
+                    navView.getHeaderView(0).matricula_menu_text.text = "Matrícula: ${student.matriculaRU}"
+                }
             }
         }
     }

@@ -154,7 +154,6 @@ class ApiSigaa {
                 var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 viewStateId = viewStateId[1].split("\" ")
                 status = "Success"
-                println(getPreviousClasses(cookie))
             }
             else{
                 status = "Tempo de conexão expirou"
@@ -163,7 +162,7 @@ class ApiSigaa {
         return Pair(status, listClasses)
     }
 
-    private suspend fun getPreviousClasses(cookie: String): Pair<String, MutableList<Class>>{
+    suspend fun getPreviousClasses(cookie: String): Pair<String, MutableList<Class>>{
         val client = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
