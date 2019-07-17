@@ -3,14 +3,13 @@ package com.rodrigmatrix.sigaaufc
 import android.app.Application
 import androidx.preference.PreferenceManager
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
-import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
-import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptorImpl
-import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSource
-import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSourceImpl
+import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
+import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import com.rodrigmatrix.sigaaufc.ui.sigaa.login.LoginViewModelFactory
+import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -30,8 +29,17 @@ class SigaaApplication: Application(), KodeinAware {
         bind() from singleton {
             SigaaApi(connectivityInterceptor = instance())
         }
+        bind<OkHttpClient>() with singleton {
+            OkHttpClient()
+        }
+        bind() from singleton {
+            ApiSigaa(httpClient = instance(), sigaaSerializer = instance())
+        }
+        bind() from singleton {
+            Serializer()
+        }
         bind<SigaaNetworkDataSource>() with singleton {
-            SigaaNetworkDataSourceImpl(sigaaApi = instance())
+            SigaaNetworkDataSourceImpl(sigaaApi = instance(), sigaaSerializer = instance())
         }
         bind<SigaaRepository>() with singleton {
             SigaaRepositoryImpl(sigaaNetworkDataSource = instance(), studentDao = instance())

@@ -1,7 +1,7 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
-import com.rodrigmatrix.sigaaufc.persistence.entity.Class
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.News
@@ -21,8 +21,8 @@ class Serializer {
         }
     }
 
-    fun parseClasses(response: String?): MutableList<Class>{
-        var classes = mutableListOf<Class>()
+    fun parseClasses(response: String?): MutableList<StudentClass>{
+        var classes = mutableListOf<StudentClass>()
         var turmaId = mutableListOf<String>()
         var names = mutableListOf<String>()
         var periodsList = mutableListOf<String>()
@@ -54,7 +54,7 @@ class Serializer {
             var id = 1
             for(it in turmaId){
                 classes.add(
-                    Class(
+                    StudentClass(
                         turmaId[id - 1],
                         id,
                         false,
@@ -81,10 +81,10 @@ class Serializer {
         }
     }
 
-    fun parsePreviousClasses(response: String?): MutableList<Class>{
-        var classes = mutableListOf<Class>()
+    fun parsePreviousClasses(response: String?): MutableList<StudentClass>{
+        var classes = mutableListOf<StudentClass>()
         var classItem =
-            Class("", 0, true, "", "", "", "", 0, 0)
+            StudentClass("", 0, true, "", "", "", "", 0, 0)
         var index = 0
         var count = 1
         Jsoup.parse(response).run {
@@ -111,7 +111,7 @@ class Serializer {
                                 val script = it.select("a").attr("onclick").toString()
                                 val idTurma = script.split("idTurma,")[1].split("',")[0]
                                 classes.add(
-                                    Class(
+                                    StudentClass(
                                         idTurma, classes.size + 1, true, classItem.credits,
                                         classItem.code, classItem.name, classItem.days, 0, 0
                                     )

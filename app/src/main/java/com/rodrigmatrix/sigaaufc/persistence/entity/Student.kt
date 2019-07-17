@@ -25,7 +25,7 @@ data class Student(
 )
 
 @Entity(tableName = "classes")
-data class Class(
+data class StudentClass(
     @PrimaryKey
     var turmaId: String,
     var id: Int,

@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.data
 
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.http.*
@@ -9,14 +10,15 @@ import java.util.concurrent.TimeUnit
 
 interface SigaaApi {
 
+    @FormUrlEncoded
     @Headers("Referer: https://si3.ufc.br/sigaa/verTelaLogin.do")
-    @POST("logar.do?dispatch=logOn")
+    @POST("sigaa/logar.do?dispatch=logOn")
     suspend fun login(
         @Header("Cookie") cookie: String,
         @Field("user.login") login: String,
         @Field("user.senha") password: String,
         @Field("entrar") comando: String
-    ): String
+    ): Call<ResponseBody>
 
     companion object {
         operator fun invoke(

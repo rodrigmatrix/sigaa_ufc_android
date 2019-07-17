@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.persistence.entity.Class
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import kotlinx.android.synthetic.main.class_row.view.*
 
-class ClassesAdapter(private val classesList: MutableList<Class>): RecyclerView.Adapter<ClassesViewHolder>() {
+class ClassesAdapter(private val classesList: MutableList<StudentClass>): RecyclerView.Adapter<ClassesViewHolder>() {
 
     override fun getItemCount(): Int {
         return classesList.size

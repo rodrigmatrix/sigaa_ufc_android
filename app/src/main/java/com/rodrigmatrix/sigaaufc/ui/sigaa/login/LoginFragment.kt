@@ -40,8 +40,9 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(LoginViewModel::class.java)
         launch {
-            val loginResponse = viewModel.login("", "", "", "")
+            val loginResponse = viewModel.login("", "", "")
             loginResponse.observe(this@LoginFragment, Observer {
+                if(it == null) return@Observer
                 println(it)
             })
         }

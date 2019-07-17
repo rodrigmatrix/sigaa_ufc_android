@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.rodrigmatrix.sigaaufc.persistence.entity.Class
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.News
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
@@ -24,13 +24,13 @@ interface StudentDao {
 
 
     @Query("SELECT * FROM classes where isPrevious = 0")
-    fun getClasses(): MutableList<Class>
+    fun getClasses(): MutableList<StudentClass>
 
     @Query("SELECT * FROM classes where isPrevious = 1")
-    fun getPreviousClasses(): MutableList<Class>
+    fun getPreviousClasses(): MutableList<StudentClass>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertClass(studentClass: Class)
+    fun insertClass(studentStudentClass: StudentClass)
 
     @Query("DELETE FROM classes")
     fun deleteClasses()

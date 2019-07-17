@@ -8,7 +8,6 @@ interface SigaaRepository {
     suspend fun login(
         cookie: String,
         login: String,
-        password: String,
-        comando: String
+        password: String
     ): LiveData<out Student>
 }

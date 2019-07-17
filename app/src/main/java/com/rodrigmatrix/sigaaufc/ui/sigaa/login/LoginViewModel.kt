@@ -17,9 +17,8 @@ class LoginViewModel(
     suspend fun login(
         cookie: String,
         login: String,
-        password: String,
-        comando: String): LiveData<out Student>
+        password: String): LiveData<out Student>
     {
-        return sigaaRepository.login(cookie, login, password, comando)
+        return sigaaRepository.login(cookie, login, password)
     }
 }

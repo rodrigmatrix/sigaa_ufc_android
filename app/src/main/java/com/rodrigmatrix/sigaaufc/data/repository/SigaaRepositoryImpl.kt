@@ -24,10 +24,9 @@ class SigaaRepositoryImpl(
     override suspend fun login(
         cookie: String,
         login: String,
-        password: String,
-        comando: String
+        password: String
     ): LiveData<out Student> {
-        sigaaNetworkDataSource.fetchLogin(cookie, login, password, comando)
+        sigaaNetworkDataSource.fetchLogin(cookie, login, password)
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getStudent()
         }
