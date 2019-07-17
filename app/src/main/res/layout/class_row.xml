@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
@@ -8,7 +9,7 @@
     <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_history"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -19,7 +20,7 @@
             app:cardCornerRadius="6dp"
             app:cardElevation="2dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -31,55 +32,54 @@
                     android:layout_marginTop="10dp"
                     android:text="Introdução a Engenharia de Software"
                     android:textAlignment="center"
-                    android:textColor="@color/colorPrimary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.233"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:textColor="@color/colorPrimary"/>
+            <TextView
+                    android:id="@+id/code_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="Código: QXD0006"
+                    android:layout_marginTop="15dp"
+                    android:layout_gravity="center"/>
+            <TextView
+                    android:id="@+id/credits_text"
+                    android:layout_width="match_parent"
+                    android:textAlignment="center"
+                    android:layout_height="wrap_content"
+                    android:text="Créditos: 4 (64h)"
+                    android:layout_marginTop="3dp"
+                    android:layout_gravity="center"/>
 
             <TextView
-                    android:id="@+id/date_text"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/period_text"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginEnd="180dp"
-                    android:layout_marginBottom="68dp"
-                    android:text="Data: 24-06-2019"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                    android:id="@+id/time_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="34dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginEnd="196dp"
-                    android:text="Hora: 12:59:46"
-                    android:textColor="@color/colorTextSecondary"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_text" />
+                    android:layout_marginTop="3dp"
+                    android:text="QUA 15:30-17:30 SEX 13:30-15:30 (06/08/2018 - 06/12/2018)"
+                    android:textAlignment="center" />
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/add_card_button"
+                    android:id="@+id/open_class_btn"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="67dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_gravity="end"
                     android:text="Ver Mais"
-                    android:textColorLink="@color/colorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/content_text" />
+                    android:textColorLink="@color/colorPrimary" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
-
+    <TextView
+            android:id="@+id/id_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"/>
+    <TextView
+            android:id="@+id/idTurma_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible"/>
 </LinearLayout>

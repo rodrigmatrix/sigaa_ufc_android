@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/add_card_activity"
-        tools:context=".AddCardActivity">
+        tools:context=".ui.activities.AddCardActivity">
 
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"

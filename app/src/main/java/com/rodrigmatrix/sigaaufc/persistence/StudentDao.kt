@@ -1,15 +1,20 @@
 package com.rodrigmatrix.sigaaufc.persistence
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.rodrigmatrix.sigaaufc.persistence.entity.Class
+import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.News
+import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 
 @Dao
 interface StudentDao {
 
     @Query("SELECT * FROM students where id = 0")
-    fun getStudent(): Student
+    fun getStudent(): LiveData<Student>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStudent(student: Student)
@@ -39,6 +44,16 @@ interface StudentDao {
 
     @Query("DELETE FROM historyru")
     fun deleteHistoryRU()
+
+
+    @Query("SELECT * FROM news WHERE idTurma LIKE :idTurma")
+    fun getNews(idTurma: String): MutableList<News>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertNews(news: News)
+
+    @Query("DELETE FROM news WHERE idTurma LIKE :idTurma")
+    fun deleteNews(idTurma: String)
 //
 //
 //

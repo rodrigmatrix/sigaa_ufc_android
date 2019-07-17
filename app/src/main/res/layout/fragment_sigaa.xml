@@ -6,7 +6,7 @@
         android:orientation="vertical"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/fragment_sigaa"
-        tools:context=".fragments.SigaaFragment">
+        tools:context=".ui.sigaa.SigaaFragment">
 
     <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"

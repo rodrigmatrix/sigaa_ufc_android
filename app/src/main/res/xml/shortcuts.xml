@@ -35,7 +35,7 @@
             tools:targetApi="n_mr1">
         <intent
                 android:action="com.rodrigmatrix.SIGAA"
-                android:targetPackage="com.rodrigmatrix.sigaaufc.fragments"
-                android:targetClass="com.rodrigmatrix.sigaaufc.fragments.SigaaFragment"/>
+                android:targetPackage="com.rodrigmatrix.sigaaufc.ui.fragments"
+                android:targetClass="com.rodrigmatrix.sigaaufc.ui.sigaa.SigaaFragment"/>
     </shortcut>
 </PreferenceScreen>

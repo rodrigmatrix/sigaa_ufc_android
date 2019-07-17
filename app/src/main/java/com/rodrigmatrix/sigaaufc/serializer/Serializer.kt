@@ -1,8 +1,10 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
-import com.rodrigmatrix.sigaaufc.persistence.Class
-import com.rodrigmatrix.sigaaufc.persistence.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.Class
+import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
+import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.News
 import org.jsoup.Jsoup
 import java.text.Normalizer
 
@@ -51,7 +53,19 @@ class Serializer {
             }
             var id = 1
             for(it in turmaId){
-                classes.add(Class(turmaId[id-1], id, false, "", "", names[id-1], periodsList[id-1], 0, 0))
+                classes.add(
+                    Class(
+                        turmaId[id - 1],
+                        id,
+                        false,
+                        "",
+                        "",
+                        names[id - 1],
+                        periodsList[id - 1],
+                        0,
+                        0
+                    )
+                )
                 println(classes[id-1])
                 id++
             }
@@ -69,7 +83,8 @@ class Serializer {
 
     fun parsePreviousClasses(response: String?): MutableList<Class>{
         var classes = mutableListOf<Class>()
-        var classItem = Class("",0, true, "", "", "", "", 0, 0)
+        var classItem =
+            Class("", 0, true, "", "", "", "", 0, 0)
         var index = 0
         var count = 1
         Jsoup.parse(response).run {
@@ -93,11 +108,14 @@ class Serializer {
                                 classItem.days = it.text()
                             }
                             7 -> {
-                                val script = it.select("a[onclick]").attr("onclick").toString()
+                                val script = it.select("a").attr("onclick").toString()
                                 val idTurma = script.split("idTurma,")[1].split("',")[0]
-                                println(idTurma)
-                                classes.add(Class(idTurma, classes.size+1,true, classItem.credits,
-                                    classItem.code, classItem.name, classItem.days, 0, 0))
+                                classes.add(
+                                    Class(
+                                        idTurma, classes.size + 1, true, classItem.credits,
+                                        classItem.code, classItem.name, classItem.days, 0, 0
+                                    )
+                                )
                                 count = 0
                             }
                         }
@@ -113,6 +131,51 @@ class Serializer {
         return classes
     }
 
+    fun parseNews(response: String?): MutableList<News>{
+        val news = mutableListOf<News>()
+        Jsoup.parse(response).run {
+            val content = select("i")
+            val dates = select("br")
+//            content.forEach {
+//                news.add(News("","1", "", it.text()))
+//            }
+            dates.forEach {
+                println(it)
+            }
+        }
+        return news
+    }
+
+    fun parseFiles(response: String?){
+
+    }
+
+    fun parseAttendance(response: String?){
+        val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0]
+        val total = response!!.split("Faltas Permitido: ")[1].split("</div> ")[0]
+        println(missed)
+        println(total)
+    }
+
+    fun parseGrades(idTurma: String, response: String?): MutableList<Grade>{
+        val grades = mutableListOf<Grade>()
+        Jsoup.parse(response).run {
+            val th = select("th")
+            val tbody = select("tbody").select("td")
+            var index = 0
+            th.forEach {
+                println(it.text())
+                println(tbody[index].text())
+                //grades.add(Grade("2", idTurma, it.text(), tbody[index].text()))
+                index++
+            }
+        }
+        return grades
+    }
+
+
+
+    @SuppressLint("DefaultLocale")
     private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
     @SuppressLint("DefaultLocale")
@@ -147,7 +210,15 @@ class Serializer {
                                 }
                                 3 -> {
                                     elem.content = it.text()
-                                    history.add(HistoryRU(index, elem.date, elem.time, elem.operation, elem.content))
+                                    history.add(
+                                        HistoryRU(
+                                            index,
+                                            elem.date,
+                                            elem.time,
+                                            elem.operation,
+                                            elem.content
+                                        )
+                                    )
                                     count = 1
                                 }
                             }
