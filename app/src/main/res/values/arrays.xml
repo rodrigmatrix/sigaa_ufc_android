@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="themeValues">
         <item>LIGHT</item>
         <item>DARK</item>
@@ -8,9 +9,21 @@
     </string-array>
 
     <string-array name="themeEntries">
-        <item>Light</item>
-        <item>Dark</item>
-        <item>Economia de Bateria</item>
-        <item>Padrão do Sistema</item>
+        <item>@string/light_string</item>
+        <item>@string/dark_string</item>
+        <item>@string/battery_saver_string</item>
+        <item>@string/system_default_string</item>
+    </string-array>
+
+    <string-array name="languageValues">
+        <item>EN_US</item>
+        <item>PT_BR</item>
+        <item>SYSTEM_DEFAULT</item>
+    </string-array>
+
+    <string-array name="languageEntries">
+        <item>@string/english_string</item>
+        <item>@string/portuguese_string</item>
+        <item>@string/system_default_string</item>
     </string-array>
 </resources>

@@ -19,6 +19,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             setTheme(pref.getString("THEME", null))
         }
         preferences.registerOnSharedPreferenceChangeListener(prefListener)
+
     }
 
     private fun setTheme(theme: String?){
@@ -31,5 +32,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
         preferences.registerOnSharedPreferenceChangeListener(prefListener)
     }
+
+//    private fun setLanguage(language: String?){
+//        when(language){
+//            "PT_BR" -> Locale.setDefault(Locale("pt_br"))
+//            "EN_US" -> Locale.setDefault(Locale.ENGLISH)
+//            "SYSTEM_DEFAULT" -> Locale.setDefault(Locale.ENGLISH)
+//        }
+//    }
 
 }

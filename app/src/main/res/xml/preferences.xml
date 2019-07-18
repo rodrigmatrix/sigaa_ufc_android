@@ -2,14 +2,26 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-            android:title="Aparência">
+            android:title="@string/appearance_string">
         <ListPreference
-                android:title="Tema"
+                android:title="@string/theme_string"
                 android:key="THEME"
                 android:summary="%s"
                 android:defaultValue="SYSTEM_DEFAULT"
                 android:entries="@array/themeEntries"
                 android:entryValues="@array/themeValues">
+        </ListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/general_string">
+        <ListPreference
+                android:title="@string/language_string"
+                android:key="LANGUAGE"
+                android:summary="%s"
+                android:defaultValue="SYSTEM_DEFAULT"
+                android:entries="@array/languageEntries"
+                android:entryValues="@array/languageValues">
         </ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>

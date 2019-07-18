@@ -9,9 +9,11 @@ interface SigaaRepository {
         cookie: String,
         login: String,
         password: String
-    ): LiveData<Student>
+    ): String
 
     suspend fun getStudent(): LiveData<out Student>
 
     suspend fun saveLogin(login: String, password: String)
+
+    suspend fun getCookie(): Boolean
 }

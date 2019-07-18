@@ -25,13 +25,13 @@
     <fragment
             android:id="@+id/nav_classes"
             android:name="com.rodrigmatrix.sigaaufc.ui.fragments.ClassesFragment"
-            android:label="Disciplinas"
+            android:label="@string/title_activity_class"
             tools:layout="@layout/fragment_classes"/>
 
     <fragment
             android:id="@+id/nav_ru"
             android:name="com.rodrigmatrix.sigaaufc.ui.ru.RestauranteUniversiarioFragment"
-            android:label="Restaurante Universitário"
+            android:label="@string/ru_string"
             tools:layout="@layout/fragment_restaurante_universiario" >
         <action
                 android:id="@+id/action_nav_ru_to_nav_sigaa"
@@ -39,25 +39,25 @@
     </fragment>
 
     <fragment
-            android:id="@+id/nav_library"
-            android:name="com.rodrigmatrix.sigaaufc.ui.fragments.LibraryFragment"
-            android:label="Biblioteca"
-            tools:layout="@layout/fragment_library" />
+            android:id="@+id/nav_settings"
+            android:label="@string/settings_string"
+            android:name="com.rodrigmatrix.sigaaufc.ui.settings.SettingsFragment"/>
+
 
     <fragment
-            android:id="@+id/nav_settings"
-            android:name="com.rodrigmatrix.sigaaufc.ui.settings.SettingsFragment"
-            android:label="Configurações"
-            tools:layout="@layout/fragment_settings" />
+            android:id="@+id/nav_library"
+            android:name="com.rodrigmatrix.sigaaufc.ui.fragments.LibraryFragment"
+            android:label="@string/library_shortcut"
+            tools:layout="@layout/fragment_library" />
 
     <fragment
             android:id="@+id/nav_about"
             android:name="com.rodrigmatrix.sigaaufc.ui.fragments.InfoFragment"
-            android:label="Sobre"
+            android:label="@string/info_string"
             tools:layout="@layout/fragment_info" />
     <fragment
             android:id="@+id/nav_sigaa"
-            android:name="com.rodrigmatrix.sigaaufc.ui.sigaa.SigaaFragment"
+            android:name="com.rodrigmatrix.sigaaufc.ui.sigaa.classes.SigaaFragment"
             android:label="SIGAA"
             tools:layout="@layout/fragment_sigaa" />
 </navigation>

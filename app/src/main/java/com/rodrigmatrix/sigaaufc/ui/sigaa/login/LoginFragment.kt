@@ -41,13 +41,20 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(LoginViewModel::class.java)
-
-
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        progress_login.isVisible = false
         launch {
             viewModel.student.await().observe(this@LoginFragment, Observer {student ->
-                if(student == null) return@Observer
+                if(student == null){
+                    launch {
+                        loadCookie()
+                    }
+                    return@Observer
+                }
+                login_input.setText(student.login)
+                password_input.setText(student.password)
             })
         }
         login_btn.setOnClickListener {
@@ -59,10 +66,28 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 val password = password_input.text.toString()
                 launch {
                     val loginResponse = viewModel.login("", login, password)
+                    handleLogin(loginResponse)
                 }
             }
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun handleLogin(res: String){
+
+    }
+
+    private suspend fun loadCookie(){
+        if(!viewModel.getCookie()){
+            runOnUiThread {
+                Snackbar.make(fragment_login, "Erro ao carregar cookie", Snackbar.LENGTH_LONG)
+                    .setAction("Recarregar", View.OnClickListener {
+                    }).show()
+            }
+        }
+        runOnUiThread {
+            progress_login.isVisible = false
+        }
     }
 
     private fun saveCredentials(login: String, password: String){

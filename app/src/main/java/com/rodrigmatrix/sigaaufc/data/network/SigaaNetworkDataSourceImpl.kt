@@ -18,22 +18,23 @@ class SigaaNetworkDataSourceImpl(
     private val sigaaSerializer: Serializer
 ) : SigaaNetworkDataSource {
 
-    private val _downloadedLogin = MutableLiveData<Student>()
-    override val downloadedLogin: LiveData<Student>
-        get() = _downloadedLogin
-
     override suspend fun fetchLogin(
         cookie: String,
         login: String,
         password: String
-    ) {
+    ): String {
+        var res = ""
         try {
-            val fetchedLogin = sigaaApi
-                .login(cookie, login, password)
+            res = sigaaApi.login(cookie, login, password)
         }
         catch (e: NoConnectivityException){
             Log.e("Connectivity", "No internet Connection.", e)
         }
+        return res
+    }
+
+    override suspend fun getCookie(): Boolean {
+        return sigaaApi.getCookie()
     }
 
     private fun loginHandler(res: String): String{

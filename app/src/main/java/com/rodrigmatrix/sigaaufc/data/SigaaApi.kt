@@ -1,6 +1,12 @@
 package com.rodrigmatrix.sigaaufc.data
 
+import android.util.Log
+import androidx.lifecycle.Observer
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
+import com.rodrigmatrix.sigaaufc.internal.TimeoutException
+import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
@@ -12,33 +18,47 @@ import okhttp3.Request
 
 class SigaaApi(
     private val httpClient: OkHttpClient,
-    private val sigaaSerializer: Serializer
+    private val sigaaSerializer: Serializer,
+    private val studentDatabase: StudentDatabase
 ) {
 
-    suspend fun getCookie(): Pair<Boolean, String>{
-        var cookie = ""
+    suspend fun getCookie(): Boolean{
         var status = false
         withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa")
                 .header("Referer", "https://si3.ufc.br")
                 .build()
-            var response = httpClient.newCall(request).execute()
-            if(response != null && response.isSuccessful){
-                status = true
-                var arr = response.request().url().toString().split("jsessionid=")
-                cookie = arr[1]
+            try {
+                val response = httpClient.newCall(request).execute()
+                if(response.isSuccessful){
+                    status = true
+                    val arr = response.request().url().toString().split("jsessionid=")
+                    val student = studentDatabase.studentDao().getStudent().value
+                    if(student == null){
+                        studentDatabase.studentDao().upsertStudent(Student(
+                            arr[1], "", "", "", "", "", "", "", false,
+                            "", 0, "", "", ""
+                        ))
+                    }
+                    else{
+                        student.jsession = arr[1]
+                        studentDatabase.studentDao().upsertStudent(student)
+                    }
+                }
+                else{
+                    status = false
+                }
             }
-            else{
-                status = false
+            catch(e: TimeoutException){
+                Log.d("Timeout Exception ",e.toString())
             }
         }
-        return Pair(status, cookie)
+        return status
     }
 
-    suspend fun login(cookie: String, login: String, password: String): Pair<String, MutableList<StudentClass>>{
+    suspend fun login(cookie: String, login: String, password: String): String{
         var status = ""
-        var listClass = mutableListOf<StudentClass>()
         withContext(Dispatchers.IO){
             var formBody = FormBody.Builder()
                 .add("width", "0")
@@ -56,34 +76,19 @@ class SigaaApi(
             var response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
-                println(res)
-                when(sigaaSerializer.loginParse(res)){
+                val parser = sigaaSerializer.loginParse(res)
+                when(parser){
                     "Continuar" -> {
-                        var res = redirectMenu(cookie)
-                        if(res.first != "Success"){
-                            status = res.first
-                        }
-                        else{
-                            status = "Success"
-                            listClass = res.second
-                        }
-
+                        status = redirectMenu(cookie)
                     }
                     "Menu Principal" -> {
-                        var res = redirectMenu(cookie)
-                        if(res.first != "Success"){
-                            status = res.first
-                        }
-                        else{
-                            status = "Success"
-                            listClass = res.second
-                        }
+                        status = redirectMenu(cookie)
                     }
                     "Usuário e/ou senha inválidos" -> {
                         status = "Usuário ou senha inválidos"
                     }
                     else -> {
-                        status = sigaaSerializer.loginParse(res)
+                        status = parser
                     }
                 }
             }
@@ -91,11 +96,10 @@ class SigaaApi(
                 status = "Erro de conexão"
             }
         }
-        return Pair(status, listClass)
+        return status
     }
-    private suspend fun redirectMenu(cookie: String): Pair<String, MutableList<StudentClass>>{
+    private suspend fun redirectMenu(cookie: String): String{
         var status = ""
-        var listClass = mutableListOf<StudentClass>()
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/paginaInicial.do")
             .header("Cookie", "JSESSIONID=$cookie")
@@ -106,22 +110,17 @@ class SigaaApi(
                 println("redirect")
                 val res = response.body()?.string()
                 if(res!!.contains("Menu Principal")){
-                    var pair = getClasses(cookie)
-                    if(pair.first != "Success"){
+                    var res = getClasses(cookie)
+                    if(res != "Success"){
                         status = "Tempo de conexão expirou"
-                    }
-                    else{
-                        status = "Success"
-                        listClass = pair.second
                     }
                 }
             }
         }
-        return Pair(status, listClass)
+        return status
     }
-    private suspend fun getClasses(cookie: String): Pair<String, MutableList<StudentClass>>{
+    private suspend fun getClasses(cookie: String): String{
         var status = ""
-        var listClasses = mutableListOf<StudentClass>()
         withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
@@ -131,7 +130,12 @@ class SigaaApi(
             var response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
-                listClasses = sigaaSerializer.parseClasses(res)
+                val listClasses = sigaaSerializer.parseClasses(res)
+                studentDatabase.studentDao().deleteClasses()
+                listClasses.forEach {
+                    studentDatabase.studentDao().insertClass(it)
+                }
+                println("chegou")
                 var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 viewStateId = viewStateId[1].split("\" ")
                 status = "Success"
@@ -140,7 +144,7 @@ class SigaaApi(
                 status = "Tempo de conexão expirou"
             }
         }
-        return Pair(status, listClasses)
+        return status
     }
 
     suspend fun getPreviousClasses(cookie: String): Pair<String, MutableList<StudentClass>>{

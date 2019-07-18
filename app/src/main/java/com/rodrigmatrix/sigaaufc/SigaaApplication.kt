@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc
 
 import android.app.Application
 import androidx.preference.PreferenceManager
+import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
@@ -29,17 +30,17 @@ class SigaaApplication: Application(), KodeinAware {
         bind<OkHttpClient>() with singleton {
             OkHttpClient()
         }
-        bind() from singleton {
-            SigaaApi(httpClient = instance(), sigaaSerializer = instance())
+        bind<SigaaRepository>() with singleton {
+            SigaaRepositoryImpl(sigaaNetworkDataSource = instance(), studentDao = instance())
         }
         bind() from singleton {
             Serializer()
         }
+        bind() from singleton {
+            SigaaApi(httpClient = instance(), sigaaSerializer = instance(), studentDatabase = instance())
+        }
         bind<SigaaNetworkDataSource>() with singleton {
             SigaaNetworkDataSourceImpl(sigaaApi = instance(), sigaaSerializer = instance())
-        }
-        bind<SigaaRepository>() with singleton {
-            SigaaRepositoryImpl(sigaaNetworkDataSource = instance(), studentDao = instance())
         }
         bind() from provider {
             LoginViewModelFactory(sigaaRepository = instance())

@@ -21,7 +21,7 @@ class LoginViewModel(
     suspend fun login(
         cookie: String,
         login: String,
-        password: String): LiveData<Student>
+        password: String): String
     {
         return sigaaRepository.login(cookie, login, password)
     }
@@ -30,6 +30,10 @@ class LoginViewModel(
         withContext(Dispatchers.IO){
             sigaaRepository.saveLogin(login, password)
         }
+    }
+
+    suspend fun getCookie(): Boolean{
+        return sigaaRepository.getCookie()
     }
 
     val student by lazyDeferred {

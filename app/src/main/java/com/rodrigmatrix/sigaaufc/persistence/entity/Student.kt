@@ -15,7 +15,6 @@ data class Student(
     var degree: String,
     var entrance: String,
     var matricula: String,
-    var theme: String,
     var hasSavedData: Boolean,
     var lastUpdate: String,
     var creditsRU: Int,

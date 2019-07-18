@@ -11,31 +11,19 @@
         <item
                 android:id="@+id/nav_ru"
                 android:icon="@drawable/ic_credit_card"
-                android:title="Créditos RU" />
+                android:title="@string/ru_shortcut" />
         <item
             android:id="@+id/nav_library"
             android:icon="@drawable/ic_local_library"
-            android:title="Biblioteca" />
+            android:title="@string/library_shortcut" />
         <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings"
-                android:title="Configurações"/>
+                android:title="@string/settings_string"/>
         <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_info"
-                android:title="Sobre" />
+                android:title="@string/info_string" />
     </group>
-<!--    <item android:title="Opções">-->
-<!--        <menu>-->
-<!--            <item-->
-<!--                    android:id="@+id/nav_settings"-->
-<!--                    android:icon="@drawable/ic_settings"-->
-<!--                    android:title="Configurações"/>-->
-<!--            <item-->
-<!--                    android:id="@+id/nav_about"-->
-<!--                    android:icon="@drawable/ic_info"-->
-<!--                    android:title="Sobre" />-->
-<!--        </menu>-->
-<!--    </item>-->
 
 </menu>

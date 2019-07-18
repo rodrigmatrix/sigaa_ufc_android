@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sigaa</string>
+    <string name="title_activity_main">SIGAA UFC</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_add_card">Add Card UR</string>
+    <string name="title_activity_class">Classes</string>
+
+    <string name="sigaa_shortcut">SIGAA</string>
+    <string name="ru_shortcut">Credits UR</string>
+    <string name="ru_long_shortcut">UR</string>
+    <string name="library_shortcut">Library</string>
+    <string name="settings_string">Settings</string>
+    <string name="info_string">About</string>
+    <string name="ru_string">University Restaurant</string>
+<!--    <string name="no_card_string"></string>-->
+<!--    <string name="add_card_icon_string"></string>-->
+<!--    <string name=""></string>-->
+
+    <string name="blank_student">Hi student</string>
+    <string name="hello_string">Hi</string>
+    
+    <string name="appearance_string">Appearance</string>
+    <string name="theme_string">Theme</string>
+
+    <string name="language_string">Language</string>
+    <string name="general_string">General</string>
+    <string name="english_string">English</string>
+    <string name="portuguese_string">Portuguese</string>
+
+    <string name="light_string">Light</string>
+    <string name="dark_string">Dark</string>
+    <string name="battery_saver_string">Set by Battery Saver</string>
+    <string name="system_default_string">System Default</string>
+</resources>

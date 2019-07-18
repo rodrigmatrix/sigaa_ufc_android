@@ -40,7 +40,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:text="Restaurante Universitário"
+                        android:text="@string/ru_string"
                         android:textColor="@color/colorText"
                         android:textSize="20sp"
                         app:layout_constraintBottom_toTopOf="@+id/card_holder_text"

@@ -14,7 +14,7 @@
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:background="?attr/backgroundColor"
-                tools:title="Restaurante Universitário"
+                tools:title="@string/ru_string"
                 android:layout_width="match_parent"
                 app:titleTextColor="@color/colorPrimary"
                 android:layout_height="?attr/actionBarSize"/>
