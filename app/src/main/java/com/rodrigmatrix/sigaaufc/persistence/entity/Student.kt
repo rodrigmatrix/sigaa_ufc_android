@@ -3,10 +3,10 @@ package com.rodrigmatrix.sigaaufc.persistence.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+const val STUDENT_ID = 0
+
 @Entity(tableName = "students")
 data class Student(
-    @PrimaryKey
-    var id: Int,
     var jsession: String,
     var login: String,
     var password: String,
@@ -22,7 +22,10 @@ data class Student(
     var nameRU: String,
     var matriculaRU: String,
     var cardRU: String
-)
+){
+    @PrimaryKey(autoGenerate = false)
+    var id: Int = STUDENT_ID
+}
 
 @Entity(tableName = "classes")
 data class StudentClass(

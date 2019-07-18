@@ -4,7 +4,12 @@
     <PreferenceCategory
             android:title="Aparência">
         <ListPreference
-                android:title="Tema">
+                android:title="Tema"
+                android:key="THEME"
+                android:summary="%s"
+                android:defaultValue="SYSTEM_DEFAULT"
+                android:entries="@array/themeEntries"
+                android:entryValues="@array/themeValues">
         </ListPreference>
     </PreferenceCategory>
 </PreferenceScreen>

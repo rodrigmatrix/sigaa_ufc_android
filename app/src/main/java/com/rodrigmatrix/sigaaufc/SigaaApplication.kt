@@ -26,14 +26,11 @@ class SigaaApplication: Application(), KodeinAware {
         bind<ConnectivityInterceptor>() with singleton {
             ConnectivityInterceptorImpl(context = instance())
         }
-        bind() from singleton {
-            SigaaApi(connectivityInterceptor = instance())
-        }
         bind<OkHttpClient>() with singleton {
             OkHttpClient()
         }
         bind() from singleton {
-            ApiSigaa(httpClient = instance(), sigaaSerializer = instance())
+            SigaaApi(httpClient = instance(), sigaaSerializer = instance())
         }
         bind() from singleton {
             Serializer()

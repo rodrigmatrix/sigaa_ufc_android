@@ -14,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SigaaNetworkDataSourceImpl(
-    private val sigaaApi: ApiSigaa,
+    private val sigaaApi: SigaaApi,
     private val sigaaSerializer: Serializer
 ) : SigaaNetworkDataSource {
 

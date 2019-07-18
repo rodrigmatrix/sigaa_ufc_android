@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="themeValues">
+        <item>LIGHT</item>
+        <item>DARK</item>
+        <item>BATTERY_SAVER</item>
+        <item>SYSTEM_DEFAULT</item>
+    </string-array>
+
+    <string-array name="themeEntries">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Economia de Bateria</item>
+        <item>Padrão do Sistema</item>
+    </string-array>
+</resources>

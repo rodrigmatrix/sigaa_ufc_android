@@ -17,7 +17,7 @@ interface StudentDao {
     fun getStudent(): LiveData<Student>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertStudent(student: Student)
+    fun upsertStudent(student: Student)
 
     @Query("DELETE FROM students")
     fun deleteStudent()

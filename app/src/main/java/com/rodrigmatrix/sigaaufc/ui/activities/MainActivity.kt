@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.ui.activities
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -12,17 +13,14 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
-import androidx.room.Room
+import androidx.preference.PreferenceManager
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
-import kotlinx.android.synthetic.main.nav_header_main.view.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 
 class MainActivity : AppCompatActivity() {
 
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var preferences: SharedPreferences
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +43,23 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        setTheme(preferences.getString("THEME", null))
     }
 
+    private fun setTheme(theme: String?){
+        when(theme){
+            "LIGHT" -> setDefaultNightMode(MODE_NIGHT_NO)
+            "DARK" -> setDefaultNightMode(MODE_NIGHT_YES)
+            "BATTERY_SAVER" -> setDefaultNightMode(MODE_NIGHT_AUTO_BATTERY)
+            "SYSTEM_DEFAULT" -> setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
+        }
+    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+
 }

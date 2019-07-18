@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSource
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
@@ -25,11 +26,27 @@ class SigaaRepositoryImpl(
         cookie: String,
         login: String,
         password: String
-    ): LiveData<out Student> {
+    ): LiveData<Student> {
         sigaaNetworkDataSource.fetchLogin(cookie, login, password)
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getStudent()
         }
+    }
+
+    override suspend fun getStudent(): LiveData<out Student> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getStudent()
+        }
+    }
+
+    override suspend fun saveLogin(login: String, password: String) {
+//        withContext(Dispatchers.IO){
+//            studentDao.getStudent().observe(this@SigaaRepositoryImpl, Observer {student ->
+//                student.login = login
+//                student.password = password
+//                studentDao.upsertStudent(student)
+//            })
+//        }
     }
 
     private fun persistLoginData(fetchedLogin: String){

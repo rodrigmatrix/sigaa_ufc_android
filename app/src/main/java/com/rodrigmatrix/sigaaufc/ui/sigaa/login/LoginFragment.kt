@@ -10,12 +10,14 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.*
+import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -39,44 +41,15 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(LoginViewModel::class.java)
+
+
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         launch {
-            val loginResponse = viewModel.login("", "", "")
-            loginResponse.observe(this@LoginFragment, Observer {
-                if(it == null) return@Observer
-                println(it)
+            viewModel.student.await().observe(this@LoginFragment, Observer {student ->
+                if(student == null) return@Observer
             })
         }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-//        val student = database.studentDao().getStudent()
-//        var cookie = ""
-//        println(student.jsession)
-//        if(student != null && student.jsession != ""){
-//            progress_login.isVisible = false
-//            cookie = student.jsession
-//            login_input.setText(student.login)
-//            password_input.setText(student.password)
-//        }
-//        else{
-//            login_btn?.isEnabled = false
-//            launch(handler){
-//                val pair = apiSigaa.getCookie()
-//                if(pair.first){
-//                    login_btn.isEnabled = true
-//                    progress_login?.isVisible = false
-//                    student.jsession = pair.second
-//                    database.studentDao().insertStudent(student)
-//                    cookie = pair.second
-//                }
-//                else{
-//                    login_btn.isEnabled = false
-//                    progress_login?.isVisible = false
-//                    Snackbar.make(fragment_login, "Tempo de conexão expirou", Snackbar.LENGTH_LONG).show()
-//                }
-//            }
-//        }
         login_btn.setOnClickListener {
             fragment_login.hideKeyboard()
             if(isValid()){
@@ -84,44 +57,60 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 login_btn.isEnabled = false
                 val login = login_input.text.toString()
                 val password = password_input.text.toString()
-//                launch(handler){
-//
-//                }
+                launch {
+                    val loginResponse = viewModel.login("", login, password)
+                }
             }
         }
         super.onViewCreated(view, savedInstanceState)
     }
-//    private fun saveCredentials(login: String, password: String){
-//        val student = database.studentDao().getStudent()
-//        if(student.login == ""){
-//            runOnUiThread {
-//                MaterialAlertDialogBuilder(fragment_login.context)
-//                    .setTitle("Salvar Dados")
-//                    .setMessage("Deseja salvar seus dados de login?")
-//                    .setPositiveButton("Sim"){ _, _ ->
-//                        student.login = login
-//                        student.password = password
-//                        database.studentDao().insertStudent(student)
-//                    }
-//                    .setNegativeButton("Agora Não"){_, _ ->}
-//                    .show()
-//            }
-//        }
-//        else if(student.login != login){
-//            runOnUiThread {
-//                MaterialAlertDialogBuilder(fragment_login.context)
-//                    .setTitle("Atualizar Dados")
-//                    .setMessage("Deseja altualizar seus dados de login salvos?")
-//                    .setPositiveButton("Sim"){ _, _ ->
-//                        student.login = login
-//                        student.password = password
-//                        database.studentDao().insertStudent(student)
-//                    }
-//                    .setNegativeButton("Agora Não"){_, _ ->}
-//                    .show()
-//            }
-//        }
-//    }
+
+    private fun saveCredentials(login: String, password: String){
+        launch {
+            val student = viewModel.student.await().observe(this@LoginFragment, Observer {student ->
+                if(student == null) return@Observer
+                if(student.login == ""){
+                    materialDialog(true, login, password)
+                }
+                else if(student.login != ""){
+                    materialDialog(false, login, password)
+                }
+            })
+        }
+    }
+
+    private fun materialDialog(newLogin: Boolean, login: String, password: String){
+        if(newLogin){
+            runOnUiThread {
+                MaterialAlertDialogBuilder(fragment_login.context)
+                    .setTitle("Salvar Dados")
+                    .setMessage("Deseja salvar seus dados de login?")
+                    .setPositiveButton("Sim"){ _, _ ->
+                        launch {
+                            viewModel.saveLogin(login, password)
+                        }
+
+                    }
+                    .setNegativeButton("Agora Não"){_, _ ->}
+                    .show()
+            }
+        }
+        else {
+            runOnUiThread {
+                MaterialAlertDialogBuilder(fragment_login.context)
+                    .setTitle("Atualizar Dados")
+                    .setMessage("Deseja altualizar seus dados de login salvos?")
+                    .setPositiveButton("Sim"){ _, _ ->
+                        launch {
+                            viewModel.saveLogin(login, password)
+                        }
+                    }
+                    .setNegativeButton("Agora Não"){_, _ ->}
+                    .show()
+            }
+        }
+
+    }
 
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -145,12 +134,6 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             password_field.error = null
         }
         return isValid
-    }
-    private val handler = CoroutineExceptionHandler { _, throwable ->
-        Snackbar.make(fragment_login, throwable.toString(), Snackbar.LENGTH_LONG).show()
-        login_btn?.isEnabled = true
-        progress_login?.isVisible = false
-        Log.e("Exception", ":$throwable")
     }
 
 }
