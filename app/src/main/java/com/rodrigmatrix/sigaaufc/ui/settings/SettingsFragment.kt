@@ -2,7 +2,7 @@ package com.rodrigmatrix.sigaaufc.ui.settings
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 
@@ -25,10 +25,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private fun setTheme(theme: String?){
         println("theme: $theme")
         when(theme){
-            "LIGHT" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            "DARK" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            "BATTERY_SAVER" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
-            "SYSTEM_DEFAULT" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            "LIGHT" -> setDefaultNightMode(MODE_NIGHT_NO)
+            "DARK" -> setDefaultNightMode(MODE_NIGHT_YES)
+            "BATTERY_SAVER" -> setDefaultNightMode(MODE_NIGHT_AUTO_BATTERY)
+            "SYSTEM_DEFAULT" -> setDefaultNightMode(MODE_NIGHT_FOLLOW_SYSTEM)
         }
         preferences.registerOnSharedPreferenceChangeListener(prefListener)
     }

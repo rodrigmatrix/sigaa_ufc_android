@@ -99,7 +99,7 @@ class SigaaApi(
         return status
     }
     private suspend fun redirectMenu(cookie: String): String{
-        var status = ""
+        var status = "Tempo de conexão expirou"
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/paginaInicial.do")
             .header("Cookie", "JSESSIONID=$cookie")
@@ -107,12 +107,13 @@ class SigaaApi(
         withContext(Dispatchers.IO){
             var response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
-                println("redirect")
                 val res = response.body()?.string()
                 if(res!!.contains("Menu Principal")){
-                    var res = getClasses(cookie)
-                    if(res != "Success"){
-                        status = "Tempo de conexão expirou"
+                    val res = getClasses(cookie)
+                    status = if(res != "Success"){
+                        "Tempo de conexão expirou"
+                    } else{
+                        "Success"
                     }
                 }
             }
@@ -127,7 +128,7 @@ class SigaaApi(
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/pag-inaInicial.do")
                 .build()
-            var response = httpClient.newCall(request).execute()
+            val response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
                 val listClasses = sigaaSerializer.parseClasses(res)
@@ -135,7 +136,6 @@ class SigaaApi(
                 listClasses.forEach {
                     studentDatabase.studentDao().insertClass(it)
                 }
-                println("chegou")
                 var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 viewStateId = viewStateId[1].split("\" ")
                 status = "Success"
@@ -156,7 +156,7 @@ class SigaaApi(
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
                 .build()
-            var response = httpClient.newCall(request).execute()
+            val response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
                 listClasses = sigaaSerializer.parsePreviousClasses(res)
@@ -171,7 +171,7 @@ class SigaaApi(
 
     suspend fun getClass(viewStateId: String, idTurma: String, id: Int, cookie: String){
         withContext(Dispatchers.IO){
-            var formBody = FormBody.Builder()
+            val formBody = FormBody.Builder()
                 .add("idTurma", idTurma)
                 .add("form_acessarTurmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id")
                 .add("form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id")
@@ -184,7 +184,7 @@ class SigaaApi(
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
                 .post(formBody)
                 .build()
-            var response = httpClient.newCall(request).execute()
+            val response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
                 //println(res)
@@ -197,9 +197,9 @@ class SigaaApi(
 
     suspend fun getPreviousClass(cookie: String, idTurma: String, id: String, viewStateId: String): Pair<String, MutableList<StudentClass>>{
         var status = ""
-        var list = mutableListOf<StudentClass>()
+        val list = mutableListOf<StudentClass>()
         withContext(Dispatchers.IO){
-            var formBody = FormBody.Builder()
+            val formBody = FormBody.Builder()
                 .add("idTurma", idTurma)
                 .add("j_id_jsp_1344809141_$id", "j_id_jsp_1344809141_$id")
                 .add("j_id_jsp_1344809141_2:j_id_jsp_1344809141_4", "j_id_jsp_1344809141_2:j_id_jsp_1344809141_4")
@@ -212,7 +212,7 @@ class SigaaApi(
                 .header("Cookie", "JSESSIONID=$cookie")
                 .post(formBody)
                 .build()
-            var response = httpClient.newCall(request).execute()
+            val response = httpClient.newCall(request).execute()
             status = when {
                 response.isSuccessful -> {
                     val res = response.body()?.string()
@@ -227,7 +227,7 @@ class SigaaApi(
 
     private suspend fun getGrades(viewStateId: String, cookie: String){
         withContext(Dispatchers.IO){
-            var formBody = FormBody.Builder()
+            val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
                 .add("formMenu:j_id_jsp_1287906063_20", "formMenu:j_id_jsp_1287906063_20")
                 .add("formMenu:j_id_jsp_1287906063_3", "formMenu:j_id_jsp_1287906063_18")
@@ -240,7 +240,7 @@ class SigaaApi(
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
                 .post(formBody)
                 .build()
-            var response = httpClient.newCall(request).execute()
+            val response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
                 //println(res)
@@ -250,7 +250,7 @@ class SigaaApi(
 
     suspend fun getRU(numeroCartao: String, matricula: String): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{
         var triple = Triple("Tempo de conexão expirou", Pair("", 1), mutableListOf<HistoryRU>())
-        var formBody = FormBody.Builder()
+        val formBody = FormBody.Builder()
             .add("codigoCartao", numeroCartao)
             .add("matriculaAtreladaCartao", matricula)
             .build()

@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.ui.sigaa.login
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -43,8 +44,11 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             .get(LoginViewModel::class.java)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progress_login.isVisible = false
+        login_input.setText("rodrigmatrix")
+        password_input.setText("iphone5s")
         launch {
             viewModel.student.await().observe(this@LoginFragment, Observer {student ->
                 if(student == null){
@@ -53,8 +57,10 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     }
                     return@Observer
                 }
-                login_input.setText(student.login)
-                password_input.setText(student.password)
+                runOnUiThread {
+                    login_input.setText(student.login)
+                    password_input.setText(student.password)
+                }
             })
         }
         login_btn.setOnClickListener {
@@ -66,15 +72,29 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 val password = password_input.text.toString()
                 launch {
                     val loginResponse = viewModel.login("", login, password)
-                    handleLogin(loginResponse)
+                    handleLogin(login, password,loginResponse)
                 }
             }
         }
+        fragment_login.hideKeyboard()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun handleLogin(res: String){
-
+    private suspend fun handleLogin(login: String, password: String, res: String){
+        if(res == "Success"){
+            runOnUiThread {
+                progress_login.isVisible = false
+            }
+            println("chamou save")
+            saveCredentials(login, password)
+        }
+        else{
+            runOnUiThread {
+                Snackbar.make(fragment_login, res, Snackbar.LENGTH_LONG).show()
+                login_btn.isEnabled = true
+                progress_login.isVisible = false
+            }
+        }
     }
 
     private suspend fun loadCookie(){
@@ -90,17 +110,16 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private fun saveCredentials(login: String, password: String){
+    private suspend fun saveCredentials(login: String, password: String){
         launch {
-            val student = viewModel.student.await().observe(this@LoginFragment, Observer {student ->
-                if(student == null) return@Observer
-                if(student.login == ""){
-                    materialDialog(true, login, password)
-                }
-                else if(student.login != ""){
-                    materialDialog(false, login, password)
-                }
-            })
+            val student = viewModel.student.await().value ?: return@launch
+            println(student)
+            if(student.login == ""){
+                materialDialog(true, login, password)
+            }
+            else if(student.login != ""){
+                materialDialog(false, login, password)
+            }
         }
     }
 
