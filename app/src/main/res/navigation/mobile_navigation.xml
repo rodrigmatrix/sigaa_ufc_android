@@ -7,7 +7,7 @@
 
     <fragment
             android:id="@+id/nav_login"
-            android:name="com.rodrigmatrix.sigaaufc.ui.sigaa.login.LoginFragment"
+            android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginFragment"
             android:label="Login">
         <action
                 android:id="@+id/action_nav_sigaa_to_nav_ru"
@@ -30,7 +30,7 @@
 
     <fragment
             android:id="@+id/nav_ru"
-            android:name="com.rodrigmatrix.sigaaufc.ui.ru.RestauranteUniversiarioFragment"
+            android:name="com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RestauranteUniversiarioFragment"
             android:label="@string/ru_string"
             tools:layout="@layout/fragment_restaurante_universiario" >
         <action
@@ -57,7 +57,7 @@
             tools:layout="@layout/fragment_info" />
     <fragment
             android:id="@+id/nav_sigaa"
-            android:name="com.rodrigmatrix.sigaaufc.ui.sigaa.classes.SigaaFragment"
+            android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.SigaaFragment"
             android:label="SIGAA"
             tools:layout="@layout/fragment_sigaa" />
 </navigation>

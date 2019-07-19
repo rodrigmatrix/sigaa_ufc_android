@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.sigaa.classes
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.fragments.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.MatriculaFragment
-import com.rodrigmatrix.sigaaufc.ui.pager.adapters.SigaaPagerAdapter
 import kotlinx.android.synthetic.main.fragment_sigaa.*
 
 class SigaaFragment : Fragment() {

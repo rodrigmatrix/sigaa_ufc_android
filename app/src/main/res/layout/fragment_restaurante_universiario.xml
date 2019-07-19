@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         android:id="@+id/coordinator"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context=".ui.ru.RestauranteUniversiarioFragment">
+        tools:context=".ui.view.ru.card_view.RestauranteUniversiarioFragment">
 
 
     <include
@@ -22,9 +22,10 @@
         <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_view_ru"
                 android:clickable="true"
+                android:focusable="true"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                app:cardCornerRadius="12dp"
+                android:layout_height="210dp"
+                app:cardCornerRadius="14dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
@@ -39,57 +40,60 @@
                         android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="26dp"
+                        android:layout_marginEnd="80dp"
+                        android:layout_marginBottom="72dp"
                         android:text="@string/ru_string"
                         android:textColor="@color/colorText"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toTopOf="@+id/card_holder_text"
+                        app:layout_constraintBottom_toTopOf="@+id/credits_text"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.25"
-                        app:layout_constraintStart_toEndOf="@+id/imageView2"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.237" />
+                        app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                         android:id="@+id/card_holder_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginStart="24dp"
                         android:layout_marginBottom="16dp"
                         android:text="Nome do Aluno"
+                        android:textSize="14sp"
                         android:textColor="@color/colorText"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent" />
 
                 <TextView
                         android:id="@+id/credits_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginTop="54dp"
+                        android:layout_marginStart="24dp"
                         android:text="0 Créditos"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textColor="@color/colorText"
                         android:textSize="14sp"
+                        app:layout_constraintBottom_toTopOf="@+id/card_holder_text"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="1.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent" />
 
                 <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="58dp"
                         android:layout_height="55dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="47dp"
+                        android:layout_marginTop="152dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="24dp"
                         android:src="@drawable/ufc_logo"
-                        app:layout_constraintBottom_toTopOf="@+id/credits_text"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -108,16 +112,21 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/add_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/White"
+            android:text="@string/card_string"
+            android:textAllCaps="false"
+            android:elevation="6dp"
             android:backgroundTint="@color/colorPrimary"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_add"
-            android:layout_gravity="bottom|right">
+            app:icon="@drawable/ic_credit_card"
+            app:iconTint="@color/White"
+            android:layout_gravity="bottom|center">
 
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

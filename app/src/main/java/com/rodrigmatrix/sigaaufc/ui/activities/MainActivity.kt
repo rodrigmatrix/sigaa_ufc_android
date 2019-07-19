@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -13,8 +12,10 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.preference.PreferenceManager
 import com.rodrigmatrix.sigaaufc.R
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 

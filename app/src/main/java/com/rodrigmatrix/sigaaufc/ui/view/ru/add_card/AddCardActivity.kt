@@ -1,29 +1,35 @@
-package com.rodrigmatrix.sigaaufc.ui.activities
+package com.rodrigmatrix.sigaaufc.ui.view.ru.add_card
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
-import androidx.room.Room
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
+import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModel
+import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
 import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.coroutines.*
-import org.jetbrains.anko.contentView
-import kotlin.coroutines.CoroutineContext
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
-class AddCardActivity : AppCompatActivity(), CoroutineScope {
-    private var job = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO + job
-    lateinit var database: StudentDatabase
+class AddCardActivity : ScopedActivity(), KodeinAware {
+
+    override val kodein by closestKodein()
+    private val viewModelFactory: AddCardViewModelFactory by instance()
+
+    private lateinit var viewModel: AddCardViewModel
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_card)
@@ -31,40 +37,20 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         toolbar.setNavigationOnClickListener {
             this.finish()
         }
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(AddCardViewModel::class.java)
         progress_add_card.isVisible = false
-        database = Room.databaseBuilder(
-            applicationContext,
-            StudentDatabase::class.java, "database.db")
-            .fallbackToDestructiveMigration()
-            .allowMainThreadQueries()
-            .build()
-        var student = database.studentDao().getStudent()
-//        card_number_input.setText(student.cardRU)
-//        matricula_number_input.setText(student.matriculaRU)
         add_card_button.setOnClickListener {
-            if(isValid()){
+            if(isValid()) {
                 add_card_activity.hideKeyboard()
                 progress_add_card.isVisible = true
                 add_card_button.isEnabled = false
                 add_credits_button.isEnabled = false
-//                launch(handler){
-//                    val api = ApiSigaa()
-//                    var triple = api.getRU(card_number_input.text.toString(), matricula_number_input.text.toString())
-//                    println(triple)
-//                    if(triple.first == "Success"){
-//                        runOnUiThread {
-//                            dialogData(triple)
-//                        }
-//                    }
-//                    else{
-//                        runOnUiThread {
-//                            Snackbar.make(add_card_activity, triple.first, Snackbar.LENGTH_LONG).show()
-//                            progress_add_card.isVisible = false
-//                            add_card_button.isEnabled = true
-//                            add_credits_button.isEnabled = false
-//                        }
-//                    }
-//                }
+                val numeroCartao = card_number_input.text.toString()
+                val matricula = matricula_number_input.text.toString()
+                launch {
+                    addCard(numeroCartao, matricula)
+                }
             }
         }
         add_credits_button.setOnClickListener {
@@ -72,6 +58,28 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         }
 
     }
+    private suspend fun addCard(numeroCartao: String, matricula: String){
+        val res = viewModel.fetchRu(numeroCartao, matricula)
+        if(res == "Success"){
+            println("deu bom")
+        }
+        else{
+            runOnUiThread {
+                Snackbar.make(add_card_activity, res, Snackbar.LENGTH_LONG).show()
+                progress_add_card.isVisible = false
+                add_card_button.isEnabled = true
+                add_credits_button.isEnabled = true
+            }
+        }
+    }
+
+    private fun bindData(){
+//        viewModel.student.await().observe(){
+//            card_number_input.setText(student.cardRU)
+//            matricula_number_input.setText(student.matriculaRU)
+//        }
+    }
+
     private fun View.hideKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
@@ -92,26 +100,7 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
         add_credits_button.isEnabled = true
         progress_add_card.isVisible = false
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-        database.close()
-    }
 
-//    private fun saveData(triple: Triple<String, Pair<String, Int>, MutableList<HistoryRU>>){
-//        var student = database.studentDao().getStudent()
-//        student.creditsRU = triple.second.second
-//        student.nameRU = triple.second.first
-//        student.cardRU = card_number_input.text.toString()
-//        student.matriculaRU = matricula_number_input.text.toString()
-//        database.studentDao().deleteHistoryRU()
-//        triple.third.forEach {
-//            database.studentDao().insertRU(it)
-//        }
-//        database.studentDao().insertStudent(student)
-//        println("call finish")
-//        this.finish()
-//    }
     private fun isValid(): Boolean{
         var isValid = true
         if(card_number_input.text.toString().isEmpty()){
@@ -129,8 +118,5 @@ class AddCardActivity : AppCompatActivity(), CoroutineScope {
             matricula_number_field.error = null
         }
         return isValid
-    }
-    private val handler = CoroutineExceptionHandler { _, throwable ->
-        Log.e("Exception", ":$throwable")
     }
 }

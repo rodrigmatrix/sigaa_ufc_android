@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.sigaa.login
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.login
 
 import androidx.lifecycle.ViewModel
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository

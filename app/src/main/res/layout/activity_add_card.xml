@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/add_card_activity"
-        tools:context=".ui.activities.AddCardActivity">
+        tools:context=".ui.view.ru.add_card.AddCardActivity">
 
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
@@ -94,6 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
                         android:text="Recarregar"
+                        android:textAllCaps="false"
                         android:textColorLink="@color/colorPrimary"/>
                 <com.google.android.material.button.MaterialButton
                         android:id="@+id/add_card_button"
@@ -101,6 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Adicionar"
+                        android:textAllCaps="false"
                         android:textColorLink="@color/colorPrimary"/>
 
             </LinearLayout>

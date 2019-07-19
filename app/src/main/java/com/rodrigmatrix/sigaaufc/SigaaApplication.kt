@@ -2,14 +2,15 @@ package com.rodrigmatrix.sigaaufc
 
 import android.app.Application
 import androidx.preference.PreferenceManager
-import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
-import com.rodrigmatrix.sigaaufc.ui.sigaa.login.LoginViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginViewModelFactory
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -40,10 +41,16 @@ class SigaaApplication: Application(), KodeinAware {
             SigaaApi(httpClient = instance(), sigaaSerializer = instance(), studentDatabase = instance())
         }
         bind<SigaaNetworkDataSource>() with singleton {
-            SigaaNetworkDataSourceImpl(sigaaApi = instance(), sigaaSerializer = instance())
+            SigaaNetworkDataSourceImpl(sigaaApi = instance())
         }
         bind() from provider {
             LoginViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            RuViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            AddCardViewModelFactory(sigaaRepository = instance())
         }
     }
 

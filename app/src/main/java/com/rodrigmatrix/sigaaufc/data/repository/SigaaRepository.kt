@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.data.repository
 
 import androidx.lifecycle.LiveData
+import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 
 
@@ -16,4 +17,8 @@ interface SigaaRepository {
     suspend fun saveLogin(login: String, password: String)
 
     suspend fun getCookie(): Boolean
+
+    suspend fun getHistoryRu(): LiveData<out MutableList<HistoryRU>>
+
+    suspend fun saveRuData(numeroCartao: String, matricula: String): String
 }

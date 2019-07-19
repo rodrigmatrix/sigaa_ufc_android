@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.pager.adapters
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes
 
 import android.content.Context
 import androidx.fragment.app.Fragment

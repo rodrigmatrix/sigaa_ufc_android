@@ -60,17 +60,17 @@ class LibraryFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun loadPage(){
-        swipe_library.isRefreshing = true
-        library_webview.webViewClient = object: WebViewClient(){
+        swipe_library?.isRefreshing = true
+        library_webview?.webViewClient = object: WebViewClient(){
             override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
-                swipe_library.isRefreshing = true
+                swipe_library?.isRefreshing = true
             }
             override fun onPageFinished(view: WebView, url: String) {
-                swipe_library.isRefreshing = false
+                swipe_library?.isRefreshing = false
             }
         }
-        library_webview.settings.domStorageEnabled = true
-        library_webview.settings.javaScriptEnabled = true
+        library_webview?.settings?.domStorageEnabled = true
+        library_webview?.settings?.javaScriptEnabled = true
         library_webview?.loadUrl("https://pergamum.ufc.br/pergamum/mobile/index.php")
     }
 }

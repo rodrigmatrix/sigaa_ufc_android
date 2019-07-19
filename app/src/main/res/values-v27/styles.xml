@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>0
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:statusBarColor">@color/colorSwipeRefresh</item>
-        <item name="elevation">1dp</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="cardElevation">8dp</item>
-        <item name="backgroundColor">@color/colorSwipeRefresh</item>
+        <item name="elevation">6dp</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="backgroundColor">@color/White</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 </resources>

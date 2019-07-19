@@ -3,35 +3,32 @@
     <string name="app_name">Sigaa</string>
     <string name="title_activity_main">SIGAA UFC</string>
 
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_add_card">Add Card UR</string>
-    <string name="title_activity_class">Classes</string>
+    <string name="title_activity_add_card">Adicionar cartão RU</string>
+    <string name="title_activity_class">Disciplinas</string>
 
     <string name="sigaa_shortcut">SIGAA</string>
-    <string name="ru_shortcut">Credits UR</string>
-    <string name="ru_long_shortcut">UR</string>
-    <string name="library_shortcut">Library</string>
-    <string name="settings_string">Settings</string>
-    <string name="info_string">About</string>
-    <string name="ru_string">University Restaurant</string>
-<!--    <string name="no_card_string"></string>-->
-<!--    <string name="add_card_icon_string"></string>-->
-<!--    <string name=""></string>-->
+    <string name="ru_shortcut">Créditos RU</string>
+    <string name="ru_long_shortcut">RU</string>
+    <string name="library_shortcut">Biblioteca</string>
+    <string name="settings_string">Configurações</string>
+    <string name="info_string">Sobre</string>
+    <string name="ru_string">Restaurante Universitário</string>
 
-    <string name="blank_student">Hi student</string>
+    <string name="blank_student">Olá aluno</string>
     <string name="hello_string">Hi</string>
-    
-    <string name="appearance_string">Appearance</string>
-    <string name="theme_string">Theme</string>
 
-    <string name="language_string">Language</string>
-    <string name="general_string">General</string>
-    <string name="english_string">English</string>
-    <string name="portuguese_string">Portuguese</string>
+    <string name="appearance_string">Aparência</string>
+    <string name="theme_string">Tema</string>
 
-    <string name="light_string">Light</string>
-    <string name="dark_string">Dark</string>
-    <string name="battery_saver_string">Set by Battery Saver</string>
-    <string name="system_default_string">System Default</string>
+    <string name="language_string">Idioma</string>
+    <string name="general_string">Geral</string>
+    <string name="english_string">Inglês</string>
+    <string name="portuguese_string">Português</string>
+
+    <string name="light_string">Claro</string>
+    <string name="dark_string">Escuro</string>
+    <string name="battery_saver_string">Economia de Bateria</string>
+    <string name="system_default_string">Padrão do Sistema</string>
+    <string name="card_string">Cartão</string>
 </resources>

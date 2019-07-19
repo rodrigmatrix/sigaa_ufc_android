@@ -37,7 +37,7 @@ interface StudentDao {
 
 
     @Query("SELECT * FROM historyru")
-    fun getHistoryRU(): MutableList<HistoryRU>
+    fun getHistoryRU(): LiveData<MutableList<HistoryRU>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRU(historyRU: HistoryRU)

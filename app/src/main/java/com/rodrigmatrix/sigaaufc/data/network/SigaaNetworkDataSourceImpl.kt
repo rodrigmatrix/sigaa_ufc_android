@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
+import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import okhttp3.ResponseBody
@@ -14,8 +15,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class SigaaNetworkDataSourceImpl(
-    private val sigaaApi: SigaaApi,
-    private val sigaaSerializer: Serializer
+    private val sigaaApi: SigaaApi
 ) : SigaaNetworkDataSource {
 
     override suspend fun fetchLogin(
@@ -35,6 +35,10 @@ class SigaaNetworkDataSourceImpl(
 
     override suspend fun getCookie(): Boolean {
         return sigaaApi.getCookie()
+    }
+
+    override suspend fun fetchRu(numeroCartao: String, matricula: String): Pair<String, MutableList<HistoryRU>> {
+        return sigaaApi.getRU(numeroCartao, matricula)
     }
 
     private fun loginHandler(res: String): String{

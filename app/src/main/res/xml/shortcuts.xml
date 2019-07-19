@@ -36,6 +36,6 @@
         <intent
                 android:action="com.rodrigmatrix.SIGAA"
                 android:targetPackage="com.rodrigmatrix.sigaaufc.ui.fragments"
-                android:targetClass="com.rodrigmatrix.sigaaufc.ui.sigaa.classes.SigaaFragment"/>
+                android:targetClass="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.SigaaFragment"/>
     </shortcut>
 </PreferenceScreen>

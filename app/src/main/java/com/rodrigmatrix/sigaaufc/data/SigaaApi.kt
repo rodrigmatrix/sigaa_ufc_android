@@ -248,12 +248,13 @@ class SigaaApi(
         }
     }
 
-    suspend fun getRU(numeroCartao: String, matricula: String): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{
-        var triple = Triple("Tempo de conexão expirou", Pair("", 1), mutableListOf<HistoryRU>())
+    suspend fun getRU(numeroCartao: String, matricula: String): Pair<String, MutableList<HistoryRU>>{
         val formBody = FormBody.Builder()
             .add("codigoCartao", numeroCartao)
             .add("matriculaAtreladaCartao", matricula)
             .build()
+        val history = mutableListOf<HistoryRU>()
+        var status = "Tempo de conexão expirou"
         withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/public/restauranteConsultarSaldo.do")
@@ -262,9 +263,23 @@ class SigaaApi(
             val response = httpClient.newCall(request).execute()
             if(response.isSuccessful){
                 val res = response.body()?.string()
-                triple = sigaaSerializer.parseRU(res)
+                val triple = sigaaSerializer.parseRU(res)
+                status = triple.first
+                if(triple.first == "Success"){
+                    val student = studentDatabase.studentDao().getStudent().value
+                    if(student != null){
+                        student.cardRU = numeroCartao
+                        student.matriculaRU = matricula
+                        student.nameRU = triple.second.first
+                        student.creditsRU = triple.second.second
+                        studentDatabase.studentDao().upsertStudent(student)
+                        triple.third.forEach {
+                            history.add(it)
+                        }
+                    }
+                }
             }
         }
-        return triple
+        return Pair(status, history)
     }
 }

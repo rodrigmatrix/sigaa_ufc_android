@@ -22,11 +22,12 @@
 
     <string name="language_string">Idioma</string>
     <string name="general_string">General</string>
-    <string name="portuguese_string">Portugues</string>
+    <string name="portuguese_string">Português</string>
     <string name="english_string">Inglês</string>
 
     <string name="light_string">Claro</string>
     <string name="dark_string">Escuro</string>
     <string name="battery_saver_string">Economia de Bateria</string>
     <string name="system_default_string">Padrão do Sistema</string>
+    <string name="card_string">Cartão</string>
 </resources>

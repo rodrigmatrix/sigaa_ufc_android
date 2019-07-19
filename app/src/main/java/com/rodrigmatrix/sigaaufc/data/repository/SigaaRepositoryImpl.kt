@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSource
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
+import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -41,5 +42,29 @@ class SigaaRepositoryImpl(
             student.password = password
             studentDao.upsertStudent(student)
         }
+    }
+
+    override suspend fun getHistoryRu(): LiveData<out MutableList<HistoryRU>> {
+        return studentDao.getHistoryRU()
+    }
+
+    override suspend fun saveRuData(numeroCartao: String, matricula: String): String {
+        var status = ""
+        withContext(Dispatchers.Main){
+            val pair = fetchRuCard(numeroCartao, matricula)
+            if(pair.first == "Success"){
+                pair.second.forEach {
+                    studentDao.insertRU(it)
+                }
+            }
+            else{
+                status = pair.first
+            }
+        }
+        return status
+    }
+
+    private suspend fun fetchRuCard(numeroCartao: String, matricula: String): Pair<String, MutableList<HistoryRU>>{
+        return sigaaNetworkDataSource.fetchRu(numeroCartao, matricula)
     }
 }

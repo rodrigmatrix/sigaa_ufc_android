@@ -1,9 +1,8 @@
-package com.rodrigmatrix.sigaaufc.ui.sigaa.login
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.login
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.*
@@ -85,7 +83,6 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             runOnUiThread {
                 progress_login.isVisible = false
             }
-            println("chamou save")
             saveCredentials(login, password)
         }
         else{
@@ -98,10 +95,16 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     }
 
     private suspend fun loadCookie(){
+        runOnUiThread {
+            progress_login.isVisible = true
+        }
         if(!viewModel.getCookie()){
             runOnUiThread {
                 Snackbar.make(fragment_login, "Erro ao carregar cookie", Snackbar.LENGTH_LONG)
                     .setAction("Recarregar", View.OnClickListener {
+                        launch {
+                            loadCookie()
+                        }
                     }).show()
             }
         }
