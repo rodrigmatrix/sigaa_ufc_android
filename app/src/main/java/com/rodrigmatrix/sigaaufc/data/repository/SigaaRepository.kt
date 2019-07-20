@@ -13,7 +13,9 @@ interface SigaaRepository {
         password: String
     ): String
 
-    suspend fun getStudent(): Student
+    suspend fun getStudent(): LiveData<out Student>
+
+    suspend fun getStudentAsync(): Student
 
     suspend fun saveLogin(login: String, password: String)
 

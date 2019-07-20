@@ -26,9 +26,15 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.fetchLogin(cookie, login, password)
     }
 
-    override suspend fun getStudent(): Student {
+    override suspend fun getStudent(): LiveData<out Student> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getStudent()
+        }
+    }
+
+    override suspend fun getStudentAsync(): Student {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getStudentAsync()
         }
     }
 
@@ -38,7 +44,7 @@ class SigaaRepositoryImpl(
 
     override suspend fun saveLogin(login: String, password: String) {
         withContext(Dispatchers.IO){
-            val student = studentDao.getStudent()
+            val student = getStudentAsync()
             student.login = login
             student.password = password
             studentDao.upsertStudent(student)

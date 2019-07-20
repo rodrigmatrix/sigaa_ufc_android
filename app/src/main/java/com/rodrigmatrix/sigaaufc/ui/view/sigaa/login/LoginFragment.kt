@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.login
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -45,21 +48,17 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progress_login.isVisible = false
-        login_input.setText("rodrigmatrix")
-        password_input.setText("iphone5s")
         launch {
-//            viewModel.student.await().observe(this@LoginFragment, Observer {student ->
-//                if(student == null){
-//                    launch {
-//                        loadCookie()
-//                    }
-//                    return@Observer
-//                }
-//                runOnUiThread {
-//                    login_input.setText(student.login)
-//                    password_input.setText(student.password)
-//                }
-//            })
+            viewModel.getStudent().observe(this@LoginFragment, Observer {student ->
+                if(student == null){
+                    loadCookie()
+                    return@Observer
+                }
+                runOnUiThread {
+                    login_input.setText(student.login)
+                    password_input.setText(student.password)
+                }
+            })
         }
         login_btn.setOnClickListener {
             fragment_login.hideKeyboard()
@@ -94,35 +93,48 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private suspend fun loadCookie(){
-        runOnUiThread {
-            progress_login.isVisible = true
-        }
-        if(!viewModel.getCookie()){
+    private fun loadCookie(){
+        launch {
             runOnUiThread {
-                Snackbar.make(fragment_login, "Erro ao carregar cookie", Snackbar.LENGTH_LONG)
-                    .setAction("Recarregar", View.OnClickListener {
-                        launch {
-                            loadCookie()
-                        }
-                    }).show()
+                progress_login.isVisible = true
             }
-        }
-        runOnUiThread {
-            progress_login.isVisible = false
+            if(!viewModel.getCookie()){
+                runOnUiThread {
+                    Snackbar.make(fragment_login, "Erro ao carregar cookie", Snackbar.LENGTH_LONG)
+                        .setAction("Recarregar") {
+                            launch {
+                                loadCookie()
+                            }
+                        }.show()
+                }
+            }
+            runOnUiThread {
+                progress_login.isVisible = false
+            }
         }
     }
 
-    private suspend fun saveCredentials(login: String, password: String){
+    private fun saveCredentials(login: String, password: String){
         launch {
-//            val student = viewModel.student.await() ?: return@launch
-//            println(student)
-//            if(student.login == ""){
-//                materialDialog(true, login, password)
-//            }
-//            else if(student.login != ""){
-//                materialDialog(false, login, password)
-//            }
+            val student = viewModel.getStudentAsync()
+            if(student?.login == ""){
+                materialDialog(true, login, password)
+            }
+            else if((student?.login != login) && (student?.password != password)){
+                materialDialog(false, login, password)
+            }
+            else{
+                openSigaa()
+            }
+        }
+
+    }
+
+    private fun openSigaa(){
+        runOnUiThread {
+            login_btn.isEnabled = true
+            val intent = Intent(fragment_login.context, ClassActivity::class.java)
+            this.startActivity(intent)
         }
     }
 
@@ -135,10 +147,15 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     .setPositiveButton("Sim"){ _, _ ->
                         launch {
                             viewModel.saveLogin(login, password)
+                            openSigaa()
                         }
-
                     }
-                    .setNegativeButton("Agora Não"){_, _ ->}
+                    .setNegativeButton("Agora Não"){_, _ ->
+                        openSigaa()
+                    }
+                    .setOnCancelListener {
+                        openSigaa()
+                    }
                     .show()
             }
         }
@@ -150,13 +167,18 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     .setPositiveButton("Sim"){ _, _ ->
                         launch {
                             viewModel.saveLogin(login, password)
+                            openSigaa()
                         }
                     }
-                    .setNegativeButton("Agora Não"){_, _ ->}
+                    .setNegativeButton("Agora Não"){_, _ ->
+                        openSigaa()
+                    }
+                    .setOnCancelListener {
+                        openSigaa()
+                    }
                     .show()
             }
         }
-
     }
 
     private fun View.hideKeyboard() {

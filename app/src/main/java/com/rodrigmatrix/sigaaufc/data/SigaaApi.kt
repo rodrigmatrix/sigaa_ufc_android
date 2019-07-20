@@ -40,16 +40,21 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     status = true
-                    val arr = response.request.body.toString().split("jsessionid=")
-                    val student = studentDatabase.studentDao().getStudent()
+                    val arr = response.request.url.toString().split("jsessionid=")
+                    val student = studentDatabase.studentDao().getStudentAsync()
                     if(student == null){
                         studentDatabase.studentDao().upsertStudent(Student(
                             arr[1], "", "", "", "", "", "", "", false,
                             ""))
                     }
                     else{
-                        student.jsession = arr[1]
-                        studentDatabase.studentDao().upsertStudent(student)
+                        if(student.jsession == ""){
+                            student.jsession = arr[1]
+                            studentDatabase.studentDao().upsertStudent(student)
+                        }
+                        else{
+                            status = true
+                        }
                     }
                 }
                 else{

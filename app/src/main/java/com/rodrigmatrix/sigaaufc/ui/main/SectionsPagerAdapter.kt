@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.rodrigmatrix.sigaaufc.R
 
 private var fragmentList = arrayListOf<Fragment>()
-private val titleList = listOf( "Avisos", "Notas", "Presença", "")
+private val titleList = listOf( "Avisos", "Notas", "Presença")
 
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {

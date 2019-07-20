@@ -11,7 +11,10 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
 interface StudentDao {
 
     @Query("SELECT * FROM students where id = 0")
-    fun getStudent(): Student
+    fun getStudent(): LiveData<Student>
+
+    @Query("SELECT * FROM students where id = 0")
+    fun getStudentAsync(): Student
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertStudent(student: Student)

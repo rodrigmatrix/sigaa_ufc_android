@@ -58,11 +58,11 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
                     fetchRu(it.cardRU, it.matriculaRU)
                     hasSavedData = true
                 }
-                else{
-                    Handler().postDelayed({
-                        fetchRu(it.cardRU, it.matriculaRU)
-                    }, 5000)
-                }
+//                else{
+//                    Handler().postDelayed({
+//                        fetchRu(it.cardRU, it.matriculaRU)
+//                    }, 10000)
+//                }
             })
         }
     }
