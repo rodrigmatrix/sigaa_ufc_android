@@ -1,18 +1,9 @@
 package com.rodrigmatrix.sigaaufc.data.network
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
-import com.rodrigmatrix.sigaaufc.internal.TimeoutException
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
-import com.rodrigmatrix.sigaaufc.serializer.Serializer
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SigaaNetworkDataSourceImpl(
     private val sigaaApi: SigaaApi
@@ -23,11 +14,12 @@ class SigaaNetworkDataSourceImpl(
         login: String,
         password: String
     ): String {
-        var res = ""
+        var res: String
         try {
             res = sigaaApi.login(cookie, login, password)
         }
         catch (e: NoConnectivityException){
+            res = "Sem conexão com a internet"
             Log.e("Connectivity", "No internet Connection.", e)
         }
         return res
@@ -37,16 +29,7 @@ class SigaaNetworkDataSourceImpl(
         return sigaaApi.getCookie()
     }
 
-    override suspend fun fetchRu(numeroCartao: String, matricula: String): Pair<String, MutableList<HistoryRU>> {
+    override suspend fun fetchRu(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>> {
         return sigaaApi.getRU(numeroCartao, matricula)
-    }
-
-    private fun loginHandler(res: String): String{
-        return when(res){
-            "Continuar" -> "Success"
-            "Menu Principal" -> "Success"
-            "Usuário e/ou senha inválidos" -> "Usuário ou senha não encontrados"
-            else -> "Erro ao efetuar login"
-        }
     }
 }

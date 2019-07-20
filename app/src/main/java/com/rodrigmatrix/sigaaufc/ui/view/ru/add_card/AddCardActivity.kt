@@ -1,22 +1,21 @@
 package com.rodrigmatrix.sigaaufc.ui.view.ru.add_card
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
-import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModel
-import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
 import kotlinx.android.synthetic.main.activity_add_card.*
+import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -39,6 +38,7 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(AddCardViewModel::class.java)
+        bindData()
         progress_add_card.isVisible = false
         add_card_button.setOnClickListener {
             if(isValid()) {
@@ -61,7 +61,7 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
     private suspend fun addCard(numeroCartao: String, matricula: String){
         val res = viewModel.fetchRu(numeroCartao, matricula)
         if(res == "Success"){
-            println("deu bom")
+            finish()
         }
         else{
             runOnUiThread {
@@ -73,11 +73,15 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun bindData(){
-//        viewModel.student.await().observe(){
-//            card_number_input.setText(student.cardRU)
-//            matricula_number_input.setText(student.matriculaRU)
-//        }
+        launch {
+            viewModel.getRuCard().observe(this@AddCardActivity, Observer {
+                if(it == null) return@Observer
+                card_number_input.setText(it.cardRU)
+                matricula_number_input.setText(it.matriculaRU)
+            })
+        }
     }
 
     private fun View.hideKeyboard() {

@@ -16,7 +16,14 @@ data class Student(
     var entrance: String,
     var matricula: String,
     var hasSavedData: Boolean,
-    var lastUpdate: String,
+    var lastUpdate: String
+){
+    @PrimaryKey(autoGenerate = false)
+    var id: Int = STUDENT_ID
+}
+
+@Entity(tableName = "ru_card")
+data class RuCard(
     var creditsRU: Int,
     var nameRU: String,
     var matriculaRU: String,

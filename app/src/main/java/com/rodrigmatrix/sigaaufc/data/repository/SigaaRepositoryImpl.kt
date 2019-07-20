@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSource
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,7 +26,7 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.fetchLogin(cookie, login, password)
     }
 
-    override suspend fun getStudent(): LiveData<out Student> {
+    override suspend fun getStudent(): Student {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getStudent()
         }
@@ -37,7 +38,7 @@ class SigaaRepositoryImpl(
 
     override suspend fun saveLogin(login: String, password: String) {
         withContext(Dispatchers.IO){
-            val student = studentDao.getStudent().value ?: return@withContext
+            val student = studentDao.getStudent()
             student.login = login
             student.password = password
             studentDao.upsertStudent(student)
@@ -45,26 +46,38 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun getHistoryRu(): LiveData<out MutableList<HistoryRU>> {
-        return studentDao.getHistoryRU()
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getHistoryRU()
+        }
     }
 
     override suspend fun saveRuData(numeroCartao: String, matricula: String): String {
         var status = ""
-        withContext(Dispatchers.Main){
-            val pair = fetchRuCard(numeroCartao, matricula)
-            if(pair.first == "Success"){
-                pair.second.forEach {
+        withContext(Dispatchers.IO){
+            val triple = fetchRuCard(numeroCartao, matricula)
+            if(triple.first == "Success"){
+                triple.second.forEach {
                     studentDao.insertRU(it)
                 }
+                val ruCard = RuCard(triple.third.second,
+                    triple.third.first,
+                    matricula,
+                    numeroCartao)
+                println("salvou")
+                studentDao.upsertRuCard(ruCard)
             }
-            else{
-                status = pair.first
-            }
+            status = triple.first
         }
         return status
     }
 
-    private suspend fun fetchRuCard(numeroCartao: String, matricula: String): Pair<String, MutableList<HistoryRU>>{
+    override suspend fun getRuCard(): LiveData<out RuCard> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getRuCard()
+        }
+    }
+
+    private suspend fun fetchRuCard(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>>{
         return sigaaNetworkDataSource.fetchRu(numeroCartao, matricula)
     }
 }

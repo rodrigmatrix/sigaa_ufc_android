@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        setTheme(preferences.getString("THEME", null))
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -44,8 +46,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-        preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        setTheme(preferences.getString("THEME", null))
     }
 
     private fun setTheme(theme: String?){

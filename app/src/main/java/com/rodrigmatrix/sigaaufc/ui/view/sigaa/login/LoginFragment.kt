@@ -48,18 +48,18 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         login_input.setText("rodrigmatrix")
         password_input.setText("iphone5s")
         launch {
-            viewModel.student.await().observe(this@LoginFragment, Observer {student ->
-                if(student == null){
-                    launch {
-                        loadCookie()
-                    }
-                    return@Observer
-                }
-                runOnUiThread {
-                    login_input.setText(student.login)
-                    password_input.setText(student.password)
-                }
-            })
+//            viewModel.student.await().observe(this@LoginFragment, Observer {student ->
+//                if(student == null){
+//                    launch {
+//                        loadCookie()
+//                    }
+//                    return@Observer
+//                }
+//                runOnUiThread {
+//                    login_input.setText(student.login)
+//                    password_input.setText(student.password)
+//                }
+//            })
         }
         login_btn.setOnClickListener {
             fragment_login.hideKeyboard()
@@ -115,14 +115,14 @@ class LoginFragment : ScopedFragment(), KodeinAware {
 
     private suspend fun saveCredentials(login: String, password: String){
         launch {
-            val student = viewModel.student.await().value ?: return@launch
-            println(student)
-            if(student.login == ""){
-                materialDialog(true, login, password)
-            }
-            else if(student.login != ""){
-                materialDialog(false, login, password)
-            }
+//            val student = viewModel.student.await() ?: return@launch
+//            println(student)
+//            if(student.login == ""){
+//                materialDialog(true, login, password)
+//            }
+//            else if(student.login != ""){
+//                materialDialog(false, login, password)
+//            }
         }
     }
 

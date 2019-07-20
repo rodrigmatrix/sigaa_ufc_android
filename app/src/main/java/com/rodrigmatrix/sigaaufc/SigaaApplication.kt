@@ -19,6 +19,7 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.provider
 import org.kodein.di.generic.singleton
+import java.util.concurrent.TimeUnit
 
 class SigaaApplication: Application(), KodeinAware {
     override val kodein = Kodein.lazy {
@@ -28,8 +29,11 @@ class SigaaApplication: Application(), KodeinAware {
         bind<ConnectivityInterceptor>() with singleton {
             ConnectivityInterceptorImpl(context = instance())
         }
-        bind<OkHttpClient>() with singleton {
-            OkHttpClient()
+        bind<OkHttpClient.Builder>() with singleton {
+            OkHttpClient
+                .Builder()
+                .readTimeout(25, TimeUnit.SECONDS)
+                .connectTimeout(25, TimeUnit.SECONDS)
         }
         bind<SigaaRepository>() with singleton {
             SigaaRepositoryImpl(sigaaNetworkDataSource = instance(), studentDao = instance())
@@ -38,7 +42,10 @@ class SigaaApplication: Application(), KodeinAware {
             Serializer()
         }
         bind() from singleton {
-            SigaaApi(httpClient = instance(), sigaaSerializer = instance(), studentDatabase = instance())
+            SigaaApi(httpClient = instance(),
+                sigaaSerializer = instance(),
+                studentDatabase = instance(),
+                connectivityInterceptor = instance())
         }
         bind<SigaaNetworkDataSource>() with singleton {
             SigaaNetworkDataSourceImpl(sigaaApi = instance())

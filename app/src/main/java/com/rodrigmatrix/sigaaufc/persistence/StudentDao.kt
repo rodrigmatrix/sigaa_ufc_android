@@ -5,22 +5,28 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.News
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 
 @Dao
 interface StudentDao {
 
     @Query("SELECT * FROM students where id = 0")
-    fun getStudent(): LiveData<Student>
+    fun getStudent(): Student
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertStudent(student: Student)
 
     @Query("DELETE FROM students")
     fun deleteStudent()
+
+    @Query("SELECT * FROM ru_card where id = 0")
+    fun getRuCard(): LiveData<RuCard>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertRuCard(ruCard: RuCard)
+
+    @Query("DELETE FROM ru_card")
+    fun deleteRuCard()
 
 
     @Query("SELECT * FROM classes where isPrevious = 0")

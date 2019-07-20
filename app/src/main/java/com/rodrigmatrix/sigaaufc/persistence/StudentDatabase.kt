@@ -4,13 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.News
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 
 @Database(
-    entities = [Student::class, StudentClass::class, HistoryRU::class, News::class],
+    entities = [Student::class, RuCard::class, StudentClass::class, HistoryRU::class, News::class],
     version = 1,
     exportSchema = false
 )
