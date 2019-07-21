@@ -17,7 +17,7 @@
             android:layout_height="match_parent"/>
     <LinearLayout
             android:id="@+id/card_view_ru"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="invisible"
             tools:visibility="visible"
@@ -29,8 +29,8 @@
                 android:layout_height="210dp"
                 app:cardCornerRadius="14dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_gravity="center"
                 app:cardElevation="6dp">
 
@@ -119,7 +119,7 @@
             android:layout_margin="@dimen/fab_margin"
             app:icon="@drawable/ic_credit_card"
             app:iconTint="@color/White"
-            android:layout_gravity="bottom|center">
+            android:layout_gravity="bottom|right">
 
     </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
 

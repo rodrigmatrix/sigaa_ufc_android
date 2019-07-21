@@ -44,6 +44,7 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
     override fun onResume() {
         super.onResume()
         var hasSavedData = false
+        bindData()
         launch {
             viewModel.getRuCard().observe(this@RestauranteUniversiarioFragment, Observer {
                 if(it == null){
@@ -51,7 +52,6 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
                     no_card?.isVisible = true
                     return@Observer
                 }
-                bindData()
                 card_holder_text.text = it.nameRU
                 credits_text.text = "${it.creditsRU} Créditos"
                 if(!hasSavedData){
@@ -78,11 +78,13 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
         launch {
             viewModel.historyRu.await().observe(this@RestauranteUniversiarioFragment, Observer {
                 if(it == null) return@Observer
-                runOnUiThread {
-                    card_view_ru?.isVisible = true
-                    recyclerView_ru?.layoutManager = LinearLayoutManager(context)
-                    recyclerView_ru?.adapter = RestauranteUniversitarioAdapter(it)
-                    no_card?.isVisible = false
+                if(it.size != 0){
+                    runOnUiThread {
+                        card_view_ru?.isVisible = true
+                        recyclerView_ru?.layoutManager = LinearLayoutManager(context)
+                        recyclerView_ru?.adapter = RestauranteUniversitarioAdapter(it)
+                        no_card?.isVisible = false
+                    }
                 }
             })
         }

@@ -118,10 +118,10 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         launch {
             val student = viewModel.getStudentAsync()
             if(student?.login == ""){
-                materialDialog(true, login, password)
+                saveDialog(true, login, password)
             }
             else if((student?.login != login) && (student?.password != password)){
-                materialDialog(false, login, password)
+                saveDialog(false, login, password)
             }
             else{
                 openSigaa()
@@ -138,7 +138,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private fun materialDialog(newLogin: Boolean, login: String, password: String){
+    private fun saveDialog(newLogin: Boolean, login: String, password: String){
         if(newLogin){
             runOnUiThread {
                 MaterialAlertDialogBuilder(fragment_login.context)
