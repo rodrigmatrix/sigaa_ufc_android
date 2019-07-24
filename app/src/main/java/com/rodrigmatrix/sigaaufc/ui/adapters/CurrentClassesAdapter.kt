@@ -38,10 +38,17 @@ class CurrentClassesAdapter(private val classesList: MutableList<StudentClass>):
 class ClassesViewHolder(val view: View): RecyclerView.ViewHolder(view){
     init {
         view.open_class_btn.setOnClickListener {
-            val intent = Intent(view.context, ClassActivity::class.java)
-            intent.putExtra("idTurma", view.idTurma_text.text.toString())
-            intent.putExtra("id", view.id_text.text.toString())
-            view.context.startActivity(intent)
+            openClass()
         }
+        view.card_current_class.setOnClickListener {
+            openClass()
+        }
+    }
+
+    private fun openClass(){
+        val intent = Intent(view.context, ClassActivity::class.java)
+        intent.putExtra("idTurma", view.idTurma_text.text.toString())
+        intent.putExtra("id", view.id_text.text.toString())
+        view.context.startActivity(intent)
     }
 }

@@ -7,7 +7,7 @@
         android:gravity="center">
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_history"
+            android:id="@+id/card_current_class"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

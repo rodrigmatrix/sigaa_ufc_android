@@ -8,6 +8,7 @@ import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.JavaxFaces
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
@@ -69,10 +70,37 @@ class SigaaApi(
         return status
     }
 
+    private suspend fun saveViewState(res: String?){
+        val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
+        val viewStateId = viewStateString[1].split("\" ")[0]
+        val viewState = studentDatabase.studentDao().getViewStateAsync()
+        if(viewState == null){
+            withContext(Dispatchers.IO){
+                studentDatabase.studentDao().upsertViewState(JavaxFaces(true, viewStateId))
+                println(getViewStateAsync())
+            }
+
+        }
+        else{
+            withContext(Dispatchers.IO){
+                viewState.valueState = viewStateId
+                studentDatabase.studentDao().upsertViewState(viewState)
+                println(getViewStateAsync())
+            }
+        }
+    }
+
+    private suspend fun getViewStateAsync(): JavaxFaces{
+        return withContext(Dispatchers.IO){
+            return@withContext studentDatabase.studentDao().getViewStateAsync()
+        }
+
+    }
+
     suspend fun login(cookie: String, login: String, password: String): String{
-        var status = ""
-        withContext(Dispatchers.IO){
-            var formBody = FormBody.Builder()
+        return withContext(Dispatchers.IO){
+            var status = ""
+            val formBody = FormBody.Builder()
                 .add("width", "0")
                 .add("height", "0")
                 .add("user.login", login)
@@ -85,42 +113,54 @@ class SigaaApi(
                 .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do")
                 .post(formBody)
                 .build()
-            val response = httpClient
-                .addInterceptor(connectivityInterceptor)
-                .build()
-                .newCall(request)
-                .execute()
-            if(response.isSuccessful){
-                val res = response.body?.string()
-                val parser = sigaaSerializer.loginParse(res)
-                status = when(parser){
-                    "Continuar" -> {
-                        redirectMenu(cookie)
-                    }
-                    "Menu Principal" -> {
-                        redirectMenu(cookie)
-                    }
-                    "Usuário e/ou senha inválidos" -> {
-                        "Usuário ou senha inválidos"
-                    }
-                    else -> {
-                        parser
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    val parser = sigaaSerializer.loginParse(res)
+                    status = when(parser){
+                        "Continuar" -> {
+                            redirectMenu(cookie)
+                        }
+                        "Menu Principal" -> {
+                            redirectMenu(cookie)
+                        }
+                        "Usuário e/ou senha inválidos" -> {
+                            "Usuário ou senha inválidos"
+                        }
+                        else -> {
+                            parser
+                        }
                     }
                 }
+                else{
+                    status = "Erro de conexão"
+                }
             }
-            else{
-                status = "Erro de conexão"
+            catch(e: NoConnectivityException){
+                status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
             }
+            catch (e: SocketTimeoutException) {
+                println("catch expirou")
+                status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            return@withContext status
         }
-        return status
     }
     private suspend fun redirectMenu(cookie: String): String{
-        var status = "Tempo de conexão expirou"
+
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/paginaInicial.do")
             .header("Cookie", "JSESSIONID=$cookie")
             .build()
-        withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO){
+            var status = ""
             val response = httpClient
                 .addInterceptor(connectivityInterceptor)
                 .build()
@@ -130,6 +170,7 @@ class SigaaApi(
                 val res = response.body?.string()
                 if(res!!.contains("Menu Principal")){
                     val res = getClasses(cookie)
+
                     status = if(res != "Success"){
                         "Tempo de conexão expirou"
                     } else{
@@ -137,22 +178,25 @@ class SigaaApi(
                     }
                 }
             }
+            else{
+                status = "Tempo de conexão expirou"
+            }
+            return@withContext status
         }
-        return status
     }
     private suspend fun getClasses(cookie: String): String{
-        var status = ""
-        withContext(Dispatchers.IO){
-            val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
-                .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/pag-inaInicial.do")
-                .build()
+        val request = Request.Builder()
+            .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
+            .header("Cookie", "JSESSIONID=$cookie")
+            .header("Referer", "https://si3.ufc.br/sigaa/pag-inaInicial.do")
+            .build()
+        return withContext(Dispatchers.IO){
             val response = httpClient
                 .addInterceptor(connectivityInterceptor)
                 .build()
                 .newCall(request)
                 .execute()
+            var status = ""
             if(response.isSuccessful){
                 val res = response.body?.string()
                 val pair = sigaaSerializer.parseClasses(res)
@@ -169,21 +213,26 @@ class SigaaApi(
                     student.profilePic = pairStudent.profilePic
                     studentDatabase.studentDao().upsertStudent(student)
                 }
-                var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
-                viewStateId = viewStateId[1].split("\" ")
+                saveViewState(res)
                 status = "Success"
             }
             else{
-                status = "Tempo de conexão expirou"
+                val error = response.body?.string()
+                println(error)
+                status = when {
+                    error!!.contains("Usuário Não Autorizado") -> "Acesso negado. Tente efetuar login novamente"
+                    error.contains("O sistema comportou-se de forma inesperada") -> "Erro ao carregar disciplinas. Tente efetuar login novamente"
+                    else -> "Tempo de conexão expirou"
+                }
             }
+            return@withContext status
         }
-        return status
     }
 
     suspend fun getPreviousClasses(cookie: String): Pair<String, MutableList<StudentClass>>{
-        var status = ""
-        var listClasses = mutableListOf<StudentClass>()
-        withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO){
+            var status = ""
+            var listClasses = mutableListOf<StudentClass>()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/portais/discente/turmas.jsf")
                 .header("Cookie", "JSESSIONID=$cookie")
@@ -202,8 +251,8 @@ class SigaaApi(
             else{
                 status = "Tempo de conexão expirou"
             }
+            return@withContext Pair(status, listClasses)
         }
-        return Pair(status, listClasses)
     }
 
     suspend fun getClass(viewStateId: String, idTurma: String, id: Int, cookie: String){
@@ -212,7 +261,7 @@ class SigaaApi(
                 .add("idTurma", idTurma)
                 .add("form_acessarTurmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id")
                 .add("form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id")
-                .add("javax.faces.ViewState", viewStateId)
+                .add("javax.faces.ViewState", getViewStateAsync().valueState)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf#")
@@ -228,10 +277,6 @@ class SigaaApi(
                 .execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                //println(res)
-                var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
-                viewStateId = viewStateId[1].split("\" ")
-                //getGrades(viewStateId[0], cookie)
             }
         }
     }
@@ -270,8 +315,9 @@ class SigaaApi(
         return Pair(status, list)
     }
 
-    private suspend fun getGrades(viewStateId: String, cookie: String){
+    suspend fun getGrades(viewStateId: String, cookie: String){
         withContext(Dispatchers.IO){
+            var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
                 .add("formMenu:j_id_jsp_1287906063_20", "formMenu:j_id_jsp_1287906063_20")
@@ -285,6 +331,17 @@ class SigaaApi(
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
                 .post(formBody)
                 .build()
+            try {
+
+            }
+            catch(e: NoConnectivityException){
+                status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
             val response = httpClient
                 .addInterceptor(connectivityInterceptor)
                 .build()

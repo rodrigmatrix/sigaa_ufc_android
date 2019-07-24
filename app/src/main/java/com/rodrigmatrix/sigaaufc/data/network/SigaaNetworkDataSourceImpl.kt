@@ -15,18 +15,7 @@ class SigaaNetworkDataSourceImpl(
         login: String,
         password: String
     ): String {
-        var res: String
-        try {
-            res = sigaaApi.login(cookie, login, password)
-        }
-        catch (e: NoConnectivityException){
-            res = "Sem conexão com a internet"
-            Log.e("Connectivity", "No internet Connection.", e)
-        }
-        catch (e: SocketTimeoutException) {
-            res = "Tempo de conexão expirou"
-        }
-        return res
+        return sigaaApi.login(cookie, login, password)
     }
 
     override suspend fun getCookie(): Boolean {
@@ -35,5 +24,9 @@ class SigaaNetworkDataSourceImpl(
 
     override suspend fun fetchRu(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>> {
         return sigaaApi.getRU(numeroCartao, matricula)
+    }
+
+    override suspend fun fetchGrades(viewStateId: String, cookie: String): String {
+        return sigaaApi.getGrades(viewStateId, cookie).toString()
     }
 }

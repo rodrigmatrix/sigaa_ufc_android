@@ -30,9 +30,5 @@ interface SigaaRepository {
         numeroCartao: String,
         matricula: String): String
 
-    suspend fun saveCurrentClasses(currentClasses: StudentClass)
-
-    suspend fun savePreviousClasses(currentClasses: StudentClass)
-
     suspend fun getCurrentClasses(): MutableList<StudentClass>
 }

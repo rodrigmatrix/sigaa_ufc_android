@@ -29,7 +29,7 @@ interface StudentDao {
     fun getViewStateAsync(): JavaxFaces
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upserViewState(viewState: JavaxFaces)
+    fun upsertViewState(viewState: JavaxFaces)
 
     @Query("DELETE FROM view_faces")
     fun deleteViewState()

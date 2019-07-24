@@ -88,17 +88,6 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.fetchRu(numeroCartao, matricula)
     }
 
-    override suspend fun saveCurrentClasses(currentClasses: StudentClass) {
-        withContext(Dispatchers.IO){
-            studentDao.deleteClasses()
-            studentDao.insertClass(currentClasses)
-        }
-    }
-
-    override suspend fun savePreviousClasses(currentClasses: StudentClass) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override suspend fun getCurrentClasses(): MutableList<StudentClass> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getClasses()

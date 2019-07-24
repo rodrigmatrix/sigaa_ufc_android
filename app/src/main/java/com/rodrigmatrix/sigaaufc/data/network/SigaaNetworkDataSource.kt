@@ -15,5 +15,7 @@ interface SigaaNetworkDataSource {
 
     suspend fun getCookie(): Boolean
 
+    suspend fun fetchGrades(viewStateId: String, cookie: String): String
+
     suspend fun fetchRu(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>>
 }
