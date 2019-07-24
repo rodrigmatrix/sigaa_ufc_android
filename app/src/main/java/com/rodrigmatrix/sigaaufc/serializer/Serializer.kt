@@ -25,6 +25,7 @@ class Serializer {
         val turmaId = mutableListOf<String>()
         val names = mutableListOf<String>()
         val periodsList = mutableListOf<String>()
+        val locationsList = mutableListOf<String>()
         val student = Student("", "", "",
             "", "", "", false, "", "")
         Jsoup.parse(response).run {
@@ -33,12 +34,12 @@ class Serializer {
                     turmaId.add(name.attr("value"))
                 }
             }
-            var elements = getElementsByClass("descricao")
-            var periods = getElementsByClass("info")
+            val elements = getElementsByClass("descricao")
+            val periods = getElementsByClass("info")
 
 
             elements.forEach {
-                var el = it.select("a[id]")
+                val el = it.select("a[id]")
                 el.forEach { name ->
                     names.add(name.text())
                 }
@@ -48,10 +49,14 @@ class Serializer {
                 if(count % 2 == 0){
                     periodsList.add(period.text())
                 }
+                else{
+                    locationsList.add(period.text())
+                }
                 count++
             }
             var id = 1
             for(it in turmaId){
+                val pairDates = parseDates(periodsList[id - 1])
                 classes.add(
                     StudentClass(
                         turmaId[id - 1],
@@ -60,7 +65,9 @@ class Serializer {
                         "",
                         "",
                         names[id - 1],
-                        periodsList[id - 1],
+                        locationsList[id - 1],
+                        pairDates.second,
+                        pairDates.first,
                         0,
                         0
                     )
@@ -83,12 +90,18 @@ class Serializer {
         }
     }
 
+    private fun parseDates(text: String): Pair<String, String>{
+        val days = text.split(" (")[0]
+        val period = text.split(" (")[1].removeSuffix(")")
+        return Pair(days, period)
+    }
+
 
 
     fun parsePreviousClasses(response: String?): MutableList<StudentClass>{
-        var classes = mutableListOf<StudentClass>()
-        var classItem =
-            StudentClass("", 0, true, "", "", "", "", 0, 0)
+        val classes = mutableListOf<StudentClass>()
+        val classItem =
+            StudentClass("", 0, true, "", "", "", "", "", "", 0, 0)
         var index = 0
         var count = 1
         Jsoup.parse(response).run {
@@ -117,7 +130,7 @@ class Serializer {
                                 classes.add(
                                     StudentClass(
                                         idTurma, classes.size + 1, true, classItem.credits,
-                                        classItem.code, classItem.name, classItem.days, 0, 0
+                                        classItem.code, classItem.name, classItem.days, "", "", 0, 0
                                     )
                                 )
                                 count = 0

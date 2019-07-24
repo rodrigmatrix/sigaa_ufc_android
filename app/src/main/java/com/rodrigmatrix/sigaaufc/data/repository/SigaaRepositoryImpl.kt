@@ -99,18 +99,11 @@ class SigaaRepositoryImpl(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun saveStudentData(
-        profilePic: String,
-        course: String,
-        matricula: String,
-        name: String) {
-        withContext(Dispatchers.IO){
-            val student = getStudentAsync()
-            student.course = course
-            student.matricula = matricula
-            student.name = name
-            student.profilePic = profilePic
-            studentDao.upsertStudent(student)
+    override suspend fun getCurrentClasses(): MutableList<StudentClass> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getClasses()
         }
     }
+
+
 }

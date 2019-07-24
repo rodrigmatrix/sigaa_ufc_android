@@ -41,6 +41,8 @@ data class StudentClass(
     var credits: String,
     var code: String,
     var name: String,
+    var location: String,
+    var period: String,
     var days: String,
     var attendance: Int,
     var missed: Int

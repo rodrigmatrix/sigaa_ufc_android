@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
-import kotlinx.android.synthetic.main.class_row.view.*
+import kotlinx.android.synthetic.main.current_class_row.view.*
 
-class ClassesAdapter(private val classesList: MutableList<StudentClass>): RecyclerView.Adapter<ClassesViewHolder>() {
+class CurrentClassesAdapter(private val classesList: MutableList<StudentClass>): RecyclerView.Adapter<ClassesViewHolder>() {
 
     override fun getItemCount(): Int {
         return classesList.size
@@ -19,7 +19,7 @@ class ClassesAdapter(private val classesList: MutableList<StudentClass>): Recycl
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassesViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val ruRow = layoutInflater.inflate(R.layout.class_row, parent, false)
+        val ruRow = layoutInflater.inflate(R.layout.current_class_row, parent, false)
         return ClassesViewHolder(ruRow)
     }
 
@@ -27,18 +27,11 @@ class ClassesAdapter(private val classesList: MutableList<StudentClass>): Recycl
     override fun onBindViewHolder(holder: ClassesViewHolder, position: Int) {
         val classElement = classesList[position]
         holder.view.name_text.text = classElement.name
-        holder.view.code_text.text = "Código: ${classElement.code}"
         holder.view.idTurma_text.text = classElement.turmaId
         holder.view.id_text.text = classElement.id.toString()
-        when {
-            classElement.credits == "" -> {
-                holder.view.credits_text.visibility = View.GONE
-            }
-            else -> {
-                holder.view.credits_text.text = "Créditos: ${classElement.credits}"
-            }
-        }
-        holder.view.period_text.text = classElement.days
+        holder.view.location_text.text = "Local: ${classElement.location}"
+        holder.view.period_text.text = classElement.period
+        holder.view.days_text.text = classElement.days
     }
 }
 

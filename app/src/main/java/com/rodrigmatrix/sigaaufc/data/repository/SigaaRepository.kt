@@ -34,10 +34,5 @@ interface SigaaRepository {
 
     suspend fun savePreviousClasses(currentClasses: StudentClass)
 
-    suspend fun saveStudentData(
-        profilePic: String,
-        course: String,
-        matricula: String,
-        name: String
-    )
+    suspend fun getCurrentClasses(): MutableList<StudentClass>
 }

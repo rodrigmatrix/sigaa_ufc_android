@@ -24,7 +24,7 @@
 
     <fragment
             android:id="@+id/nav_classes"
-            android:name="com.rodrigmatrix.sigaaufc.ui.fragments.ClassesFragment"
+            android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.ClassesFragment"
             android:label="@string/title_activity_class"
             tools:layout="@layout/fragment_classes"/>
 

@@ -17,6 +17,7 @@ import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.main.SigaaActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -136,7 +137,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     private fun openSigaa(){
         runOnUiThread {
             login_btn.isEnabled = true
-            val intent = Intent(fragment_login.context, ClassActivity::class.java)
+            val intent = Intent(fragment_login.context, SigaaActivity::class.java)
             this.startActivity(intent)
         }
     }

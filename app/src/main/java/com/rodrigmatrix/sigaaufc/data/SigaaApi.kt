@@ -231,7 +231,7 @@ class SigaaApi(
                 //println(res)
                 var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 viewStateId = viewStateId[1].split("\" ")
-                getGrades(viewStateId[0], cookie)
+                //getGrades(viewStateId[0], cookie)
             }
         }
     }

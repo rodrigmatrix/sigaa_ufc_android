@@ -1,13 +1,12 @@
-package com.rodrigmatrix.sigaaufc.ui.main
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.main
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.rodrigmatrix.sigaaufc.R
 
 private var fragmentList = arrayListOf<Fragment>()
-private val titleList = listOf( "Avisos", "Notas", "Presença")
+private val titleList = listOf( "Disciplinas", "IRA", "Matrícula")
 
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
