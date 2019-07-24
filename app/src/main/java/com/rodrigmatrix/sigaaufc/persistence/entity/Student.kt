@@ -32,6 +32,15 @@ data class RuCard(
     var id: Int = STUDENT_ID
 }
 
+@Entity(tableName = "view_faces")
+data class JavaxFaces(
+    var ongoing: Boolean,
+    var valueState: String
+){
+    @PrimaryKey(autoGenerate = false)
+    var id: Int = STUDENT_ID
+}
+
 @Entity(tableName = "classes")
 data class StudentClass(
     @PrimaryKey

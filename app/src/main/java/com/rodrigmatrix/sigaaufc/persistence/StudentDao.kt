@@ -22,6 +22,18 @@ interface StudentDao {
     @Query("DELETE FROM students")
     fun deleteStudent()
 
+    @Query("SELECT * FROM view_faces where id = 0")
+    fun getViewState(): LiveData<JavaxFaces>
+
+    @Query("SELECT * FROM view_faces where id = 0")
+    fun getViewStateAsync(): JavaxFaces
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upserViewState(viewState: JavaxFaces)
+
+    @Query("DELETE FROM view_faces")
+    fun deleteViewState()
+
     @Query("SELECT * FROM ru_card where id = 0")
     fun getRuCard(): LiveData<RuCard>
 

@@ -3,12 +3,16 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.main
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.MatriculaFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
+import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.launch
+import org.jetbrains.anko.support.v4.runOnUiThread
 
 class SigaaActivity : AppCompatActivity() {
 
@@ -29,18 +33,33 @@ class SigaaActivity : AppCompatActivity() {
         viewPager.offscreenPageLimit = 3
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
+        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_classes)
+        tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
+        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_assignment)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
-            sectionsPagerAdapter.removeFragments()
-            this.finish()
+            confirmClose()
+        }
+    }
+
+    private fun confirmClose(){
+        runOnUiThread {
+            MaterialAlertDialogBuilder(activity_sigaa.context)
+                .setTitle("Encerrar Sessão")
+                .setMessage("Deseja fechar o Sigaa e encerrar sua sessão? Será necessário efetuar login novamente")
+                .setPositiveButton("Sim"){ _, _ ->
+                    sectionsPagerAdapter.removeFragments()
+                    this.finish()
+                }
+                .setNegativeButton("Não"){_, _ ->
+                }
+                .show()
         }
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
-        sectionsPagerAdapter.removeFragments()
-        this.finish()
+        confirmClose()
     }
 }
