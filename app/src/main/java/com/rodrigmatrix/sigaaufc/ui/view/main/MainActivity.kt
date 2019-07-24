@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.activities
+package com.rodrigmatrix.sigaaufc.ui.view.main
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
@@ -9,15 +9,27 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.preference.PreferenceManager
 import com.rodrigmatrix.sigaaufc.R
-import java.util.*
+import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ScopedActivity(), KodeinAware {
+
+    override val kodein by closestKodein()
+    private val viewModelFactory: MainActivityViewModelFactory by instance()
+
+    private lateinit var viewModel: MainActivityViewModel
 
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -46,6 +58,29 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(MainActivityViewModel::class.java)
+        launch {
+            viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
+                if(student == null) return@Observer
+                if(student.profilePic != ""){
+                    bindUi(student.profilePic, student.name, student.matricula)
+                }
+            })
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun bindUi(profilePic: String, name: String, matricula: String){
+        if(profilePic != "/sigaa/img/no_picture.png"){
+            GlideApp.with(this@MainActivity)
+                .load("https://si3.ufc.br/$profilePic")
+                .into(nav_view.getHeaderView(0).profile_pic_image)
+        }
+        if(name != ""){
+            nav_view.getHeaderView(0).student_name_menu_text.text = "Olá ${name.split(" ")[0]}"
+            nav_view.getHeaderView(0).matricula_menu_text.text = "Matrícula: $matricula"
+        }
     }
 
     private fun setTheme(theme: String?){

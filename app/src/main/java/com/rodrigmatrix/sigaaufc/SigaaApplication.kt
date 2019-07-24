@@ -8,6 +8,8 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
+import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity
+import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginViewModelFactory
@@ -35,12 +37,6 @@ class SigaaApplication: Application(), KodeinAware {
                 .readTimeout(25, TimeUnit.SECONDS)
                 .connectTimeout(25, TimeUnit.SECONDS)
         }
-        bind<SigaaRepository>() with singleton {
-            SigaaRepositoryImpl(sigaaNetworkDataSource = instance(), studentDao = instance())
-        }
-        bind() from singleton {
-            Serializer()
-        }
         bind() from singleton {
             SigaaApi(httpClient = instance(),
                 sigaaSerializer = instance(),
@@ -50,6 +46,12 @@ class SigaaApplication: Application(), KodeinAware {
         bind<SigaaNetworkDataSource>() with singleton {
             SigaaNetworkDataSourceImpl(sigaaApi = instance())
         }
+        bind<SigaaRepository>() with singleton {
+            SigaaRepositoryImpl(sigaaNetworkDataSource = instance(), studentDao = instance())
+        }
+        bind() from singleton {
+            Serializer()
+        }
         bind() from provider {
             LoginViewModelFactory(sigaaRepository = instance())
         }
@@ -58,6 +60,9 @@ class SigaaApplication: Application(), KodeinAware {
         }
         bind() from provider {
             AddCardViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            MainActivityViewModelFactory(sigaaRepository = instance())
         }
     }
 

@@ -14,10 +14,12 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.KodeinAware
@@ -54,6 +56,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     loadCookie()
                     return@Observer
                 }
+                println(student)
                 runOnUiThread {
                     login_input.setText(student.login)
                     password_input.setText(student.password)

@@ -8,6 +8,7 @@ import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -85,5 +86,31 @@ class SigaaRepositoryImpl(
 
     private suspend fun fetchRuCard(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>>{
         return sigaaNetworkDataSource.fetchRu(numeroCartao, matricula)
+    }
+
+    override suspend fun saveCurrentClasses(currentClasses: StudentClass) {
+        withContext(Dispatchers.IO){
+            studentDao.deleteClasses()
+            studentDao.insertClass(currentClasses)
+        }
+    }
+
+    override suspend fun savePreviousClasses(currentClasses: StudentClass) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun saveStudentData(
+        profilePic: String,
+        course: String,
+        matricula: String,
+        name: String) {
+        withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            student.course = course
+            student.matricula = matricula
+            student.name = name
+            student.profilePic = profilePic
+            studentDao.upsertStudent(student)
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import java.net.SocketTimeoutException
 
 class SigaaNetworkDataSourceImpl(
     private val sigaaApi: SigaaApi
@@ -21,6 +22,9 @@ class SigaaNetworkDataSourceImpl(
         catch (e: NoConnectivityException){
             res = "Sem conexão com a internet"
             Log.e("Connectivity", "No internet Connection.", e)
+        }
+        catch (e: SocketTimeoutException) {
+            res = "Tempo de conexão expirou"
         }
         return res
     }

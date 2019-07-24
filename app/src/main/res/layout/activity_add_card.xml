@@ -46,7 +46,7 @@
                     app:cardCornerRadius="10dp"
                     android:layout_marginBottom="10dp">
                 <ImageView
-                        android:layout_width="230dp"
+                        android:layout_width="227dp"
                         android:layout_height="143dp"
                         android:src="@drawable/cartao_ru"
                         android:scaleType="centerCrop"/>

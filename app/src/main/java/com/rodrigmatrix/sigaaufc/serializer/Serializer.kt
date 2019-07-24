@@ -1,10 +1,8 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
-import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.News
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import org.jsoup.Jsoup
 import java.text.Normalizer
 
@@ -21,16 +19,18 @@ class Serializer {
         }
     }
 
-    fun parseClasses(response: String?): MutableList<StudentClass>{
-        var classes = mutableListOf<StudentClass>()
-        var turmaId = mutableListOf<String>()
-        var names = mutableListOf<String>()
-        var periodsList = mutableListOf<String>()
+    @SuppressLint("DefaultLocale")
+    fun parseClasses(response: String?): Pair<Student, MutableList<StudentClass>>{
+        val classes = mutableListOf<StudentClass>()
+        val turmaId = mutableListOf<String>()
+        val names = mutableListOf<String>()
+        val periodsList = mutableListOf<String>()
+        val student = Student("", "", "",
+            "", "", "", false, "", "")
         Jsoup.parse(response).run {
             select("input[value]").forEach {name ->
                 if(name.attr("name").contains("idTurma")){
                     turmaId.add(name.attr("value"))
-                    //println(name.attr("value"))
                 }
             }
             var elements = getElementsByClass("descricao")
@@ -40,7 +40,6 @@ class Serializer {
             elements.forEach {
                 var el = it.select("a[id]")
                 el.forEach { name ->
-                    //println(name.text())
                     names.add(name.text())
                 }
             }
@@ -69,17 +68,22 @@ class Serializer {
                 println(classes[id-1])
                 id++
             }
-            var studentName = select("div[class=nome_usuario]")
-            println(studentName.text())
+
+            val studentName = select("div[class=nome_usuario]")
+            student.name = studentName.text().toLowerCase().capitalizeWords()
             var matricula = response?.split("<td> Matr&#237;cula: </td>\n" + "\t\t\t\t\t\t<td> ")
             matricula = matricula!![1].split(" </td>")
-            println(matricula[0])
-            var curso = response?.split("<td> Curso: </td>\n" + "\t\t\t\t\t\t<td> ")
-            var c = Normalizer.normalize(curso?.get(1)!!.split(" </td>")[0], Normalizer.Form.NFD)
-            println(c)
-            return classes
+            student.matricula = matricula[0]
+            val curso = response?.split("<td> Curso: </td>\n" + "\t\t\t\t\t\t<td> ")
+            val c = curso?.get(1)!!.split(" </td>")[0]
+            student.course = c.toLowerCase().capitalizeWords()
+            val linkProfilePic = select("img[src]")[0].attr("src")
+            student.profilePic = linkProfilePic
+            return Pair(student, classes)
         }
     }
+
+
 
     fun parsePreviousClasses(response: String?): MutableList<StudentClass>{
         var classes = mutableListOf<StudentClass>()
@@ -184,16 +188,16 @@ class Serializer {
             response!!.contains("O campo 'Matrícula atrelada ao cartão' é de preenchimento obrigatório.") -> {
                 return Triple("Matrícula não encontrada", Pair("", 0), mutableListOf())
             }
-            response?.contains("Não existem dados a serem exibidos") -> {
+            response.contains("Não existem dados a serem exibidos") -> {
                 return Triple("Matrícula ou cartão não encontrados", Pair("", 0), mutableListOf())
             }
-            response?.contains("Refeições disponíveis") -> {
-                var history = mutableListOf<HistoryRU>()
-                var elem = HistoryRU(1, "", "", "", "")
+            response.contains("Refeições disponíveis") -> {
+                val history = mutableListOf<HistoryRU>()
+                val elem = HistoryRU(1, "", "", "", "")
                 Jsoup.parse(response).run {
-                    var operations = select("td[nowrap=nowrap]")
-                    var name = operations[1].text().toLowerCase().capitalizeWords()
-                    var credits = operations[3].text().toInt()
+                    val operations = select("td[nowrap=nowrap]")
+                    val name = operations[1].text().toLowerCase().capitalizeWords()
+                    val credits = operations[3].text().toInt()
                     var count = 1
                     for((index, it) in operations.withIndex()){
                         if(index >= 4){

@@ -67,8 +67,6 @@
                     android:text="Ver Mais"
                     android:textColorLink="@color/colorPrimary" />
 
-
-
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

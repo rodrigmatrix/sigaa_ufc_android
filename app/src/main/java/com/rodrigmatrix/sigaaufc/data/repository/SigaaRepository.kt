@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 
 
 interface SigaaRepository {
@@ -25,5 +26,18 @@ interface SigaaRepository {
 
     suspend fun getRuCard(): LiveData<out RuCard>
 
-    suspend fun saveRuData(numeroCartao: String, matricula: String): String
+    suspend fun saveRuData(
+        numeroCartao: String,
+        matricula: String): String
+
+    suspend fun saveCurrentClasses(currentClasses: StudentClass)
+
+    suspend fun savePreviousClasses(currentClasses: StudentClass)
+
+    suspend fun saveStudentData(
+        profilePic: String,
+        course: String,
+        matricula: String,
+        name: String
+    )
 }

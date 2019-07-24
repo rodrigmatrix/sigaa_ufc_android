@@ -12,11 +12,10 @@ data class Student(
     var password: String,
     var name: String,
     var course: String,
-    var degree: String,
-    var entrance: String,
     var matricula: String,
     var hasSavedData: Boolean,
-    var lastUpdate: String
+    var lastUpdate: String,
+    var profilePic: String
 ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = STUDENT_ID

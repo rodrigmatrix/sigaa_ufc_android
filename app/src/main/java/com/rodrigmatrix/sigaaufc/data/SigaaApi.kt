@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.net.SocketTimeoutException
 
 
 class SigaaApi(
@@ -44,8 +45,7 @@ class SigaaApi(
                     val student = studentDatabase.studentDao().getStudentAsync()
                     if(student == null){
                         studentDatabase.studentDao().upsertStudent(Student(
-                            arr[1], "", "", "", "", "", "", "", false,
-                            ""))
+                            arr[1], "", "", "", "", "", false, "", ""))
                     }
                     else{
                         if(student.jsession == ""){
@@ -61,8 +61,9 @@ class SigaaApi(
                     status = false
                 }
             }
-            catch(e: TimeoutException){
-                Log.d("Timeout Exception ",e.toString())
+            catch (e: SocketTimeoutException) {
+                status = false
+                Log.e("Connectivity", "No internet Connection.", e)
             }
         }
         return status
@@ -154,10 +155,19 @@ class SigaaApi(
                 .execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                val listClasses = sigaaSerializer.parseClasses(res)
+                val pair = sigaaSerializer.parseClasses(res)
                 studentDatabase.studentDao().deleteClasses()
-                listClasses.forEach {
+                pair.second.forEach {
                     studentDatabase.studentDao().insertClass(it)
+                }
+                val student = studentDatabase.studentDao().getStudentAsync()
+                if(student != null){
+                    val pairStudent = pair.first
+                    student.course = pairStudent.course
+                    student.matricula = pairStudent.matricula
+                    student.name = pairStudent.name
+                    student.profilePic = pairStudent.profilePic
+                    studentDatabase.studentDao().upsertStudent(student)
                 }
                 var viewStateId = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 viewStateId = viewStateId[1].split("\" ")
@@ -328,6 +338,10 @@ class SigaaApi(
             }
             catch(e: NoConnectivityException){
                 status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
 
