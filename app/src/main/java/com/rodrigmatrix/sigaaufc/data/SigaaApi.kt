@@ -360,10 +360,10 @@ class SigaaApi(
             .add("matriculaAtreladaCartao", matricula)
             .build()
         val history = mutableListOf<HistoryRU>()
-        var status = "Tempo de conexão expirou"
+        var status = ""
         var name = ""
         var credits = 0
-        withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
             val request = Request.Builder()
                 .url("https://si3.ufc.br/public/restauranteConsultarSaldo.do")
                 .post(formBody)
@@ -401,8 +401,7 @@ class SigaaApi(
                 status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
-
+            return@withContext Triple(status, history, Pair(name, credits))
         }
-        return Triple(status, history, Pair(name, credits))
     }
 }

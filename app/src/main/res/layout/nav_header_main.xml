@@ -15,7 +15,7 @@
     <com.google.android.material.card.MaterialCardView
             android:layout_width="86dp"
             android:layout_height="86dp"
-            app:cardCornerRadius="50dp">
+            app:cardCornerRadius="45dp">
         <ImageView
                 android:id="@+id/profile_pic_image"
                 android:layout_width="match_parent"
