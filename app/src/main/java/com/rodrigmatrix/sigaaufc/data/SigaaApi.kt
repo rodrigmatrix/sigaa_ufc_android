@@ -110,7 +110,7 @@ class SigaaApi(
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/logar.do?dispatch=logOn")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do")
+                .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do%3bjsessionid=$cookie")
                 .post(formBody)
                 .build()
             try {
@@ -154,10 +154,10 @@ class SigaaApi(
         }
     }
     private suspend fun redirectMenu(cookie: String): String{
-
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/paginaInicial.do")
             .header("Cookie", "JSESSIONID=$cookie")
+            .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do%3bjsessionid=$cookie")
             .build()
         return withContext(Dispatchers.IO){
             var status = ""
@@ -189,6 +189,7 @@ class SigaaApi(
             .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
             .header("Cookie", "JSESSIONID=$cookie")
             .header("Referer", "https://si3.ufc.br/sigaa/pag-inaInicial.do")
+            .header("Host", "si3.ufc.br")
             .build()
         return withContext(Dispatchers.IO){
             val response = httpClient

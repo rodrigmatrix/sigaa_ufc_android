@@ -1,10 +1,7 @@
 package com.rodrigmatrix.sigaaufc.data.network
 
-import android.util.Log
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
-import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import java.net.SocketTimeoutException
 
 class SigaaNetworkDataSourceImpl(
     private val sigaaApi: SigaaApi

@@ -50,11 +50,10 @@ class LoginFragment : ScopedFragment(), KodeinAware {
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        progress_login.isVisible = false
+        loadCookie()
         launch {
             viewModel.getStudent().observe(this@LoginFragment, Observer {student ->
                 if(student == null){
-                    loadCookie()
                     return@Observer
                 }
                 println(student)
@@ -101,6 +100,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         launch {
             runOnUiThread {
                 progress_login.isVisible = true
+                login_btn.isEnabled = false
             }
             if(!viewModel.getCookie()){
                 runOnUiThread {
@@ -114,8 +114,14 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             }
             runOnUiThread {
                 progress_login.isVisible = false
+                login_btn.isEnabled = true
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadCookie()
     }
 
     private fun saveCredentials(login: String, password: String){
