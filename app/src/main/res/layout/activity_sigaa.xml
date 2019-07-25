@@ -5,7 +5,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/activity_sigaa"
-        tools:context=".ui.activities.ClassActivity">
+        tools:context=".ui.view.sigaa.classes.selected.ClassActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout

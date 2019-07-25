@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.activities
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected
 
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
@@ -6,7 +6,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.adapters.ClassPagerAdapter
-import com.rodrigmatrix.sigaaufc.ui.fragments.GradesFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.InfoFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.MatriculaFragment
@@ -15,6 +15,8 @@ import kotlinx.android.synthetic.main.activity_sigaa.*
 class ClassActivity : AppCompatActivity() {
 
     private lateinit var sectionsPagerAdapter: ClassPagerAdapter
+    lateinit var idTurma: String
+    lateinit var id: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +26,9 @@ class ClassActivity : AppCompatActivity() {
                 this,
                 supportFragmentManager
             )
-        sectionsPagerAdapter.addFragment(GradesFragment())
+        idTurma = intent.getStringExtra("idTurma")!!
+        id = intent.getStringExtra("id")!!
+        sectionsPagerAdapter.addFragment(GradesFragment.newInstance(idTurma, id))
         sectionsPagerAdapter.addFragment(IraFragment())
         sectionsPagerAdapter.addFragment(MatriculaFragment())
         sectionsPagerAdapter.addFragment(InfoFragment())

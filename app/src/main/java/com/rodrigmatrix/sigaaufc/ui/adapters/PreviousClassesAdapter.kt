@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
-import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassActivity
 import kotlinx.android.synthetic.main.class_previous_row.view.*
 
 class PreviousClassesAdapter(private val classesList: MutableList<StudentClass>): RecyclerView.Adapter<PreviousClassesViewHolder>() {

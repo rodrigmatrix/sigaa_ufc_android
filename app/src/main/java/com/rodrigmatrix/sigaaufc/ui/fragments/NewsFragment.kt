@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 
 class NewsFragment : Fragment() {
     lateinit var idTurma: String

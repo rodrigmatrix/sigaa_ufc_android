@@ -256,16 +256,19 @@ class SigaaApi(
         }
     }
 
-    suspend fun getClass(viewStateId: String, idTurma: String, id: Int, cookie: String){
+    suspend fun getClass(id: String, idTurma: String, cookie: String){
+        val viewState = getViewStateAsync().valueState
+        println(viewState)
+        println("id $id")
         withContext(Dispatchers.IO){
             val formBody = FormBody.Builder()
                 .add("idTurma", idTurma)
-                .add("form_acessarTurmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id")
-                .add("form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id", "form_acessarTurmaVirtualj_id_$id:turmaVirtualj_id_$id")
-                .add("javax.faces.ViewState", getViewStateAsync().valueState)
+                .add("form_acessarTurmaVirtual$id", "form_acessarTurmaVirtual$id")
+                .add("form_acessarTurmaVirtual$id:turmaVirtual$id", "form_acessarTurmaVirtual$id:turmaVirtual$id")
+                .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf#")
+                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
@@ -278,6 +281,11 @@ class SigaaApi(
                 .execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
+                println(res)
+            }
+            else{
+                val res = response.body?.string()
+                println(res)
             }
         }
     }

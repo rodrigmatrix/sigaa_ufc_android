@@ -6,13 +6,10 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.ClassesFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.MatriculaFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
-import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.coroutines.launch
-import org.jetbrains.anko.support.v4.runOnUiThread
 
 class SigaaActivity : AppCompatActivity() {
 

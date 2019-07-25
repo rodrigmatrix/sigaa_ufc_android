@@ -31,4 +31,6 @@ interface SigaaRepository {
         matricula: String): String
 
     suspend fun getCurrentClasses(): MutableList<StudentClass>
+
+    suspend fun setClass(id: String, idTurma: String)
 }

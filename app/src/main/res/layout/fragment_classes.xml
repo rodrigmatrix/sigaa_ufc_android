@@ -5,7 +5,7 @@
         android:layout_height="match_parent"
         android:id="@+id/classes_fragment"
         android:orientation="vertical"
-        tools:context=".ui.view.sigaa.classes.ClassesFragment">
+        tools:context=".ui.view.sigaa.classes.view.ClassesFragment">
     <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_classes"
             android:layout_width="match_parent"

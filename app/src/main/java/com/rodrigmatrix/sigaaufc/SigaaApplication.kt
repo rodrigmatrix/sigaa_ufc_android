@@ -8,11 +8,11 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
-import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity
 import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.ClassesViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginViewModelFactory
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
@@ -68,6 +68,10 @@ class SigaaApplication: Application(), KodeinAware {
         bind() from provider {
             ClassesViewModelFactory(sigaaRepository = instance())
         }
+        bind() from provider {
+            GradesViewModelFactory(sigaaRepository = instance())
+        }
+
     }
 
     override fun onCreate() {

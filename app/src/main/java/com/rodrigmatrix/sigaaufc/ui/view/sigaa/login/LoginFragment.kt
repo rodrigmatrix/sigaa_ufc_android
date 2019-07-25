@@ -14,13 +14,9 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
-import com.rodrigmatrix.sigaaufc.ui.activities.ClassActivity
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.main.SigaaActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.KodeinAware

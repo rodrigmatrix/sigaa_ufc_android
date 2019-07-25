@@ -21,7 +21,7 @@
             android:windowSoftInputMode="adjustPan"
             tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
         <activity
-                android:name=".ui.activities.ClassActivity"
+                android:name=".ui.view.sigaa.classes.selected.ClassActivity"
                 android:label="@string/title_activity_class"
                 android:theme="@style/AppTheme.NoActionBar"/>
         <activity

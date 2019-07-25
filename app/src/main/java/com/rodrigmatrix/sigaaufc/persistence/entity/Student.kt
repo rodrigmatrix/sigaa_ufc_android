@@ -45,7 +45,7 @@ data class JavaxFaces(
 data class StudentClass(
     @PrimaryKey
     var turmaId: String,
-    var id: Int,
+    var id: String,
     var isPrevious: Boolean,
     var credits: String,
     var code: String,

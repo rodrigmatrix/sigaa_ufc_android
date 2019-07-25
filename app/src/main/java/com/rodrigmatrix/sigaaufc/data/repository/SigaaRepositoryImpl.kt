@@ -94,5 +94,10 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun setClass(id: String, idTurma: String) {
+        val cookie = studentDao.getStudentAsync().jsession
+        return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie)
+    }
+
 
 }

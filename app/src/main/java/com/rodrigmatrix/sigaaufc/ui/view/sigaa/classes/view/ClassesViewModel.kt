@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
