@@ -24,7 +24,7 @@ class SigaaNetworkDataSourceImpl(
     }
 
     override suspend fun fetchGrades(viewStateId: String, cookie: String): String {
-        return sigaaApi.getGrades(viewStateId, cookie).toString()
+        return sigaaApi.getGrades(cookie).toString()
     }
 
     override suspend fun fetchClass(id: String, idTurma: String, cookie: String) {

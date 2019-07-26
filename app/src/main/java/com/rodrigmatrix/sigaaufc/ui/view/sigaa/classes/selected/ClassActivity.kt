@@ -3,16 +3,25 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.adapters.ClassPagerAdapter
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.InfoFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.MatriculaFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
+import kotlinx.coroutines.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
-class ClassActivity : AppCompatActivity() {
+class ClassActivity : ScopedActivity(), KodeinAware {
+
+    override val kodein by closestKodein()
+    private lateinit var viewModel: ClassViewModel
+    private val viewModelFactory: ClassViewModelFactory by instance()
 
     private lateinit var sectionsPagerAdapter: ClassPagerAdapter
     lateinit var idTurma: String
@@ -21,11 +30,8 @@ class ClassActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sigaa)
-        sectionsPagerAdapter =
-            ClassPagerAdapter(
-                this,
-                supportFragmentManager
-            )
+        sectionsPagerAdapter = ClassPagerAdapter(this, supportFragmentManager)
+        viewModelFactory
         idTurma = intent.getStringExtra("idTurma")!!
         id = intent.getStringExtra("id")!!
         sectionsPagerAdapter.addFragment(GradesFragment.newInstance(idTurma, id))
@@ -38,6 +44,13 @@ class ClassActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         title = "Disciplina"
         tabs.setupWithViewPager(viewPager)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(ClassViewModel::class.java)
+        setTabs()
+        setClass()
+    }
+
+    private fun setTabs(){
         tabs.getTabAt(0)!!.setIcon(R.drawable.ic_download)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
         tabs.getTabAt(2)!!.setIcon(R.drawable.ic_news)
@@ -48,6 +61,12 @@ class ClassActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             sectionsPagerAdapter.removeFragments()
             this.finish()
+        }
+    }
+
+    private fun setClass(){
+        launch {
+            viewModel.setClass(id, idTurma)
         }
     }
 

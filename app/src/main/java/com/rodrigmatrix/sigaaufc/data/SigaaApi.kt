@@ -268,7 +268,9 @@ class SigaaApi(
                 .execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                println(res)
+                saveViewState(res)
+                getGrades(cookie)
+                //println(res)
             }
             else{
                 val res = response.body?.string()
@@ -311,14 +313,15 @@ class SigaaApi(
         return Pair(status, list)
     }
 
-    suspend fun getGrades(viewStateId: String, cookie: String){
+    suspend fun getGrades(cookie: String){
+        val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
                 .add("formMenu:j_id_jsp_1287906063_20", "formMenu:j_id_jsp_1287906063_20")
                 .add("formMenu:j_id_jsp_1287906063_3", "formMenu:j_id_jsp_1287906063_18")
-                .add("javax.faces.ViewState", viewStateId)
+                .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br//sigaa/ava/index.jsf")
@@ -328,7 +331,15 @@ class SigaaApi(
                 .post(formBody)
                 .build()
             try {
-
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    println(res)
+                }
             }
             catch(e: NoConnectivityException){
                 status = "Sem conexão com a internet"

@@ -30,14 +30,9 @@ class GradesFragment : ScopedFragment(), KodeinAware {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(GradesViewModel::class.java)
-        getGrades()
     }
 
-    private fun getGrades(){
-        launch {
-            viewModel.setClass(id, idTurma)
-        }
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

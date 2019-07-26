@@ -9,10 +9,6 @@ class GradesViewModel(
     private val sigaaRepository: SigaaRepository
 ): ViewModel() {
 
-    suspend fun setClass(id: String, idTurma: String){
-        withContext(Dispatchers.IO){
-            sigaaRepository.setClass(id, idTurma)
-        }
-    }
+
 
 }
