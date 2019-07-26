@@ -35,7 +35,6 @@ class GradesFragment : ScopedFragment(), KodeinAware {
 
     private fun getGrades(){
         launch {
-            println("id $id idturma $idTurma")
             viewModel.setClass(id, idTurma)
         }
     }

@@ -70,34 +70,22 @@ class SigaaApi(
         return status
     }
 
-    private suspend fun saveViewState(res: String?){
+    private fun saveViewState(res: String?){
         val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
         val viewStateId = viewStateString[1].split("\" ")[0]
         val viewState = studentDatabase.studentDao().getViewStateAsync()
-        if(viewState == null){
-            withContext(Dispatchers.IO){
-                studentDatabase.studentDao().upsertViewState(JavaxFaces(true, viewStateId))
-                println(getViewStateAsync())
-            }
-
-        }
-        else{
-            withContext(Dispatchers.IO){
-                viewState.valueState = viewStateId
-                studentDatabase.studentDao().upsertViewState(viewState)
-                println(getViewStateAsync())
-            }
-        }
+        println("viewstate to save $viewState")
+        studentDatabase.studentDao().upsertViewState(JavaxFaces(true, viewStateId))
     }
 
     private suspend fun getViewStateAsync(): JavaxFaces{
         return withContext(Dispatchers.IO){
             return@withContext studentDatabase.studentDao().getViewStateAsync()
         }
-
     }
 
     suspend fun login(cookie: String, login: String, password: String): String{
+        println("cookie login $cookie")
         return withContext(Dispatchers.IO){
             var status = ""
             val formBody = FormBody.Builder()
@@ -170,7 +158,6 @@ class SigaaApi(
                 val res = response.body?.string()
                 if(res!!.contains("Menu Principal")){
                     val res = getClasses(cookie)
-
                     status = if(res != "Success"){
                         "Tempo de conexão expirou"
                     } else{
@@ -200,6 +187,7 @@ class SigaaApi(
             var status = ""
             if(response.isSuccessful){
                 val res = response.body?.string()
+                saveViewState(res)
                 val pair = sigaaSerializer.parseClasses(res)
                 studentDatabase.studentDao().deleteClasses()
                 pair.second.forEach {
@@ -214,16 +202,15 @@ class SigaaApi(
                     student.profilePic = pairStudent.profilePic
                     studentDatabase.studentDao().upsertStudent(student)
                 }
-                saveViewState(res)
                 status = "Success"
             }
             else{
                 val error = response.body?.string()
-                println(error)
+//                println(error)
                 status = when {
                     error!!.contains("Usuário Não Autorizado") -> "Acesso negado. Tente efetuar login novamente"
                     error.contains("O sistema comportou-se de forma inesperada") -> "Erro ao carregar disciplinas. Tente efetuar login novamente"
-                    else -> "Tempo de conexão expirou"
+                    else -> "Erro ao efetuar login. Tente novamente"
                 }
             }
             return@withContext status
@@ -250,7 +237,7 @@ class SigaaApi(
                 status = "Success"
             }
             else{
-                status = "Tempo de conexão expirou"
+                status = "Erro ao efetuar login. Tente novamente"
             }
             return@withContext Pair(status, listClasses)
         }
@@ -259,16 +246,16 @@ class SigaaApi(
     suspend fun getClass(id: String, idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         println(viewState)
-        println("id $id")
+        println("cookie getclass $cookie")
         withContext(Dispatchers.IO){
             val formBody = FormBody.Builder()
-                .add("idTurma", idTurma)
                 .add("form_acessarTurmaVirtual$id", "form_acessarTurmaVirtual$id")
-                .add("form_acessarTurmaVirtual$id:turmaVirtual$id", "form_acessarTurmaVirtual$id:turmaVirtual$id")
+                .add("idTurma", idTurma)
                 .add("javax.faces.ViewState", viewState)
+                .add("form_acessarTurmaVirtual$id:turmaVirtual$id", "form_acessarTurmaVirtual$id:turmaVirtual$id")
                 .build()
             val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf#")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
@@ -285,7 +272,7 @@ class SigaaApi(
             }
             else{
                 val res = response.body?.string()
-                println(res)
+                //println(res)
             }
         }
     }

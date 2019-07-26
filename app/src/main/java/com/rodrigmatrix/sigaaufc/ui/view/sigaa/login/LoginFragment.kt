@@ -67,7 +67,8 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 val login = login_input.text.toString()
                 val password = password_input.text.toString()
                 launch {
-                    val loginResponse = viewModel.login("", login, password)
+                    val cookie = viewModel.getStudentAsync().jsession
+                    val loginResponse = viewModel.login(cookie, login, password)
                     handleLogin(login, password,loginResponse)
                 }
             }
@@ -102,9 +103,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 runOnUiThread {
                     Snackbar.make(fragment_login, "Erro ao carregar cookie", Snackbar.LENGTH_LONG)
                         .setAction("Recarregar") {
-                            launch {
-                                loadCookie()
-                            }
+                            loadCookie()
                         }.show()
                 }
             }
