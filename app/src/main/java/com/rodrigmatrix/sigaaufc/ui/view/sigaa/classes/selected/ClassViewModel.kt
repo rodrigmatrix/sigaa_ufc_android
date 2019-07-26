@@ -8,6 +8,11 @@ import kotlinx.coroutines.withContext
 class ClassViewModel(
     private val sigaaRepository: SigaaRepository
 ): ViewModel() {
+
+    suspend fun fetchCurrentClasses(): String{
+        return sigaaRepository.fetchCurrentClasses()
+    }
+
     suspend fun setClass(id: String, idTurma: String){
         withContext(Dispatchers.IO){
             sigaaRepository.setClass(id, idTurma)

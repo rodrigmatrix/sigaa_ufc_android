@@ -17,6 +17,8 @@ class ClassesViewModel(
         return sigaaRepository.getCookie()
     }
 
+
+
     suspend fun getCurrentClasses(): MutableList<StudentClass>{
         return withContext(Dispatchers.IO) {
             return@withContext sigaaRepository.getCurrentClasses()

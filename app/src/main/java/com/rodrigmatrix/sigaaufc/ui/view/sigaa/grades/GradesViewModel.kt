@@ -9,6 +9,8 @@ class GradesViewModel(
     private val sigaaRepository: SigaaRepository
 ): ViewModel() {
 
+    suspend fun fetchGrades(){
 
+    }
 
 }

@@ -8,15 +8,23 @@
         android:id="@+id/add_card_activity"
         tools:context=".ui.view.ru.add_card.AddCardActivity">
 
+    <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="3dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="3dp">
         <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                app:title="Adicionar cartão"
-                app:titleTextColor="@color/colorPrimary"
-
                 android:background="?attr/backgroundColor"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="12dp"/>
+                app:title="Adicionar cartão"
+                android:layout_width="match_parent"
+                android:layout_height="51dp"
+                app:titleTextColor="@color/colorPrimary" />
+    </com.google.android.material.card.MaterialCardView>
     <ProgressBar
             android:id="@+id/progress_add_card"
             style="?android:attr/progressBarStyleHorizontal"

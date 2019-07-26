@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:clickable="true"
@@ -30,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="Introdução a Engenharia de Software"
+                    tools:text="Introdução a Engenharia de Software"
                     android:textAlignment="center"
                     android:textColor="@color/colorPrimary"/>
 
@@ -39,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:text="Local: Sala 2 - Bloco 4"
+                    tools:text="Local: Sala 2 - Bloco 4"
                     android:layout_marginBottom="6dp"
                     android:textAlignment="center" />
             <TextView
@@ -47,7 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="06/08/2018 - 06/12/2018"
+                    tools:text="06/08/2018 - 06/12/2018"
                     android:layout_marginBottom="6dp"
                     android:textAlignment="center" />
             <TextView
@@ -55,8 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
-                    android:text="QUA 15:30-17:30 SEX 13:30-15:30"
-
+                    tools:text="QUA 15:30-17:30 SEX 13:30-15:30"
                     android:textAlignment="center" />
 
 
@@ -67,7 +67,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:text="Ver Mais"
+                    android:layout_marginEnd="6dp"
+                    android:text="@string/ver_mais"
                     android:textColorLink="@color/colorPrimary" />
 
         </LinearLayout>

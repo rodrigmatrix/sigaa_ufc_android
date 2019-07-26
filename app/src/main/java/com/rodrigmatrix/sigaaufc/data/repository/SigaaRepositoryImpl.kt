@@ -99,5 +99,13 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie)
     }
 
+    override suspend fun fetchCurrentClasses(): String {
+        val student = getStudentAsync()
+        val cookie = student.jsession
+        val login = student.login
+        val password = student.password
+        return sigaaNetworkDataSource.fetchLogin(cookie, login, password)
+    }
+
 
 }

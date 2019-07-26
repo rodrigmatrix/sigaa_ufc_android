@@ -8,18 +8,28 @@
         tools:context=".ui.view.sigaa.classes.selected.ClassActivity">
 
 
+
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:background="?attr/backgroundColor"
-                tools:title="Sigaa"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackground">
+        <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                app:titleTextColor="@color/colorPrimary"
-                android:layout_height="?attr/actionBarSize"/>
-
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="13dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="3dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="3dp">
+            <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
+                    android:background="?attr/backgroundColor"
+                    tools:title="@string/sigaa_shortcut"
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    app:titleTextColor="@color/colorPrimary" />
+        </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"

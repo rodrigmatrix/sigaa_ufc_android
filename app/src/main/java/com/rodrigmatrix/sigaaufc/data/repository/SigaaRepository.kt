@@ -33,4 +33,6 @@ interface SigaaRepository {
     suspend fun getCurrentClasses(): MutableList<StudentClass>
 
     suspend fun setClass(id: String, idTurma: String)
+
+    suspend fun fetchCurrentClasses(): String
 }

@@ -1,11 +1,8 @@
 package com.rodrigmatrix.sigaaufc.data
 
 import android.util.Log
-import androidx.lifecycle.Observer
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
-import com.rodrigmatrix.sigaaufc.internal.TimeoutException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.persistence.entity.JavaxFaces
@@ -18,6 +15,13 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.SocketTimeoutException
+import okhttp3.Cookie
+import okhttp3.HttpUrl
+import okhttp3.CookieJar
+
+
+
+
 
 
 class SigaaApi(
@@ -32,7 +36,6 @@ class SigaaApi(
         withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa")
-                .header("Referer", "https://si3.ufc.br")
                 .build()
             try {
                 val response = httpClient
@@ -41,6 +44,7 @@ class SigaaApi(
                     .newCall(request)
                     .execute()
                 if(response.isSuccessful){
+                    val res = response.body?.string()
                     status = true
                     val arr = response.request.url.toString().split("jsessionid=")
                     val student = studentDatabase.studentDao().getStudentAsync()
@@ -49,13 +53,9 @@ class SigaaApi(
                             arr[1], "", "", "", "", "", false, "", ""))
                     }
                     else{
-                        if(student.jsession == ""){
-                            student.jsession = arr[1]
-                            studentDatabase.studentDao().upsertStudent(student)
-                        }
-                        else{
-                            status = true
-                        }
+                        student.jsession = arr[1]
+                        studentDatabase.studentDao().upsertStudent(student)
+                        status = true
                     }
                 }
                 else{
@@ -94,11 +94,14 @@ class SigaaApi(
                 .add("user.login", login)
                 .add("user.senha", password)
                 .add("entrar", "Entrar")
+                .add("urlRedirect", "")
+                .add("acao","")
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/logar.do?dispatch=logOn")
+                .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do%3bjsessionid=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/verTelaLogin.do")
                 .post(formBody)
                 .build()
             try {
@@ -126,6 +129,8 @@ class SigaaApi(
                     }
                 }
                 else{
+                    val res = response.body?.string()
+                    println(res)
                     status = "Erro de conexão"
                 }
             }
@@ -269,7 +274,7 @@ class SigaaApi(
             if(response.isSuccessful){
                 val res = response.body?.string()
                 saveViewState(res)
-                getGrades(cookie)
+                getGrades(idTurma, cookie)
                 //println(res)
             }
             else{
@@ -313,7 +318,7 @@ class SigaaApi(
         return Pair(status, list)
     }
 
-    suspend fun getGrades(cookie: String){
+    suspend fun getGrades(idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
@@ -356,7 +361,7 @@ class SigaaApi(
                 .execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                //println(res)
+                sigaaSerializer.parseGrades(idTurma, res)
             }
         }
     }

@@ -23,6 +23,9 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     private lateinit var viewModel: ClassViewModel
     private val viewModelFactory: ClassViewModelFactory by instance()
 
+    private var ongoing = false
+    private var ongoingClass = false
+
     private lateinit var sectionsPagerAdapter: ClassPagerAdapter
     lateinit var idTurma: String
     lateinit var id: String
@@ -50,6 +53,8 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         setClass()
     }
 
+
+
     private fun setTabs(){
         tabs.getTabAt(0)!!.setIcon(R.drawable.ic_download)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
@@ -59,20 +64,33 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
-            sectionsPagerAdapter.removeFragments()
-            this.finish()
+            loadClasses()
         }
     }
 
     private fun setClass(){
         launch {
+            ongoingClass = true
             viewModel.setClass(id, idTurma)
+            ongoingClass = false
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        sectionsPagerAdapter.removeFragments()
-        this.finish()
+    override fun onBackPressed(){
+        loadClasses()
+    }
+
+    private fun loadClasses(){
+        if(!ongoing && !ongoingClass){
+            ongoing = true
+            launch {
+                val response = viewModel.fetchCurrentClasses()
+                runOnUiThread {
+                    sectionsPagerAdapter.removeFragments()
+                    finish()
+                }
+                ongoing = false
+            }
+        }
     }
 }

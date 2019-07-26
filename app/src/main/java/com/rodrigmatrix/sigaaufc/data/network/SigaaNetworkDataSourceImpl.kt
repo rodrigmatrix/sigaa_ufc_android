@@ -24,7 +24,7 @@ class SigaaNetworkDataSourceImpl(
     }
 
     override suspend fun fetchGrades(viewStateId: String, cookie: String): String {
-        return sigaaApi.getGrades(cookie).toString()
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override suspend fun fetchClass(id: String, idTurma: String, cookie: String) {

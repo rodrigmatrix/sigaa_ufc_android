@@ -9,17 +9,9 @@
             android:id="@+id/nav_login"
             android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginFragment"
             android:label="Login">
-        <action
-                android:id="@+id/action_nav_sigaa_to_nav_ru"
-                app:destination="@id/nav_ru" />
         <deepLink
                 android:id="@+id/deepLink"
                 app:uri="https://si3.ufc.br/sigaa/verTelaLogin.do" />
-        <action
-                android:id="@+id/action_nav_login_to_nav_sigaa"
-                app:destination="@id/nav_sigaa"
-                app:popEnterAnim="@anim/nav_default_enter_anim"
-                app:popUpTo="@+id/nav_login" />
     </fragment>
 
     <fragment
@@ -32,11 +24,7 @@
             android:id="@+id/nav_ru"
             android:name="com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RestauranteUniversiarioFragment"
             android:label="@string/ru_string"
-            tools:layout="@layout/fragment_restaurante_universiario" >
-        <action
-                android:id="@+id/action_nav_ru_to_nav_sigaa"
-                app:destination="@id/nav_login" />
-    </fragment>
+            tools:layout="@layout/fragment_restaurante_universiario" />
 
     <fragment
             android:id="@+id/nav_settings"
