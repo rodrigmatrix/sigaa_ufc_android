@@ -40,7 +40,7 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(ClassesViewModel::class.java)
-        launch {
+        launch(handler) {
             val classes = viewModel.getCurrentClasses()
             val previousClasses = viewModel.getCurrentClasses()
             println(classes)

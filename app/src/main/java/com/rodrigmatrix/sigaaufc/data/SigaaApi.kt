@@ -62,9 +62,13 @@ class SigaaApi(
                     status = false
                 }
             }
-            catch (e: SocketTimeoutException) {
+            catch(e: NoConnectivityException){
                 status = false
                 Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                status = false
+                Log.e("Connectivity", "Timeout Exception", e)
             }
         }
         return status
@@ -324,12 +328,61 @@ class SigaaApi(
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
+                .add("formMenu:j_id_jsp_412625199_3", "formMenu:j_id_jsp_412625199_18")
+                .add("formMenu:j_id_jsp_412625199_19", "formMenu:j_id_jsp_412625199_19")
+                .add("javax.faces.ViewState", viewState)
+                .build()
+            val request = Request.Builder()
+                .url("https://si3.ufc.br//sigaa/ava/index.jsf")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/ava/index.jsf")
+                .post(formBody)
+                .build()
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    println(res)
+                }
+            }
+            catch(e: NoConnectivityException){
+                status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            val response = httpClient
+                .addInterceptor(connectivityInterceptor)
+                .build()
+                .newCall(request)
+                .execute()
+            if(response.isSuccessful){
+                val res = response.body?.string()
+                val attendance = sigaaSerializer.parseAttendance(res)
+
+            }
+        }
+    }
+
+    suspend fun getAttendance(idTurma: String, cookie: String){
+        val viewState = getViewStateAsync().valueState
+        withContext(Dispatchers.IO){
+            var status = "Tempo de conexão expirou"
+            val formBody = FormBody.Builder()
+                .add("formMenu", "formMenu")
                 .add("formMenu:j_id_jsp_1287906063_20", "formMenu:j_id_jsp_1287906063_20")
                 .add("formMenu:j_id_jsp_1287906063_3", "formMenu:j_id_jsp_1287906063_18")
                 .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
-                .url("https://si3.ufc.br//sigaa/ava/index.jsf")
+                .url("https://si3.ufc.br/sigaa/ava/FrequenciaAluno/mapa.jsf")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")

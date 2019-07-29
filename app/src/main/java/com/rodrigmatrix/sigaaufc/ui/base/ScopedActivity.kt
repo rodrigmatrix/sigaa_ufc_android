@@ -1,7 +1,9 @@
 package com.rodrigmatrix.sigaaufc.ui.base
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,5 +23,9 @@ abstract class ScopedActivity: AppCompatActivity(), CoroutineScope {
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
+    }
+
+    val handler = CoroutineExceptionHandler { _, throwable ->
+        Log.e("Exception", ":$throwable")
     }
 }

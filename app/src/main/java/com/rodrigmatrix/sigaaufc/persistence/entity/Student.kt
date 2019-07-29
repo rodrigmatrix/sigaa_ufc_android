@@ -5,6 +5,9 @@ import androidx.room.PrimaryKey
 
 const val STUDENT_ID = 0
 
+
+data class Attendance(val attended: Int, val missed: Int)
+
 @Entity(tableName = "students")
 data class Student(
     var jsession: String,

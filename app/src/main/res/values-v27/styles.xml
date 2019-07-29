@@ -18,4 +18,5 @@
         <item name="windowNoTitle">true</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
+
 </resources>

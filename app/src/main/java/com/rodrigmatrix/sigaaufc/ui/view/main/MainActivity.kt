@@ -60,7 +60,7 @@ class MainActivity : ScopedActivity(), KodeinAware {
         navView.setupWithNavController(navController)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(MainActivityViewModel::class.java)
-        launch {
+        launch(handler) {
             viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
                 if(student == null) return@Observer
                 if(student.profilePic != ""){

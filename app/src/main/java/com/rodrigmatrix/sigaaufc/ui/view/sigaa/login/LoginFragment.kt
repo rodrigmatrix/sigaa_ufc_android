@@ -47,7 +47,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadCookie()
-        launch {
+        launch(handler) {
             viewModel.getStudent().observe(this@LoginFragment, Observer {student ->
                 if(student == null){
                     return@Observer
@@ -66,7 +66,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 login_btn.isEnabled = false
                 val login = login_input.text.toString()
                 val password = password_input.text.toString()
-                launch {
+                launch(handler) {
                     val cookie = viewModel.getStudentAsync().jsession
                     val loginResponse = viewModel.login(cookie, login, password)
                     handleLogin(login, password,loginResponse)
@@ -94,7 +94,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun loadCookie(){
-        launch {
+        launch(handler) {
             runOnUiThread {
                 progress_login.isVisible = true
                 login_btn.isEnabled = false
@@ -120,7 +120,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun saveCredentials(login: String, password: String){
-        launch {
+        launch(handler) {
             val student = viewModel.getStudentAsync()
             if(student?.login == ""){
                 saveDialog(true, login, password)
@@ -150,7 +150,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     .setTitle("Salvar Dados")
                     .setMessage("Deseja salvar seus dados de login?")
                     .setPositiveButton("Sim"){ _, _ ->
-                        launch {
+                        launch(handler) {
                             viewModel.saveLogin(login, password)
                             openSigaa()
                         }
@@ -170,7 +170,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     .setTitle("Atualizar Dados")
                     .setMessage("Deseja altualizar seus dados de login salvos?")
                     .setPositiveButton("Sim"){ _, _ ->
-                        launch {
+                        launch(handler) {
                             viewModel.saveLogin(login, password)
                             openSigaa()
                         }

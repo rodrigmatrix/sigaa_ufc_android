@@ -48,7 +48,7 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
                 add_credits_button.isEnabled = false
                 val numeroCartao = card_number_input.text.toString()
                 val matricula = matricula_number_input.text.toString()
-                launch {
+                launch(handler) {
                     addCard(numeroCartao, matricula)
                 }
             }
@@ -75,7 +75,7 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
 
     @SuppressLint("SetTextI18n")
     private fun bindData(){
-        launch {
+        launch(handler) {
             viewModel.getRuCard().observe(this@AddCardActivity, Observer {
                 if(it == null) return@Observer
                 card_number_input.setText(it.cardRU)

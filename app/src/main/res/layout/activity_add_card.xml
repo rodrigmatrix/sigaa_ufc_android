@@ -27,13 +27,9 @@
     </com.google.android.material.card.MaterialCardView>
     <ProgressBar
             android:id="@+id/progress_add_card"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="15dp"
-            android:indeterminate="true"
-            android:max="100"
-            android:minWidth="200dp"
-            android:minHeight="90dp"/>
+            style="@style/AppTheme.ProgressBar"
+            android:layout_marginBottom="-8dp"
+            android:layout_marginTop="-4dp"/>
     <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

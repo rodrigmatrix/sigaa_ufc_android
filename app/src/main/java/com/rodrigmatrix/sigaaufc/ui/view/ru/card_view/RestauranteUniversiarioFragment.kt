@@ -45,7 +45,7 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
         super.onResume()
         var hasSavedData = false
         bindData()
-        launch {
+        launch(handler) {
             viewModel.getRuCard().observe(this@RestauranteUniversiarioFragment, Observer {
                 if(it == null){
                     card_view_ru?.isVisible = false
@@ -67,7 +67,7 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
         }
     }
     private fun fetchRu(cardRu: String, matricula: String){
-        launch {
+        launch(handler) {
             withContext(Dispatchers.IO) {
                 viewModel.fetchRuData(cardRu, matricula)
             }
@@ -75,7 +75,7 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
     }
 
     private fun bindData(){
-        launch {
+        launch(handler) {
             viewModel.historyRu.await().observe(this@RestauranteUniversiarioFragment, Observer {
                 if(it == null) return@Observer
                 if(it.size != 0){

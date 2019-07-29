@@ -44,8 +44,11 @@ interface StudentDao {
     fun deleteRuCard()
 
 
-    @Query("SELECT * FROM classes where isPrevious = 0")
+    @Query("SELECT * FROM classes WHERE isPrevious = 0")
     fun getClasses(): MutableList<StudentClass>
+
+    @Query("SELECT * FROM classes WHERE (isPrevious = 0) AND (turmaId = :idTurma)")
+    fun getClassWithIdTurma(idTurma: String): StudentClass
 
     @Query("SELECT * FROM classes where isPrevious = 1")
     fun getPreviousClasses(): MutableList<StudentClass>

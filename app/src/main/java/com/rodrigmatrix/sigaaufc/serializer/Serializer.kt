@@ -177,11 +177,10 @@ class Serializer {
 
     }
 
-    fun parseAttendance(response: String?){
-        val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0]
-        val total = response!!.split("Faltas Permitido: ")[1].split("</div> ")[0]
-        println(missed)
-        println(total)
+    fun parseAttendance(response: String?): Attendance{
+        val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0].toInt()
+        val total = response!!.split("Faltas Permitido: ")[1].split("</div> ")[0].toInt()
+        return Attendance(total, missed)
     }
 
     fun parseGrades(idTurma: String, response: String?): MutableList<Grade>{

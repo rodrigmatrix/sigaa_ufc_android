@@ -69,7 +69,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setClass(){
-        launch {
+        launch(handler) {
             ongoingClass = true
             viewModel.setClass(id, idTurma)
             ongoingClass = false
@@ -83,7 +83,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     private fun loadClasses(){
         if(!ongoing && !ongoingClass){
             ongoing = true
-            launch {
+            launch(handler) {
                 val response = viewModel.fetchCurrentClasses()
                 runOnUiThread {
                     sectionsPagerAdapter.removeFragments()
