@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
@@ -14,6 +15,7 @@ import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.NewsFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
+import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -24,6 +26,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     override val kodein by closestKodein()
     private lateinit var viewModel: ClassViewModel
     private val viewModelFactory: ClassViewModelFactory by instance()
+    private var countBack = 3
 
     private var ongoing = false
     private var ongoingClass = false
@@ -110,8 +113,19 @@ class ClassActivity : ScopedActivity(), KodeinAware {
             }
         }
         else{
+            if(countBack == 1){
+                runOnUiThread {
+                    MaterialAlertDialogBuilder(activity_sigaa.context)
+                        .setTitle("Alerta de operação!")
+                        .setMessage("Por limitações do Sigaa, é necessário aguardar os dados terminarem de carregar para poder acessar as disciplinas.")
+                        .setPositiveButton("Ok"){ _, _ ->
+                        }
+                        .show()
+                }
+            }
+            countBack--
             runOnUiThread {
-                Snackbar.make(activity_sigaa, "Aguarde...", Snackbar.LENGTH_LONG)
+                Snackbar.make(activity_sigaa, "Aguarde...", Snackbar.LENGTH_LONG).show()
             }
         }
     }

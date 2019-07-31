@@ -39,7 +39,6 @@ class IraFragment : ScopedFragment(), KodeinAware {
 
     private fun observeIra(){
         launch {
-            println("chegou")
             viewModel.getIra().observe(this@IraFragment, Observer {
                 if(it == null) return@Observer
                 recycler_view_ira.layoutManager = LinearLayoutManager(context)
