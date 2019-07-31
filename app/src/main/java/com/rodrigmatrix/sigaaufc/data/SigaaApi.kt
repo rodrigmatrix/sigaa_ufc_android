@@ -247,9 +247,8 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    sigaaSerializer.parseIra(res).forEach {
-                        println(it)
-                    }
+                    studentDatabase.studentDao().deleteIra()
+                    studentDatabase.studentDao().upsertIra(sigaaSerializer.parseIra(res))
                 }
                 else{
                     status = ""

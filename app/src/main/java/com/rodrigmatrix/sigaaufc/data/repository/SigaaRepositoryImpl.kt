@@ -112,5 +112,11 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun getIra(): LiveData<out MutableList<Ira>> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getIra()
+        }
+    }
+
 
 }

@@ -15,6 +15,7 @@ import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceViewModelFac
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginViewModelFactory
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
@@ -79,7 +80,9 @@ class SigaaApplication: Application(), KodeinAware {
         bind() from provider {
             AttendanceViewModelFactory(sigaaRepository = instance())
         }
-
+        bind() from provider {
+            IraViewModelFactory(sigaaRepository = instance())
+        }
     }
 
     override fun onCreate() {

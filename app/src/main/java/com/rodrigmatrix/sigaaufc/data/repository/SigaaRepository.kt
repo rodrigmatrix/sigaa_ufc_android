@@ -36,4 +36,6 @@ interface SigaaRepository {
     suspend fun getClass(idTurma: String): LiveData<out StudentClass>
 
     suspend fun getGrades(idTurma: String): LiveData<out MutableList<Grade>>
+
+    suspend fun getIra(): LiveData<out MutableList<Ira>>
 }
