@@ -11,6 +11,7 @@ import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesViewModelFactory
@@ -74,6 +75,9 @@ class SigaaApplication: Application(), KodeinAware {
         }
         bind() from provider {
             ClassViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            AttendanceViewModelFactory(sigaaRepository = instance())
         }
 
     }

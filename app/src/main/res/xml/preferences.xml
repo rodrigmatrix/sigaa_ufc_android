@@ -13,15 +13,15 @@
         </ListPreference>
     </PreferenceCategory>
 
-    <PreferenceCategory
-            android:title="@string/general_string">
-        <ListPreference
-                android:title="@string/language_string"
-                android:key="LANGUAGE"
-                android:summary="%s"
-                android:defaultValue="SYSTEM_DEFAULT"
-                android:entries="@array/languageEntries"
-                android:entryValues="@array/languageValues">
-        </ListPreference>
-    </PreferenceCategory>
+<!--    <PreferenceCategory-->
+<!--            android:title="@string/general_string">-->
+<!--        <ListPreference-->
+<!--                android:title="@string/language_string"-->
+<!--                android:key="LANGUAGE"-->
+<!--                android:summary="%s"-->
+<!--                android:defaultValue="SYSTEM_DEFAULT"-->
+<!--                android:entries="@array/languageEntries"-->
+<!--                android:entryValues="@array/languageValues">-->
+<!--        </ListPreference>-->
+<!--    </PreferenceCategory>-->
 </PreferenceScreen>

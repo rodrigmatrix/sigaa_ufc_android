@@ -1,19 +1,29 @@
 package com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
+import kotlinx.android.synthetic.main.fragment_attendance.*
+import kotlinx.coroutines.launch
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 
-class AttendanceFragment : Fragment() {
+class AttendanceFragment : ScopedFragment(), KodeinAware {
 
+
+    override val kodein by closestKodein()
+    private val viewModelFactory: AttendanceViewModelFactory by instance()
     private lateinit var idTurma: String
-
-    companion object {
-        fun newInstance() = AttendanceFragment()
-    }
 
     private lateinit var viewModel: AttendanceViewModel
 
@@ -24,14 +34,39 @@ class AttendanceFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_attendance, container, false)
     }
 
-//    override fun onActivityCreated(savedInstanceState: Bundle?) {
-//        super.onActivityCreated(savedInstanceState)
-//        viewModel = ViewModelProviders.of(this).get(AttendanceViewModel::class.java)
-//        // TODO: Use the ViewModel
-//    }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(AttendanceViewModel::class.java)
+        observeAttendance()
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    @SuppressLint("SetTextI18n")
+    private fun observeAttendance(){
+        launch {
+            viewModel.getAttendance(idTurma).observe(this@AttendanceFragment, Observer {
+                if(it == null) return@Observer
+                if(it.attendance != 0){
+                    attendance_view.isVisible = true
+                    total_hour_text.text = "Horas: ${it.attendance}"
+                    total_class_text.text = "Aulas: ${it.attendance/2}"
+
+                    missed_hour_text.text = "Horas: ${it.missed}"
+                    missed_class_text.text = "Aulas: ${it.missed/2}"
+                }
+            })
+        }
+
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(idTurmaValue: String) =
+            AttendanceFragment().apply {
+                arguments = Bundle().apply {
+                    idTurma = idTurmaValue
+                }
+            }
     }
 
 }

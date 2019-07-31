@@ -23,9 +23,11 @@
         <activity
                 android:name=".ui.view.sigaa.classes.selected.ClassActivity"
                 android:label="@string/title_activity_class"
+                android:screenOrientation="portrait"
                 android:theme="@style/AppTheme.NoActionBar"/>
         <activity
                 android:name="com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardActivity"
+                android:screenOrientation="portrait"
                 android:label="@string/title_activity_add_card" />
         <activity
                 android:name=".ui.view.sigaa.main.SigaaActivity"
@@ -34,6 +36,7 @@
         <activity
                 android:name=".ui.view.main.MainActivity"
                 android:label="@string/title_activity_main"
+                android:screenOrientation="portrait"
                 android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

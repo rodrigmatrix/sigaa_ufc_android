@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.ui.view.main
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
@@ -35,9 +36,10 @@ class MainActivity : ScopedActivity(), KodeinAware {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var preferences: SharedPreferences
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         setTheme(preferences.getString("THEME", null))
         setContentView(R.layout.activity_main)

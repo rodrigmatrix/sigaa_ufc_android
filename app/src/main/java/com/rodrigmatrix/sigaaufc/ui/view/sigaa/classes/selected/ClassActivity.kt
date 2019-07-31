@@ -36,15 +36,10 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sigaa)
-        sectionsPagerAdapter =
-            ClassPagerAdapter(
-                this,
-                supportFragmentManager
-            )
-        viewModelFactory
+        sectionsPagerAdapter = ClassPagerAdapter(this, supportFragmentManager)
         idTurma = intent.getStringExtra("idTurma")!!
         id = intent.getStringExtra("id")!!
-        sectionsPagerAdapter.addFragment(AttendanceFragment())
+        sectionsPagerAdapter.addFragment(AttendanceFragment.newInstance(idTurma))
         sectionsPagerAdapter.addFragment(GradesFragment.newInstance(idTurma, id))
         sectionsPagerAdapter.addFragment(FilesFragment())
         sectionsPagerAdapter.addFragment(NewsFragment())
