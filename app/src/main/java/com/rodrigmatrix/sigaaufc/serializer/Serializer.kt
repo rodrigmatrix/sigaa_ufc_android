@@ -95,6 +95,27 @@ class Serializer {
         }
     }
 
+    fun parseGradesRequestId(response: String?): String{
+        return Jsoup.parse(response).run {
+            val script= select("a")[9].attr("onclick")
+            return@run script.split("forms['formMenu'],'")[1].split(",")[0]
+        }
+    }
+
+    fun parseAttendanceRequestId(response: String?): String{
+        return Jsoup.parse(response).run {
+            val script= select("a")[8].attr("onclick")
+            return@run script.split("forms['formMenu'],'")[1].split(",")[0]
+        }
+    }
+
+    fun parseNewsRequestId(response: String?){
+        Jsoup.parse(response).run {
+            val script= select("a")[6].attr("onclick")
+            println(script)
+        }
+    }
+
     private fun parseDates(text: String): Pair<String, String>{
         val days = text.split(" (")[0]
         val period = text.split(" (")[1].removeSuffix(")")
@@ -185,7 +206,8 @@ class Serializer {
         return Attendance(total, missed)
     }
 
-    fun parseGrades(idTurma: String, response: String?): MutableList<Grade>{
+    fun parseGrades(idTurma: String, response: String?): MutableList<Grade> {
+        println(response)
         val grades = mutableListOf<Grade>()
         Jsoup.parse(response).run {
             val th = select("th")

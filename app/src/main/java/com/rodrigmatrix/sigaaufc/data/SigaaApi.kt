@@ -271,8 +271,16 @@ class SigaaApi(
             if(response.isSuccessful){
                 val res = response.body?.string()
                 saveViewState(res)
-                getAttendance(idTurma, cookie)
-                //println(res)
+                getAttendance(
+                    sigaaSerializer.parseAttendanceRequestId(res),
+                    idTurma,
+                    cookie
+                )
+                getGrades(
+                    sigaaSerializer.parseGradesRequestId(res),
+                    idTurma,
+                    cookie
+                )
             }
             else{
                 val res = response.body?.string()
@@ -315,14 +323,13 @@ class SigaaApi(
         return Pair(status, list)
     }
 
-    private suspend fun getGrades(idTurma: String, cookie: String){
+    private suspend fun getGrades(requestId: String, idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
-                .add("formMenu:j_id_jsp_412625199_3", "formMenu:j_id_jsp_412625199_18")
-                .add("formMenu:j_id_jsp_412625199_19", "formMenu:j_id_jsp_412625199_19")
+                .add(requestId, requestId)
                 .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
@@ -340,7 +347,7 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    println(res)
+                    sigaaSerializer.parseGrades(idTurma, res)
                 }
             }
             catch(e: NoConnectivityException){
@@ -362,14 +369,13 @@ class SigaaApi(
         }
     }
 
-    private suspend fun getAttendance(idTurma: String, cookie: String){
+    private suspend fun getAttendance(requestId: String, idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
-                .add("formMenu:j_id_jsp_1287906063_3", "formMenu:j_id_jsp_1287906063_18")
-                .add("formMenu:j_id_jsp_1287906063_19", "formMenu:j_id_jsp_1287906063_19")
+                .add(requestId, requestId)
                 .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
@@ -395,6 +401,9 @@ class SigaaApi(
                     studentDatabase.studentDao().upsertClass(studentClass)
                     println(studentClass)
                 }
+                else{
+                    println("erro")
+                }
             }
             catch(e: NoConnectivityException){
                 status = "Sem conexão com a internet"
@@ -403,15 +412,6 @@ class SigaaApi(
             catch (e: SocketTimeoutException) {
                 status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
-            }
-            val response = httpClient
-                .addInterceptor(connectivityInterceptor)
-                .build()
-                .newCall(request)
-                .execute()
-            if(response.isSuccessful){
-                val res = response.body?.string()
-                sigaaSerializer.parseGrades(idTurma, res)
             }
         }
     }
