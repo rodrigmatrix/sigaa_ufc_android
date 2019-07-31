@@ -54,7 +54,7 @@ interface StudentDao {
     fun getPreviousClasses(): MutableList<StudentClass>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertClass(studentStudentClass: StudentClass)
+    fun upsertClass(studentStudentClass: StudentClass)
 
     @Query("DELETE FROM classes")
     fun deleteClasses()

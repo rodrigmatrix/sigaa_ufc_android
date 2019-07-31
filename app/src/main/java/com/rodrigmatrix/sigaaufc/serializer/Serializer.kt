@@ -179,7 +179,9 @@ class Serializer {
 
     fun parseAttendance(response: String?): Attendance{
         val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0].toInt()
-        val total = response!!.split("Faltas Permitido: ")[1].split("</div> ")[0].toInt()
+        val total = response.split("Faltas Permitido: ")[1].split("</div> ")[0].toInt()
+        println("missed: $missed")
+        println("total: $total")
         return Attendance(total, missed)
     }
 

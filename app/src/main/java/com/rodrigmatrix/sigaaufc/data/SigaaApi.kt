@@ -15,13 +15,6 @@ import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.SocketTimeoutException
-import okhttp3.Cookie
-import okhttp3.HttpUrl
-import okhttp3.CookieJar
-
-
-
-
 
 
 class SigaaApi(
@@ -200,7 +193,7 @@ class SigaaApi(
                 val pair = sigaaSerializer.parseClasses(res)
                 studentDatabase.studentDao().deleteClasses()
                 pair.second.forEach {
-                    studentDatabase.studentDao().insertClass(it)
+                    studentDatabase.studentDao().upsertClass(it)
                 }
                 val student = studentDatabase.studentDao().getStudentAsync()
                 if(student != null){
@@ -278,7 +271,7 @@ class SigaaApi(
             if(response.isSuccessful){
                 val res = response.body?.string()
                 saveViewState(res)
-                getGrades(idTurma, cookie)
+                getAttendance(idTurma, cookie)
                 //println(res)
             }
             else{
@@ -322,7 +315,7 @@ class SigaaApi(
         return Pair(status, list)
     }
 
-    suspend fun getGrades(idTurma: String, cookie: String){
+    private suspend fun getGrades(idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
@@ -365,24 +358,23 @@ class SigaaApi(
                 .execute()
             if(response.isSuccessful){
                 val res = response.body?.string()
-                val attendance = sigaaSerializer.parseAttendance(res)
-
             }
         }
     }
 
-    suspend fun getAttendance(idTurma: String, cookie: String){
+    private suspend fun getAttendance(idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
-                .add("formMenu:j_id_jsp_1287906063_20", "formMenu:j_id_jsp_1287906063_20")
                 .add("formMenu:j_id_jsp_1287906063_3", "formMenu:j_id_jsp_1287906063_18")
+                .add("formMenu:j_id_jsp_1287906063_19", "formMenu:j_id_jsp_1287906063_19")
                 .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/ava/FrequenciaAluno/mapa.jsf")
+                .url("https://si3.ufc.br/sigaa/ava/index.jsf")
+                .header("formMenu", "formMenu")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
@@ -396,7 +388,12 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    println(res)
+                    val attendance = sigaaSerializer.parseAttendance(res)
+                    val studentClass = studentDatabase.studentDao().getClassWithIdTurma(idTurma)
+                    studentClass.attendance = attendance.attended
+                    studentClass.missed = attendance.missed
+                    studentDatabase.studentDao().upsertClass(studentClass)
+                    println(studentClass)
                 }
             }
             catch(e: NoConnectivityException){

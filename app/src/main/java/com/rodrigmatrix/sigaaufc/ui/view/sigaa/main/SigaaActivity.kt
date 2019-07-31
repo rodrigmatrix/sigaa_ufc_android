@@ -24,7 +24,6 @@ class SigaaActivity : AppCompatActivity() {
         )
         sectionsPagerAdapter.addFragment(ClassesFragment())
         sectionsPagerAdapter.addFragment(IraFragment())
-        sectionsPagerAdapter.addFragment(MatriculaFragment())
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         viewPager.offscreenPageLimit = 3
@@ -32,7 +31,6 @@ class SigaaActivity : AppCompatActivity() {
         tabs.setupWithViewPager(viewPager)
         tabs.getTabAt(0)!!.setIcon(R.drawable.ic_classes)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
-        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_assignment)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
