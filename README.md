@@ -9,6 +9,8 @@ Aplicativo do Sigaa da Universidade Federal do Ceará
 
 [Material Theme](https://material.io) 
 
+[Android Architecture Components](https://developer.android.com/jetpack/docs/guide)
+
 [Android Room Persistence (SQL Lite Database)](https://developer.android.com/topic/libraries/architecture/room)
 
 [Kodein (Dependency Injection)](https://github.com/Kodein-Framework/Kodein-DI)
