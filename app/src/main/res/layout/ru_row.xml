@@ -28,7 +28,7 @@
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/content_text"
+                    android:id="@+id/total_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="95dp"
@@ -69,7 +69,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/image_ru"
-                    app:layout_constraintTop_toBottomOf="@+id/content_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/missed_text" />
 
             <ImageView
                     android:id="@+id/image_ru"

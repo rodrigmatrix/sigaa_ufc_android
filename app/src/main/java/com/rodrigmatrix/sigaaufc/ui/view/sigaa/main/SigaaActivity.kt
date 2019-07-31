@@ -8,7 +8,6 @@ import com.google.android.material.tabs.TabLayout
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
-import com.rodrigmatrix.sigaaufc.ui.fragments.MatriculaFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
 
 class SigaaActivity : AppCompatActivity() {

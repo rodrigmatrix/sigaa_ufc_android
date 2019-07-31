@@ -27,13 +27,13 @@ class RestauranteUniversitarioAdapter(private val historyList: MutableList<Histo
         when(history.content){
             "Refeição: Jantar" -> {
                 holder.view.image_ru.setImageResource(R.drawable.dinner)
-                holder.view.content_text.text = history.content
+                holder.view.total_text.text = history.content
                 holder.view.date_text.text = "Data: ${history.date}"
                 holder.view.time_text.text = "Hora: ${history.time}"
             }
             "Refeição: Almoço" -> {
                 holder.view.image_ru.setImageResource(R.drawable.lunch)
-                holder.view.content_text.text = history.content
+                holder.view.total_text.text = history.content
                 holder.view.date_text.text = "Data: ${history.date}"
                 holder.view.time_text.text = "Hora: ${history.time}"
             }
@@ -43,13 +43,13 @@ class RestauranteUniversitarioAdapter(private val historyList: MutableList<Histo
                     var before = history.content.split("Antes: ", "/")
                     var after = history.content.split("Depois: ")
                     holder.view.image_ru.setImageResource(R.drawable.ic_credit_card)
-                    holder.view.content_text.text = "Recarga do cartão"
+                    holder.view.total_text.text = "Recarga do cartão"
                     holder.view.date_text.text = "Depois: ${after[after.size-1]}"
                     holder.view.time_text.text = "Antes: ${before[1]}"
                 }
                 else{
                     holder.view.image_ru.setImageResource(R.drawable.coffee)
-                    holder.view.content_text.text = history.content
+                    holder.view.total_text.text = history.content
                     holder.view.date_text.text = "Data: ${history.date}"
                     holder.view.time_text.text = "Hora: ${history.time}"
                 }

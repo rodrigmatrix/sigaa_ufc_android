@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.adapters
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected
 
 import android.content.Context
 import androidx.fragment.app.Fragment
@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
 private var fragmentList = arrayListOf<Fragment>()
-private val titleList = listOf( "Arquivos", "Notas", "Notícias", "Frequência")
+private val titleList = listOf("Faltas",  "Notas", "Arquivos", "Notícias")
 
 class ClassPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
