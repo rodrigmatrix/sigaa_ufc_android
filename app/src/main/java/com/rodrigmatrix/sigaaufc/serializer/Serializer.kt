@@ -13,7 +13,7 @@ class Serializer {
         return when {
             response!!.contains("value=\"Continuar") -> "Continuar"
             response.contains("Menu Principal") -> "Menu Principal"
-            response.contains("Usuário e/ou senha inválidos") -> "Aluno não encontrado"
+            response.contains("Usuário e/ou senha inválidos") -> "Aluno e/ou senha não encontrado"
             response.contains("Por favor, aguarde enquanto carregamos as suas") -> "Menu Principal"
             response.contains("Tentativa de acesso por aplicativo externo. Operação negada") -> "Tentativa de acesso por aplicativo externo."
             else -> "Erro ao efetuar login. Verifique os seus dados"

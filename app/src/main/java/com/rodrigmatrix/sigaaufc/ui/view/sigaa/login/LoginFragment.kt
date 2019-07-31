@@ -125,7 +125,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             if(student?.login == ""){
                 saveDialog(true, login, password)
             }
-            else if((student?.login != login) && (student?.password != password)){
+            else if((student?.login != login) || (student?.password != password)){
                 saveDialog(false, login, password)
             }
             else{
