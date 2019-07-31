@@ -96,6 +96,47 @@ class Serializer {
         }
     }
 
+    fun parseIraRequestId(response: String?): Pair<String, String> {
+        val id = response!!.split("<input type=\"hidden\" name=\"id\" value=\"")[1].split("\"")[0]
+        println(id)
+        val script = response!!.split("de IRA', '")[1].split("'")[0]
+        println(script)
+        return Pair(id, script)
+    }
+
+    fun parseIra(response: String?): MutableList<Ira>{
+        val iraList = mutableListOf<Ira>()
+        Jsoup.parse(response).run {
+            val elements = getElementsByClass("item").select("td")
+            val ira = Ira("", "", 0.0, 0.0)
+            var index = 1
+            elements.forEach {
+                when(index){
+                    1 -> {
+                        ira.period = it.text()
+                    }
+                    2 -> {
+                        ira.iraI = it.text().toDouble()
+                    }
+                    3 -> {
+                        ira.iraG = it.text().toDouble()
+                    }
+                    4 -> {
+                        iraList.add(Ira(
+                            Random.nextDouble().toString(),
+                            ira.period,
+                            ira.iraI,
+                            ira.iraG
+                        ))
+                        index = 0
+                    }
+                }
+                index++
+            }
+        }
+        return iraList
+    }
+
     fun parseGradesRequestId(response: String?): String{
         return Jsoup.parse(response).run {
             val script= select("a")[9].attr("onclick")

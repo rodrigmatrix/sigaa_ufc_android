@@ -95,6 +95,16 @@ interface StudentDao {
 
     @Query("DELETE FROM grades WHERE idTurma LIKE :idTurma")
     fun deleteGradesFromClass(idTurma: String)
+
+    @Query("SELECT * FROM ira")
+    fun getIra(): LiveData<MutableList<Ira>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertIra(ira: MutableList<Ira>)
+
+    @Query("DELETE FROM ira")
+    fun deleteIra()
+
 //
 //
 //

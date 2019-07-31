@@ -87,3 +87,12 @@ data class Grade(
     var name: String,
     var content: String
 )
+
+@Entity(tableName = "ira")
+data class Ira(
+    @PrimaryKey
+    var id: String,
+    var period: String,
+    var iraI: Double,
+    var iraG: Double
+)

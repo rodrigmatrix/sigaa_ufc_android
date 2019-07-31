@@ -13,7 +13,8 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
         HistoryRU::class,
         News::class,
         JavaxFaces::class,
-        Grade::class],
+        Grade::class,
+        Ira::class],
     version = 1,
     exportSchema = false
 )

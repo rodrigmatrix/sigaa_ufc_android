@@ -205,6 +205,9 @@ class SigaaApi(
                     studentDatabase.studentDao().upsertStudent(student)
                 }
                 status = "Success"
+                val pairIra = sigaaSerializer.parseIraRequestId(res)
+                getIra(pairIra.first, pairIra.second, cookie)
+
             }
             else{
                 val error = response.body?.string()
@@ -216,6 +219,50 @@ class SigaaApi(
                 }
             }
             return@withContext status
+        }
+    }
+
+    private suspend fun getIra(id: String, script: String, cookie: String){
+        val viewState = getViewStateAsync().valueState
+        withContext(Dispatchers.IO){
+            var status = ""
+            var listClasses = mutableListOf<StudentClass>()
+            val formBody = FormBody.Builder()
+                .add("menu:form_menu_discente", "menu:form_menu_discente")
+                .add("id", id)
+                .add("jscook_action", script)
+                .add("javax.faces.ViewState", viewState)
+                .build()
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .post(formBody)
+                .build()
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    sigaaSerializer.parseIra(res).forEach {
+                        println(it)
+                    }
+                }
+                else{
+                    status = ""
+                }
+            }
+            catch(e: NoConnectivityException){
+                status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
         }
     }
 
@@ -352,6 +399,9 @@ class SigaaApi(
                         studentDatabase.studentDao().upsertGrade(it)
                     }
                 }
+                else{
+                    status = ""
+                }
             }
             catch(e: NoConnectivityException){
                 status = "Sem conexão com a internet"
@@ -360,14 +410,6 @@ class SigaaApi(
             catch (e: SocketTimeoutException) {
                 status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
-            }
-            val response = httpClient
-                .addInterceptor(connectivityInterceptor)
-                .build()
-                .newCall(request)
-                .execute()
-            if(response.isSuccessful){
-                val res = response.body?.string()
             }
         }
     }
