@@ -77,9 +77,6 @@ dependencies {
     // Okhttp
     implementation "com.squareup.okhttp3:okhttp:4.0.1"
 
-    // chart
-    implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
-
     // Preference
     implementation "androidx.preference:preference:1.1.0-rc01"
 

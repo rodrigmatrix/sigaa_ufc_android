@@ -116,7 +116,9 @@ class ClassActivity : ScopedActivity(), KodeinAware {
             }
         }
         else{
-            Snackbar.make(activity_sigaa, "Aguarde...", Snackbar.LENGTH_LONG)
+            runOnUiThread {
+                Snackbar.make(activity_sigaa, "Aguarde...", Snackbar.LENGTH_LONG)
+            }
         }
     }
 }

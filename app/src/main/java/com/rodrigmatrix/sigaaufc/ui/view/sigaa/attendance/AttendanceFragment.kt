@@ -5,12 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.anychart.AnyChart
-import com.anychart.chart.common.dataentry.DataEntry
-import com.anychart.chart.common.dataentry.ValueDataEntry
-
 import com.rodrigmatrix.sigaaufc.R
-import kotlinx.android.synthetic.main.fragment_attendance.*
 
 class AttendanceFragment : Fragment() {
 
@@ -37,12 +32,6 @@ class AttendanceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val pie = AnyChart.pie()
-        val array = arrayListOf<DataEntry>()
-        array.add(ValueDataEntry("Faltas (Horas):", 0))
-        array.add(ValueDataEntry("Máximo Permitido (Horas):", 16))
-        pie.data(array)
-        any_chart_view.setChart(pie)
     }
 
 }
