@@ -1,6 +1,5 @@
 package com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,7 +10,7 @@ import com.anychart.chart.common.dataentry.DataEntry
 import com.anychart.chart.common.dataentry.ValueDataEntry
 
 import com.rodrigmatrix.sigaaufc.R
-import kotlinx.android.synthetic.main.attendance_fragment.*
+import kotlinx.android.synthetic.main.fragment_attendance.*
 
 class AttendanceFragment : Fragment() {
 
@@ -27,7 +26,7 @@ class AttendanceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.attendance_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_attendance, container, false)
     }
 
 //    override fun onActivityCreated(savedInstanceState: Bundle?) {

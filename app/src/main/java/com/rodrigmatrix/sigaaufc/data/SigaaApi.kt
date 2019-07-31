@@ -347,7 +347,10 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    sigaaSerializer.parseGrades(idTurma, res)
+                    studentDatabase.studentDao().deleteGradesFromClass(idTurma)
+                    sigaaSerializer.parseGrades(idTurma, res).forEach {
+                        studentDatabase.studentDao().upsertGrade(it)
+                    }
                 }
             }
             catch(e: NoConnectivityException){
@@ -395,7 +398,7 @@ class SigaaApi(
                 if(response.isSuccessful){
                     val res = response.body?.string()
                     val attendance = sigaaSerializer.parseAttendance(res)
-                    val studentClass = studentDatabase.studentDao().getClassWithIdTurma(idTurma)
+                    val studentClass = studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
                     studentClass.attendance = attendance.attended
                     studentClass.missed = attendance.missed
                     studentDatabase.studentDao().upsertClass(studentClass)

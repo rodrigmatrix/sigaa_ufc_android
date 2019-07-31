@@ -62,14 +62,13 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="0dp"
                     android:layout_marginEnd="128dp"
                     android:text="Hora: 12:59:46"
                     android:textColor="@color/colorTextSecondary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/image_ru"
-                    app:layout_constraintTop_toBottomOf="@+id/missed_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/total_text" />
 
             <ImageView
                     android:id="@+id/image_ru"

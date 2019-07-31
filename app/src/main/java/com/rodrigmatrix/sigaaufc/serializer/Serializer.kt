@@ -5,6 +5,7 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import org.jsoup.Jsoup
 import java.text.Normalizer
+import kotlin.random.Random
 
 class Serializer {
 
@@ -69,7 +70,7 @@ class Serializer {
                         false,
                         "",
                         "",
-                        names[id - 1],
+                        names[id - 1].toLowerCase().capitalizeWords(),
                         locationsList[id - 1],
                         pairDates.second,
                         pairDates.first,
@@ -207,16 +208,21 @@ class Serializer {
     }
 
     fun parseGrades(idTurma: String, response: String?): MutableList<Grade> {
-        println(response)
         val grades = mutableListOf<Grade>()
         Jsoup.parse(response).run {
             val th = select("th")
             val tbody = select("tbody").select("td")
             var index = 0
             th.forEach {
-                println(it.text())
-                println(tbody[index].text())
-                //grades.add(Grade("2", idTurma, it.text(), tbody[index].text()))
+                println("nome: ${it.text()}")
+                println("nota: ${tbody[index].text()}")
+                if(index >= 2){
+                    grades.add(Grade(
+                        Random.nextDouble().toString(),
+                        idTurma,
+                        it.text(),
+                        tbody[index].text()))
+                }
                 index++
             }
         }
@@ -226,7 +232,14 @@ class Serializer {
 
 
     @SuppressLint("DefaultLocale")
-    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
+    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
+        if(it.length >= 3){
+            return@joinToString it.capitalize()
+        }
+        else{
+            return@joinToString it
+        }
+    }
 
     @SuppressLint("DefaultLocale")
     fun parseRU(response: String?): Triple<String, Pair<String, Int>, MutableList<HistoryRU>>{

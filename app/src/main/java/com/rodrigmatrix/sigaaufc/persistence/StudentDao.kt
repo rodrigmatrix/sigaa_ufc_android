@@ -48,7 +48,10 @@ interface StudentDao {
     fun getClasses(): MutableList<StudentClass>
 
     @Query("SELECT * FROM classes WHERE (isPrevious = 0) AND (turmaId = :idTurma)")
-    fun getClassWithIdTurma(idTurma: String): StudentClass
+    fun getClassWithIdTurmaAsync(idTurma: String): StudentClass
+
+    @Query("SELECT * FROM classes WHERE (isPrevious = 0) AND (turmaId = :idTurma)")
+    fun getClassWithIdTurma(idTurma: String): LiveData<StudentClass>
 
     @Query("SELECT * FROM classes where isPrevious = 1")
     fun getPreviousClasses(): MutableList<StudentClass>
@@ -78,20 +81,20 @@ interface StudentDao {
 
     @Query("DELETE FROM news WHERE idTurma LIKE :idTurma")
     fun deleteNews(idTurma: String)
-//
-//
-//
-//    @Query("SELECT * FROM grades WHERE classId LIKE :id")
-//    fun getGrades(id: String): MutableList<Grade>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertGrade(grade: Grade)
-//
-//    @Query("DELETE FROM grades")
-//    fun deleteGrades()
-//
-//    @Query("DELETE FROM grades WHERE classId LIKE :id")
-//    fun deleteGradesFromClass(id: String)
+
+
+
+    @Query("SELECT * FROM grades WHERE idTurma LIKE :idTurma")
+    fun getGrades(idTurma: String): LiveData<MutableList<Grade>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertGrade(grade: Grade)
+
+    @Query("DELETE FROM grades")
+    fun deleteGrades()
+
+    @Query("DELETE FROM grades WHERE idTurma LIKE :idTurma")
+    fun deleteGradesFromClass(idTurma: String)
 //
 //
 //

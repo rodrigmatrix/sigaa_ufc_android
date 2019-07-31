@@ -1,17 +1,10 @@
 package com.rodrigmatrix.sigaaufc.data.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSource
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SigaaRepositoryImpl(
@@ -105,6 +98,18 @@ class SigaaRepositoryImpl(
         val login = student.login
         val password = student.password
         return sigaaNetworkDataSource.fetchLogin(cookie, login, password)
+    }
+
+    override suspend fun getClass(idTurma: String): LiveData<out StudentClass> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getClassWithIdTurma(idTurma)
+        }
+    }
+
+    override suspend fun getGrades(idTurma: String): LiveData<out MutableList<Grade>> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getGrades(idTurma)
+        }
     }
 
 

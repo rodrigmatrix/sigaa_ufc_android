@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
@@ -36,6 +37,7 @@ class SigaaActivity : AppCompatActivity() {
         toolbar.setNavigationOnClickListener {
             confirmClose()
         }
+        progress_sigaa.isVisible = false
     }
 
     private fun confirmClose(){

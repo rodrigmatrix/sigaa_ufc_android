@@ -7,7 +7,13 @@ import androidx.room.RoomDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 
 @Database(
-    entities = [Student::class, RuCard::class, StudentClass::class, HistoryRU::class, News::class, JavaxFaces::class],
+    entities = [Student::class,
+        RuCard::class,
+        StudentClass::class,
+        HistoryRU::class,
+        News::class,
+        JavaxFaces::class,
+        Grade::class],
     version = 1,
     exportSchema = false
 )

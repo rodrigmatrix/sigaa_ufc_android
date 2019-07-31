@@ -37,11 +37,11 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary" />
         <ProgressBar
-                android:id="@+id/progress_close_class"
+                android:id="@+id/progress_sigaa"
                 style="@style/AppTheme.ProgressBar"
-                android:visibility="invisible"
                 android:layout_marginBottom="-8dp"
                 android:layout_marginTop="-4dp"/>
+
     </com.google.android.material.appbar.AppBarLayout>
 
 

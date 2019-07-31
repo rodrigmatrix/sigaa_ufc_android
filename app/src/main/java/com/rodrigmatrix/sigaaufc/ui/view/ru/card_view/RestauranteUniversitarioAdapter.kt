@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.adapters
+package com.rodrigmatrix.sigaaufc.ui.view.ru.card_view
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -18,7 +18,9 @@ class RestauranteUniversitarioAdapter(private val historyList: MutableList<Histo
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestauranteUniversitarioViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val ruRow = layoutInflater.inflate(R.layout.ru_row, parent, false)
-        return RestauranteUniversitarioViewHolder(ruRow)
+        return RestauranteUniversitarioViewHolder(
+            ruRow
+        )
     }
 
     @SuppressLint("SetTextI18n")

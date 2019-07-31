@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.adapters
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view
 
 import android.annotation.SuppressLint
 import android.content.Intent

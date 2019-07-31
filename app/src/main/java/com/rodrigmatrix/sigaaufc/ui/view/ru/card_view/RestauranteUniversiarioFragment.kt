@@ -3,7 +3,6 @@ package com.rodrigmatrix.sigaaufc.ui.view.ru.card_view
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardActivity
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.ui.adapters.RestauranteUniversitarioAdapter
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*

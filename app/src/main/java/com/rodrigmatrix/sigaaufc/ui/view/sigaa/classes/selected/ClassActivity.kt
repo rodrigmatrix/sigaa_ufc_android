@@ -1,14 +1,19 @@
 package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected
 
 import android.os.Bundle
+import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.fragments.IraFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.NewsFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -41,8 +46,8 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         id = intent.getStringExtra("id")!!
         sectionsPagerAdapter.addFragment(AttendanceFragment())
         sectionsPagerAdapter.addFragment(GradesFragment.newInstance(idTurma, id))
-        sectionsPagerAdapter.addFragment(IraFragment())
-        sectionsPagerAdapter.addFragment(AttendanceFragment())
+        sectionsPagerAdapter.addFragment(FilesFragment())
+        sectionsPagerAdapter.addFragment(NewsFragment())
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         viewPager.offscreenPageLimit = 4
@@ -52,7 +57,17 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(ClassViewModel::class.java)
         setTabs()
+        observeClass()
         setClass()
+    }
+
+    private fun observeClass(){
+        launch {
+            viewModel.getCurrentClass(idTurma).observe(this@ClassActivity, Observer {
+                if(it == null) return@Observer
+                title = it.name.split(" - ")[1]
+            })
+        }
     }
 
 
@@ -75,6 +90,9 @@ class ClassActivity : ScopedActivity(), KodeinAware {
             ongoingClass = true
             viewModel.setClass(id, idTurma)
             ongoingClass = false
+            runOnUiThread {
+                progress_sigaa.isVisible = false
+            }
         }
     }
 
@@ -86,6 +104,9 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         if(!ongoing && !ongoingClass){
             ongoing = true
             launch(handler) {
+                runOnUiThread {
+                    progress_sigaa.isVisible = true
+                }
                 val response = viewModel.fetchCurrentClasses()
                 runOnUiThread {
                     sectionsPagerAdapter.removeFragments()
@@ -93,6 +114,9 @@ class ClassActivity : ScopedActivity(), KodeinAware {
                 }
                 ongoing = false
             }
+        }
+        else{
+            Snackbar.make(activity_sigaa, "Aguarde...", Snackbar.LENGTH_LONG)
         }
     }
 }

@@ -1,10 +1,7 @@
 package com.rodrigmatrix.sigaaufc.data.repository
 
 import androidx.lifecycle.LiveData
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 
 
 interface SigaaRepository {
@@ -35,4 +32,8 @@ interface SigaaRepository {
     suspend fun setClass(id: String, idTurma: String)
 
     suspend fun fetchCurrentClasses(): String
+
+    suspend fun getClass(idTurma: String): LiveData<out StudentClass>
+
+    suspend fun getGrades(idTurma: String): LiveData<out MutableList<Grade>>
 }
