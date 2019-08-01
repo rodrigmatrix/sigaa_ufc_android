@@ -92,12 +92,12 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie)
     }
 
-    override suspend fun fetchCurrentClasses(): String {
+    override suspend fun fetchCurrentClasses() {
         val student = getStudentAsync()
         val cookie = student.jsession
         val login = student.login
         val password = student.password
-        return sigaaNetworkDataSource.fetchLogin(cookie, login, password)
+        sigaaNetworkDataSource.fetchCurrentClasses(cookie)
     }
 
     override suspend fun getClass(idTurma: String): LiveData<out StudentClass> {
@@ -115,6 +115,12 @@ class SigaaRepositoryImpl(
     override suspend fun getIra(): LiveData<out MutableList<Ira>> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getIra()
+        }
+    }
+
+    override suspend fun deleteGrades() {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.deleteGrades()
         }
     }
 

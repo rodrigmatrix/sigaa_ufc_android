@@ -10,10 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import kotlinx.android.synthetic.main.fragment_attendance.*
 import kotlinx.coroutines.launch
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -38,6 +36,7 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(AttendanceViewModel::class.java)
+        idTurma = arguments?.getString("idTurma")!!
         observeAttendance()
     }
 
@@ -57,16 +56,6 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
             })
         }
 
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(idTurmaValue: String) =
-            AttendanceFragment().apply {
-                arguments = Bundle().apply {
-                    idTurma = idTurmaValue
-                }
-            }
     }
 
 }

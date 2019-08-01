@@ -173,7 +173,7 @@ class SigaaApi(
             return@withContext status
         }
     }
-    private suspend fun getClasses(cookie: String): String{
+    suspend fun getClasses(cookie: String): String{
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/verPortalDiscente.do")
             .header("Cookie", "JSESSIONID=$cookie")
@@ -393,7 +393,6 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    studentDatabase.studentDao().deleteGradesFromClass(idTurma)
                     sigaaSerializer.parseGrades(idTurma, res).forEach {
                         studentDatabase.studentDao().upsertGrade(it)
                     }

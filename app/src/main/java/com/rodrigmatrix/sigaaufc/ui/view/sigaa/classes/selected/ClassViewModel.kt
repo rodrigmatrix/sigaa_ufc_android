@@ -11,7 +11,7 @@ class ClassViewModel(
     private val sigaaRepository: SigaaRepository
 ): ViewModel() {
 
-    suspend fun fetchCurrentClasses(): String{
+    suspend fun fetchCurrentClasses(){
         return sigaaRepository.fetchCurrentClasses()
     }
 
@@ -24,4 +24,6 @@ class ClassViewModel(
             sigaaRepository.setClass(id, idTurma)
         }
     }
+
+
 }

@@ -14,17 +14,25 @@ import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModel
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModelFactory
 import kotlinx.android.synthetic.main.fragment_grades.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
+import kotlin.coroutines.CoroutineContext
 
-class GradesFragment : ScopedFragment(), KodeinAware {
+class GradesFragment: Fragment(), KodeinAware, CoroutineScope {
 
-    lateinit var idTurma: String
-    lateinit var id: String
+    private lateinit var job: Job
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
+
+    private lateinit var idTurma: String
 
     override val kodein by closestKodein()
     private lateinit var viewModel: GradesViewModel
@@ -32,19 +40,21 @@ class GradesFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        job = Job()
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(GradesViewModel::class.java)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        idTurma = arguments?.getString("idTurma")!!
+        println("idturma grade $idTurma")
         observeGrades()
     }
 
     private fun observeGrades(){
-        launch {
+        job = launch {
+            viewModel.deleteGrades()
             viewModel.fetchGrades(idTurma).observe(this@GradesFragment, Observer {
                 if(it == null) return@Observer
+                println(it)
+                println(idTurma)
                 runOnUiThread {
                     recycler_view_grades?.layoutManager = LinearLayoutManager(context)
                     recycler_view_grades?.adapter = GradesAdapter(it)
@@ -52,6 +62,11 @@ class GradesFragment : ScopedFragment(), KodeinAware {
             })
         }
 
+    }
+
+    override fun onDestroy() {
+        job?.cancel()
+        super.onDestroy()
     }
 
 
@@ -62,16 +77,5 @@ class GradesFragment : ScopedFragment(), KodeinAware {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_grades, container, false)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(idTurmaValue: String, idValue: String) =
-            GradesFragment().apply {
-                arguments = Bundle().apply {
-                    idTurma = idTurmaValue
-                    id = idValue
-                }
-            }
     }
 }

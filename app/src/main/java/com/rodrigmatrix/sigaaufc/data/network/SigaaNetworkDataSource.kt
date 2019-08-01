@@ -18,4 +18,6 @@ interface SigaaNetworkDataSource {
     suspend fun fetchRu(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>>
 
     suspend fun fetchClass(id: String, idTurma: String, cookie: String)
+
+    suspend fun fetchCurrentClasses(cookie: String): String
 }

@@ -30,4 +30,8 @@ class SigaaNetworkDataSourceImpl(
     override suspend fun fetchClass(id: String, idTurma: String, cookie: String) {
         return sigaaApi.getClass(id, idTurma, cookie)
     }
+
+    override suspend fun fetchCurrentClasses(cookie: String): String {
+        return sigaaApi.getClasses(cookie)
+    }
 }

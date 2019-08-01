@@ -26,10 +26,6 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     override val kodein by closestKodein()
     private lateinit var viewModel: ClassViewModel
     private val viewModelFactory: ClassViewModelFactory by instance()
-    private var countBack = 3
-
-    private var ongoing = false
-    private var ongoingClass = false
 
     private lateinit var sectionsPagerAdapter: ClassPagerAdapter
     lateinit var idTurma: String
@@ -41,8 +37,15 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         sectionsPagerAdapter = ClassPagerAdapter(this, supportFragmentManager)
         idTurma = intent.getStringExtra("idTurma")!!
         id = intent.getStringExtra("id")!!
-        sectionsPagerAdapter.addFragment(AttendanceFragment.newInstance(idTurma))
-        sectionsPagerAdapter.addFragment(GradesFragment.newInstance(idTurma, id))
+        println("idturma activity string $idTurma")
+        val bundle = Bundle()
+        bundle.putString("idTurma", idTurma)
+        val attendanceFragment = AttendanceFragment()
+        attendanceFragment.arguments = bundle
+        val gradesFragment = GradesFragment()
+        gradesFragment.arguments = bundle
+        sectionsPagerAdapter.addFragment(attendanceFragment)
+        sectionsPagerAdapter.addFragment(gradesFragment)
         sectionsPagerAdapter.addFragment(FilesFragment())
         sectionsPagerAdapter.addFragment(NewsFragment())
         val viewPager: ViewPager = findViewById(R.id.view_pager)
@@ -67,8 +70,6 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         }
     }
 
-
-
     private fun setTabs(){
         tabs.getTabAt(0)!!.setIcon(R.drawable.ic_attendance)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
@@ -78,15 +79,15 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
-            loadClasses()
+            sectionsPagerAdapter.removeFragments()
+            finish()
         }
     }
 
     private fun setClass(){
         launch(handler) {
-            ongoingClass = true
+            viewModel.fetchCurrentClasses()
             viewModel.setClass(id, idTurma)
-            ongoingClass = false
             runOnUiThread {
                 progress_sigaa.isVisible = false
             }
@@ -94,39 +95,12 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     override fun onBackPressed(){
-        loadClasses()
+        sectionsPagerAdapter.removeFragments()
+        finish()
     }
 
-    private fun loadClasses(){
-        if(!ongoing && !ongoingClass){
-            ongoing = true
-            launch(handler) {
-                runOnUiThread {
-                    progress_sigaa.isVisible = true
-                }
-                val response = viewModel.fetchCurrentClasses()
-                runOnUiThread {
-                    sectionsPagerAdapter.removeFragments()
-                    finish()
-                }
-                ongoing = false
-            }
-        }
-        else{
-            if(countBack == 1){
-                runOnUiThread {
-                    MaterialAlertDialogBuilder(activity_sigaa.context)
-                        .setTitle("Alerta de operação!")
-                        .setMessage("Por limitações do Sigaa, é necessário aguardar os dados terminarem de carregar para poder acessar as disciplinas.")
-                        .setPositiveButton("Ok"){ _, _ ->
-                        }
-                        .show()
-                }
-            }
-            countBack--
-            runOnUiThread {
-                Snackbar.make(activity_sigaa, "Aguarde...", Snackbar.LENGTH_LONG).show()
-            }
-        }
+    override fun onDestroy() {
+        sectionsPagerAdapter.removeFragments()
+        super.onDestroy()
     }
 }

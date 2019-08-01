@@ -15,4 +15,8 @@ class GradesViewModel(
         return sigaaRepository.getGrades(idTurma)
     }
 
+    suspend fun deleteGrades(){
+        return sigaaRepository.deleteGrades()
+    }
+
 }
