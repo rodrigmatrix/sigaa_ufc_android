@@ -10,7 +10,6 @@ import kotlin.random.Random
 class Serializer {
 
     fun loginParse(response: String?): String{
-        println(response)
         return when {
             response!!.contains("value=\"Continuar") -> "Continuar"
             response.contains("Menu Principal") -> "Menu Principal"
@@ -96,6 +95,27 @@ class Serializer {
             student.profilePic = linkProfilePic
             return Pair(student, classes)
         }
+    }
+
+    fun getVinculoId(res: String?): String{
+            Jsoup.parse(res).run {
+                val names = select("span[class=col-xs-2]")
+                val active = select("span[class=col-xs-1 text-center]")
+                val ids = mutableListOf<String>()
+                select("a[href]").forEach {
+                    println(it.attr("href"))
+                    if(it.attr("href").contains("sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")){
+                        ids.add(it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0])
+                    }
+                }
+
+                for((index, value) in names.withIndex()){
+                    if(value.text().contains("Discente (Graduação)") && (active[index+1].text() == "Sim")){
+                        return ids[index]
+                    }
+                }
+            }
+        return "2"
     }
 
     fun parseIraRequestId(response: String?): Pair<String, String> {

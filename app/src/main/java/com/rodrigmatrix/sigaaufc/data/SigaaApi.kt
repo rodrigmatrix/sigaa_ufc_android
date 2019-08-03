@@ -121,8 +121,8 @@ class SigaaApi(
                             "Usuário ou senha inválidos"
                         }
                         "Vinculo" -> {
-                            println("chamou vinculo")
-                            setVinculo(cookie, getVinculoId(res))
+                            val vinculoId = sigaaSerializer.getVinculoId(res)
+                            setVinculo(cookie, vinculoId)
                         }
                         else -> {
                             parser
@@ -148,9 +148,7 @@ class SigaaApi(
         }
     }
 
-    private fun getVinculoId(res: String?): String{
-        return res!!.split("<a href=\"/sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")[1].split("\"")[0]
-    }
+
 
     private suspend fun setVinculo(cookie: String, vinculoId: String): String{
         return withContext(Dispatchers.IO){
