@@ -120,6 +120,10 @@ class SigaaApi(
                         "Usuário e/ou senha inválidos" -> {
                             "Usuário ou senha inválidos"
                         }
+                        "Vinculo" -> {
+                            println("chamou vinculo")
+                            setVinculo(cookie, getVinculoId(res))
+                        }
                         else -> {
                             parser
                         }
@@ -143,6 +147,52 @@ class SigaaApi(
             return@withContext status
         }
     }
+
+    private fun getVinculoId(res: String?): String{
+        return res!!.split("<a href=\"/sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")[1].split("\"")[0]
+    }
+
+    private suspend fun setVinculo(cookie: String, vinculoId: String): String{
+        return withContext(Dispatchers.IO){
+            var status = ""
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=$vinculoId")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/vinculos.jsf")
+                .build()
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                status = if(response.isSuccessful){
+                    val res = response.body?.string()
+                    println(res)
+                    getClasses(cookie)
+                    "Success"
+                } else{
+                    val res = response.body?.string()
+                    println(res)
+                    "Erro de conexão"
+                }
+            }
+            catch(e: NoConnectivityException){
+                status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                println("catch expirou")
+                status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            return@withContext status
+        }
+    }
+
+
+
     private suspend fun redirectMenu(cookie: String): String{
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/paginaInicial.do")
