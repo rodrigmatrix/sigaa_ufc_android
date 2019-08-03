@@ -1,6 +1,6 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
-# Em processamento no Google Play
+<a href='https://play.google.com/store/apps/details?id=com.rodrigmatrix.sigaaufc&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img height="100" width="250" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
 # Sigaa_Ufc_Android
 Aplicativo do Sigaa da Universidade Federal do Ceará
