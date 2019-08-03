@@ -31,7 +31,7 @@
                 android:label="@string/title_activity_add_card" />
         <activity
                 android:name=".ui.view.sigaa.main.SigaaActivity"
-                    android:label="Sigaa"
+                android:label="Sigaa"
                 android:theme="@style/AppTheme"/>
         <activity
                 android:name=".ui.view.main.MainActivity"

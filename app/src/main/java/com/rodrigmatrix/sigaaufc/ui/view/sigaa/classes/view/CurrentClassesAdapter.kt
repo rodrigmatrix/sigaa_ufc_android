@@ -37,9 +37,6 @@ class CurrentClassesAdapter(private val classesList: MutableList<StudentClass>):
 
 class ClassesViewHolder(val view: View): RecyclerView.ViewHolder(view){
     init {
-        view.open_class_btn.setOnClickListener {
-            openClass()
-        }
         view.card_current_class.setOnClickListener {
             openClass()
         }

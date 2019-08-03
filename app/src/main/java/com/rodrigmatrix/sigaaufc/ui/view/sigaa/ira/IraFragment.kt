@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
-import kotlinx.android.synthetic.main.ira_fragment.*
+import kotlinx.android.synthetic.main.fragment_ira.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -27,7 +26,7 @@ class IraFragment : ScopedFragment(), KodeinAware {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.ira_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_ira, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

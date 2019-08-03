@@ -12,8 +12,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:clickable="true"
@@ -56,20 +56,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
+                    android:layout_marginBottom="20dp"
                     tools:text="QUA 15:30-17:30 SEX 13:30-15:30"
                     android:textAlignment="center" />
-
-
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/open_class_btn"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="6dp"
-                    android:text="@string/ver_mais"
-                    android:textColorLink="@color/colorPrimary" />
 
         </LinearLayout>
 

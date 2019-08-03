@@ -7,7 +7,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".ui.view.ru.card_view.RestauranteUniversiarioFragment">
 
-
     <include
             layout="@layout/no_card_error"
             android:id="@+id/no_card"
@@ -103,7 +102,6 @@
                     android:layout_width="match_parent"
                     tools:visibility="invisible"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
                     android:id="@+id/recyclerView_ru"/>
     </LinearLayout>
 
@@ -111,17 +109,15 @@
             android:id="@+id/add_card"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/White"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="12dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:elevation="6dp"
             android:text="@string/card_string"
             android:textAllCaps="false"
-            android:elevation="6dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:layout_margin="@dimen/fab_margin"
+            android:textColor="@color/White"
             app:icon="@drawable/ic_credit_card"
-            app:iconTint="@color/White"
-            android:layout_gravity="bottom|right">
-
-    </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
+            app:iconTint="@color/White"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
