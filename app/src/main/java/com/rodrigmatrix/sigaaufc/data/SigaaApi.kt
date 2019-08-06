@@ -542,7 +542,11 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    sigaaSerializer.parseNews(idTurma, res)
+                    val news = sigaaSerializer.parseNews(idTurma, res)
+                    studentDatabase.studentDao().deleteNews(idTurma)
+                    news.forEach {
+                        studentDatabase.studentDao().insertNews(it)
+                    }
                 }
                 else{
                     println("erro")

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
@@ -44,8 +45,12 @@ class NewsFragment : ScopedFragment(), KodeinAware {
     private fun bindNews(idTurma: String){
         launch(handler) {
             viewModel.deleteNews(idTurma)
+            viewModel.insertFakeNews(idTurma)
             viewModel.getNews(idTurma).observe(this@NewsFragment, Observer {
                 if(it == null) return@Observer
+                if((it.size == 1) && (it[0].requestId == "fake")){
+                    return@Observer
+                }
                 if(it.size == 0){
                     runOnUiThread {
                         empty_news_view.isVisible = true
@@ -57,6 +62,8 @@ class NewsFragment : ScopedFragment(), KodeinAware {
                     runOnUiThread {
                         empty_news_view.isVisible = false
                         recycler_view_news.isVisible = true
+                        recycler_view_news.layoutManager = LinearLayoutManager(context)
+                        recycler_view_news.adapter = NewsAdapter(it)
                     }
                 }
             })

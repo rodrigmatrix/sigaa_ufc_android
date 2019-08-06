@@ -45,4 +45,6 @@ interface SigaaRepository {
 
     suspend fun getNews(idTurma: String): LiveData<out MutableList<News>>
 
+    suspend fun insertFakeNews(idTurma: String)
+
 }

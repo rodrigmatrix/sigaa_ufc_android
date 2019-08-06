@@ -136,5 +136,11 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun insertFakeNews(idTurma: String) {
+        withContext(Dispatchers.IO){
+            studentDao.insertNews(News("fake", "", idTurma, "", "", ""))
+        }
+    }
+
 
 }

@@ -17,4 +17,8 @@ class NewsViewModel(
     suspend fun getNews(idTurma: String): LiveData<out MutableList<News>> {
         return sigaaRepository.getNews(idTurma)
     }
+
+    suspend fun insertFakeNews(idTurma: String){
+        return sigaaRepository.insertFakeNews(idTurma)
+    }
 }
