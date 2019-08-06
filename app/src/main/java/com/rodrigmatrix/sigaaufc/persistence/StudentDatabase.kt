@@ -15,7 +15,7 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
         JavaxFaces::class,
         Grade::class,
         Ira::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class StudentDatabase : RoomDatabase() {

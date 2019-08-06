@@ -10,16 +10,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModel
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModelFactory
 import kotlinx.android.synthetic.main.fragment_grades.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance

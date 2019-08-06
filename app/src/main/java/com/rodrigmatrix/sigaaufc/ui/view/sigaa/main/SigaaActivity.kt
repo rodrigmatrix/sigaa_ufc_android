@@ -7,7 +7,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
 

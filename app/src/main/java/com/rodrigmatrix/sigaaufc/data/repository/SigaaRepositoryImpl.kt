@@ -124,5 +124,17 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun deleteNews(idTurma: String) {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.deleteNews(idTurma)
+        }
+    }
+
+    override suspend fun getNews(idTurma: String): LiveData<out MutableList<News>> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getNews(idTurma)
+        }
+    }
+
 
 }

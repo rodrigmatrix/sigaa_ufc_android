@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import org.jsoup.Jsoup
+import java.lang.IndexOutOfBoundsException
 import java.text.Normalizer
 import kotlin.random.Random
 
@@ -108,15 +109,16 @@ class Serializer {
                         ids.add(it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0])
                     }
                 }
-
                 for((index, value) in names.withIndex()){
                     if(value.text().contains("Discente (Graduação)") && (active[index+1].text() == "Sim")){
                         return ids[index]
                     }
                 }
             }
-        return "2"
+        return "error"
     }
+
+
 
     fun parseIraRequestId(response: String?): Pair<String, String> {
         val id = response!!.split("<input type=\"hidden\" name=\"id\" value=\"")[1].split("\"")[0]
@@ -173,17 +175,21 @@ class Serializer {
         }
     }
 
-    fun parseNewsRequestId(response: String?){
-        Jsoup.parse(response).run {
-            val script= select("a")[6].attr("onclick")
-            println(script)
+    fun parseNewsRequestId(response: String?): String{
+        return Jsoup.parse(response).run {
+            val script= select("a")[7].attr("onclick")
+            return@run script.split("['formMenu'],'")[1].split(",")[0]
         }
     }
 
     private fun parseDates(text: String): Pair<String, String>{
-        val days = text.split(" (")[0]
-        val period = text.split(" (")[1].removeSuffix(")")
-        return Pair(days, period)
+        return if(text != "" && text.contains("(")){
+            val days = text.split(" (")[0]
+            val period = text.split(" (")[1].removeSuffix(")")
+            Pair(days, period)
+        } else{
+            Pair(text, "")
+        }
     }
 
 
@@ -243,16 +249,23 @@ class Serializer {
         return classes
     }
 
-    fun parseNews(response: String?): MutableList<News>{
+    fun parseNews(idTurma: String, response: String?): MutableList<News>{
         val news = mutableListOf<News>()
         Jsoup.parse(response).run {
-            val content = select("i")
-            val dates = select("br")
-//            content.forEach {
-//                news.add(News("","1", "", it.text()))
-//            }
-            dates.forEach {
-                println(it)
+            val tbody = select("tbody")
+            val title = tbody.select("td[class=first]")
+            val dates = tbody.select("td[class=width75]")
+            val onclick = tbody.select("td[class=icon]").select("a")
+            var dateIndex = 0
+            for((index, it) in title.withIndex()){
+                val pair = getNewsId(onclick[index].attr("onclick"))
+                news.add(News(pair.first,
+                    pair.second,
+                    idTurma,
+                    it.text(),
+                    dates[dateIndex].text(),"")
+                )
+                dateIndex += 2
             }
         }
         return news
@@ -277,8 +290,8 @@ class Serializer {
             val tbody = select("tbody").select("td")
             var index = 0
             th.forEach {
-                println("nome: ${it.text()}")
-                println("nota: ${tbody[index].text()}")
+//                println("nome: ${it.text()}")
+//                println("nota: ${tbody[index].text()}")
                 if(index >= 2){
                     grades.add(Grade(
                         Random.nextDouble().toString(),
@@ -292,15 +305,24 @@ class Serializer {
         return grades
     }
 
+    private fun getNewsId(script: String): Pair<String, String>{
+        return try {
+            val requestId1 = script.split(".forms['")[1].split("']")[0]
+            val requestId2 = script.split("'],'")[1].split(",")[0]
+            Pair(requestId1, requestId2)
+        }catch(e: IndexOutOfBoundsException){
+            Pair("", "")
+        }
+    }
+
 
 
     @SuppressLint("DefaultLocale")
     private fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
-        if(it.length >= 3){
-            return@joinToString it.capitalize()
-        }
-        else{
-            return@joinToString it
+        when {
+            it.length <= 3 && it.contains("i") -> return@joinToString it.toUpperCase()
+            it.length >= 3 -> return@joinToString it.capitalize()
+            else -> return@joinToString it
         }
     }
 

@@ -74,7 +74,7 @@ interface StudentDao {
 
 
     @Query("SELECT * FROM news WHERE idTurma LIKE :idTurma")
-    fun getNews(idTurma: String): MutableList<News>
+    fun getNews(idTurma: String): LiveData<MutableList<News>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNews(news: News)
