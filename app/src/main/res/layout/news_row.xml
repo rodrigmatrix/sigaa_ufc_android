@@ -39,6 +39,21 @@
                     android:layout_marginBottom="20dp"
                     tools:text="Ira Individual: 10.0"/>
         </LinearLayout>
+        <TextView
+                android:id="@+id/id_news"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="invisible"/>
+        <TextView
+                android:id="@+id/requestId_news"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="invisible"/>
+        <TextView
+                android:id="@+id/requestId2_news"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="invisible"/>
 
     </com.google.android.material.card.MaterialCardView>
 

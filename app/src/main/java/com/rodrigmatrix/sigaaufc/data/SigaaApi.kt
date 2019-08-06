@@ -563,6 +563,52 @@ class SigaaApi(
         }
     }
 
+    suspend fun fetchNewsContent(cookie: String, id: String, requestId: String, requestId2: String){
+        val viewState = getViewStateAsync().valueState
+        withContext(Dispatchers.IO){
+            var status = "Tempo de conexão expirou"
+            val formBody = FormBody.Builder()
+                .add(requestId, requestId)
+                .add(requestId2, requestId2)
+                .add("id", id)
+                .add("javax.faces.ViewState", viewState)
+                .build()
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/ava/NoticiaTurma/listar.jsf")
+                .header("formMenu", "formMenu")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .post(formBody)
+                .build()
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    val content = sigaaSerializer.parseNewsContent(res)
+                    val news = studentDatabase.studentDao().getNewsWithIdAsync(id)
+                    news.content = content
+                    studentDatabase.studentDao().upsertNewsContent(news)
+                }
+                else{
+                    println("erro")
+                }
+            }
+            catch(e: NoConnectivityException){
+                status = "Sem conexão com a internet"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+        }
+    }
+
     suspend fun getRU(numeroCartao: String, matricula: String): Triple<String, MutableList<HistoryRU>, Pair<String, Int>>{
         val formBody = FormBody.Builder()
             .add("codigoCartao", numeroCartao)

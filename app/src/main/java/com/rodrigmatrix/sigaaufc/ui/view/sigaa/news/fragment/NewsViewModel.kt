@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.view.sigaa.news
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

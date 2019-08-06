@@ -21,4 +21,6 @@ interface SigaaNetworkDataSource {
 
     suspend fun fetchCurrentClasses(cookie: String): String
 
+    suspend fun fetchNews(cookie: String, newsId: String, requestId: String, requestId2: String)
+
 }

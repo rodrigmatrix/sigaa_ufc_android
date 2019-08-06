@@ -3,10 +3,12 @@ package com.rodrigmatrix.sigaaufc.ui.base
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import org.jetbrains.anko.support.v4.runOnUiThread
 import kotlin.coroutines.CoroutineContext
 
 abstract class ScopedFragment: Fragment(), CoroutineScope {
@@ -26,6 +28,9 @@ abstract class ScopedFragment: Fragment(), CoroutineScope {
     }
 
     val handler = CoroutineExceptionHandler { _, throwable ->
+        runOnUiThread {
+            Snackbar.make(view!!, throwable.toString(), Snackbar.LENGTH_LONG).show()
+        }
         Log.e("Exception", ":$throwable")
     }
 }

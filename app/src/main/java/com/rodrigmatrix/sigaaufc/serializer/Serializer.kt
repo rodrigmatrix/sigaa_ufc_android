@@ -261,6 +261,7 @@ class Serializer {
                 val pair = getNewsId(onclick[index].attr("onclick"))
                 news.add(News(pair.first,
                     pair.second,
+                    pair.third,
                     idTurma,
                     it.text(),
                     dates[dateIndex].text(),"")
@@ -269,6 +270,20 @@ class Serializer {
             }
         }
         return news
+    }
+
+    fun parseNewsContent(response: String?): String{
+        var content = ""
+        Jsoup.parse(response).run {
+            val body = select("p")
+            for((index, value) in body.withIndex()){
+                if(index >= 8){
+                    content += " ${value.text()}"
+                }
+            }
+        }
+        println(content)
+        return content
     }
 
     fun parseFiles(response: String?){
@@ -305,13 +320,14 @@ class Serializer {
         return grades
     }
 
-    private fun getNewsId(script: String): Pair<String, String>{
+    private fun getNewsId(script: String): Triple<String, String, String>{
         return try {
+            val newsId = script.split(",id,")[1].split("',")[0]
             val requestId1 = script.split(".forms['")[1].split("']")[0]
             val requestId2 = script.split("'],'")[1].split(",")[0]
-            Pair(requestId1, requestId2)
+            Triple(newsId, requestId1, requestId2)
         }catch(e: IndexOutOfBoundsException){
-            Pair("", "")
+            Triple("", "", "")
         }
     }
 

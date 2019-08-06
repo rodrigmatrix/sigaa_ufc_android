@@ -17,7 +17,8 @@ import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesViewModel
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginViewModelFactory
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.NewsViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.view.NewsContentViewModelFactory
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -86,6 +87,9 @@ class SigaaApplication: Application(), KodeinAware {
         }
         bind() from provider {
             NewsViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            NewsContentViewModelFactory(sigaaRepository = instance())
         }
     }
 

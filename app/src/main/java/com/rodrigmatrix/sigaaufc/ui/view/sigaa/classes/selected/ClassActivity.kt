@@ -6,16 +6,13 @@ import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.NewsFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -87,7 +84,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setClass(){
-        launch {
+        launch(handler) {
             viewModel.fetchCurrentClasses()
             viewModel.setClass(id, idTurma)
             runOnUiThread {

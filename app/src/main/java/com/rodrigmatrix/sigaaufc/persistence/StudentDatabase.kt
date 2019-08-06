@@ -15,7 +15,7 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
         JavaxFaces::class,
         Grade::class,
         Ira::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class StudentDatabase : RoomDatabase() {
@@ -36,6 +36,7 @@ abstract class StudentDatabase : RoomDatabase() {
             Room.databaseBuilder(context.applicationContext,
                 StudentDatabase::class.java,
                 "sigaa.db")
+                .fallbackToDestructiveMigration()
                 .build()
     }
 }

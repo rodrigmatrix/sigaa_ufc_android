@@ -138,7 +138,19 @@ class SigaaRepositoryImpl(
 
     override suspend fun insertFakeNews(idTurma: String) {
         withContext(Dispatchers.IO){
-            studentDao.insertNews(News("fake", "", idTurma, "", "", ""))
+            studentDao.insertNews(News( "","fake", "", idTurma, "", "", ""))
+        }
+    }
+
+    override suspend fun fetchNews(newsId: String, requestId: String, requestId2: String) {
+        val student = getStudentAsync()
+        val cookie = student.jsession
+        sigaaNetworkDataSource.fetchNews(cookie, newsId, requestId, requestId2)
+    }
+
+    override suspend fun getNewsWithId(idNews: String): LiveData<out News> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getNewsWithId(idNews)
         }
     }
 
