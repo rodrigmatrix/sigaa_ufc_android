@@ -13,10 +13,12 @@ import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassViewModelFactory
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view.ClassesViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.view.NewsContentViewModelFactory
 import okhttp3.OkHttpClient
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
@@ -82,6 +84,12 @@ class SigaaApplication: Application(), KodeinAware {
         }
         bind() from provider {
             IraViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            NewsViewModelFactory(sigaaRepository = instance())
+        }
+        bind() from provider {
+            NewsContentViewModelFactory(sigaaRepository = instance())
         }
     }
 

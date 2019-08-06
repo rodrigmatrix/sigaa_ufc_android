@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
 private var fragmentList = arrayListOf<Fragment>()
-private val titleList = listOf("Faltas",  "Notas", "Arquivos", "Notícias")
+private val titleList = listOf("Notícias", "Notas", "Faltas", "Arquivos")
 
 class ClassPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {

@@ -6,16 +6,13 @@ import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.NewsFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
-import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -43,11 +40,13 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         val attendanceFragment = AttendanceFragment()
         attendanceFragment.arguments = bundle
         val gradesFragment = GradesFragment()
+        val newsFragment = NewsFragment()
+        newsFragment.arguments = bundle
         gradesFragment.arguments = bundle
-        sectionsPagerAdapter.addFragment(attendanceFragment)
+        sectionsPagerAdapter.addFragment(newsFragment)
         sectionsPagerAdapter.addFragment(gradesFragment)
+        sectionsPagerAdapter.addFragment(attendanceFragment)
         sectionsPagerAdapter.addFragment(FilesFragment())
-        sectionsPagerAdapter.addFragment(NewsFragment())
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         viewPager.offscreenPageLimit = 4
@@ -71,10 +70,10 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setTabs(){
-        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_attendance)
+        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_news)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
-        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_download)
-        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_news)
+        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_attendance)
+        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_download)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)

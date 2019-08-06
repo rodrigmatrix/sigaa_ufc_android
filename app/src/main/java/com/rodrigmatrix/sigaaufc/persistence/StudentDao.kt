@@ -73,11 +73,22 @@ interface StudentDao {
     fun deleteHistoryRU()
 
 
+
+
     @Query("SELECT * FROM news WHERE idTurma LIKE :idTurma")
-    fun getNews(idTurma: String): MutableList<News>
+    fun getNews(idTurma: String): LiveData<MutableList<News>>
+
+    @Query("SELECT * FROM news WHERE newsId LIKE :newsId")
+    fun getNewsWithId(newsId: String): LiveData<News>
+
+    @Query("SELECT * FROM news WHERE newsId LIKE :newsId")
+    fun getNewsWithIdAsync(newsId: String): News
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNews(news: News)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertNewsContent(news: News)
 
     @Query("DELETE FROM news WHERE idTurma LIKE :idTurma")
     fun deleteNews(idTurma: String)

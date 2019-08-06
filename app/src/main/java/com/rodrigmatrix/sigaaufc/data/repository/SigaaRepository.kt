@@ -41,4 +41,14 @@ interface SigaaRepository {
 
     suspend fun deleteGrades()
 
+    suspend fun deleteNews(idTurma: String)
+
+    suspend fun getNews(idTurma: String): LiveData<out MutableList<News>>
+
+    suspend fun getNewsWithId(idNews: String): LiveData<out News>
+
+    suspend fun insertFakeNews(idTurma: String)
+
+    suspend fun fetchNews(newsId: String, requestId: String, requestId2: String)
+
 }

@@ -1,4 +1,4 @@
-package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.view
+package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

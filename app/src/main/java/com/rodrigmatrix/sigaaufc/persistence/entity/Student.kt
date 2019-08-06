@@ -63,8 +63,11 @@ data class StudentClass(
 @Entity(tableName = "news")
 data class News(
     @PrimaryKey
-    var id: String,
+    var newsId: String,
+    var requestId: String,
+    var requestId2: String,
     var idTurma: String,
+    var title: String,
     var date: String,
     var content: String
 )
