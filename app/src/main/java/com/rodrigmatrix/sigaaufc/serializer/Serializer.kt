@@ -274,15 +274,17 @@ class Serializer {
 
     fun parseNewsContent(response: String?): String{
         var content = ""
-        Jsoup.parse(response).run {
-            val body = select("p")
-            for((index, value) in body.withIndex()){
-                if(index >= 8){
-                    content += " ${value.text()}"
-                }
+        val html = response!!.split("<body>")[2].split("</body>")[0]
+        Jsoup.parse(html).run {
+            val p = select("p")
+            for(it in p){
+                println(it.text())
+                content += " ${it.text()}"
+            }
+            if(content == ""){
+                content = "Erro ao exibir notícia"
             }
         }
-        println(content)
         return content
     }
 
