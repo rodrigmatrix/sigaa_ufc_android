@@ -89,16 +89,6 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
     }
 
     val handler = CoroutineExceptionHandler { _, throwable ->
-        runOnUiThread {
-            Snackbar.make(view!!, throwable.toString(), Snackbar.LENGTH_LONG).show()
-        }
         Log.e("Exception", ":$throwable")
     }
-
-
-
-
-
-
-
 }

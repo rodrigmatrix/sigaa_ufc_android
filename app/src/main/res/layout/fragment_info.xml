@@ -59,7 +59,6 @@
                 android:text="Agradeço ao Júnior Nascimento da UFC Sobral pela ideia e ajuda."
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="15sp" />
-
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +67,19 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:gravity="center"
-                android:text="Esse app foi desenvolvido com o objetivo de migrar o sigaa, ru e pergamum em um só app. O código fonte é totalmente aberto e se encontra no meu Github. Peço todo o apoio para reporte de bugs e sugestões para melhorar a experiência do app."
+                android:text="Atenção. Esse aplicativo não possui nenhum vínculo com a Universidade Federal do Ceará. Todo o suporte e manutenção é feito por mim. Qualquer dúvida entre em contato: rodrigmatrix@gmail.com."
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textSize="15sp" />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="Esse app foi desenvolvido com o objetivo de unir o sigaa, ru e pergamum em um só app. O código fonte é totalmente aberto e se encontra no meu Github. Peço todo o apoio para reporte de bugs e sugestões para melhorar a experiência do app."
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="15sp" />

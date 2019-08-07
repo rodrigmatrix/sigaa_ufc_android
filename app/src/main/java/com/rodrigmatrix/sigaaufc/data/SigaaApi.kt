@@ -68,11 +68,15 @@ class SigaaApi(
     }
 
     private fun saveViewState(res: String?){
-        val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
-        val viewStateId = viewStateString[1].split("\" ")[0]
-        val viewState = studentDatabase.studentDao().getViewStateAsync()
-        println("viewstate to save $viewState")
-        studentDatabase.studentDao().upsertViewState(JavaxFaces(true, viewStateId))
+        try {
+            val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
+            val viewStateId = viewStateString[1].split("\" ")[0]
+            val viewState = studentDatabase.studentDao().getViewStateAsync()
+            println("viewstate to save $viewState")
+            studentDatabase.studentDao().upsertViewState(JavaxFaces(true, viewStateId))
+        }catch(e: IndexOutOfBoundsException){
+            println(e)
+        }
     }
 
     private suspend fun getViewStateAsync(): JavaxFaces{
@@ -567,18 +571,20 @@ class SigaaApi(
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
+            println(requestId)
+            println(requestId2)
+            println(id)
             val formBody = FormBody.Builder()
                 .add(requestId, requestId)
+                .add("javax.faces.ViewState", viewState)
                 .add(requestId2, requestId2)
                 .add("id", id)
-                .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/ava/NoticiaTurma/listar.jsf")
-                .header("formMenu", "formMenu")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .header("Referer", "https://si3.ufc.br/sigaa/ava/NoticiaTurma/mostrar.jsf")
                 .post(formBody)
                 .build()
             try {
@@ -589,6 +595,7 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
+                    saveViewState(res)
                     val content = sigaaSerializer.parseNewsContent(res)
                     val news = studentDatabase.studentDao().getNewsWithIdAsync(id)
                     news.content = content
