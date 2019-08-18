@@ -67,6 +67,7 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
             viewModel.getNews(newsId).observe(this@NewsContentSheetFragment, Observer {
                 if(it == null) return@Observer
                 if(it.content != ""){
+                    println(it)
                     runOnUiThread {
                         title_text.text = it.title
                         date_text.text = it.date

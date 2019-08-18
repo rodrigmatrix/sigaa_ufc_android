@@ -553,6 +553,7 @@ class SigaaApi(
                     val news = sigaaSerializer.parseNews(idTurma, res)
                     studentDatabase.studentDao().deleteNews(idTurma)
                     news.forEach {
+                        println(it)
                         studentDatabase.studentDao().insertNews(it)
                     }
                 }
@@ -574,7 +575,6 @@ class SigaaApi(
     suspend fun fetchNewsContent(cookie: String, id: String, requestId: String, requestId2: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
-            var status = "Tempo de conexão expirou"
             println(requestId)
             println(requestId2)
             println(id)
@@ -586,9 +586,7 @@ class SigaaApi(
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/ava/NoticiaTurma/listar.jsf")
-                .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/ava/NoticiaTurma/mostrar.jsf")
                 .post(formBody)
                 .build()
             try {
@@ -599,8 +597,6 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    saveViewState(res)
-                    println(res)
                     val content = sigaaSerializer.parseNewsContent(res)
                     val news = studentDatabase.studentDao().getNewsWithIdAsync(id)
                     news.content = content
@@ -611,11 +607,9 @@ class SigaaApi(
                 }
             }
             catch(e: NoConnectivityException){
-                status = "Sem conexão com a internet"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
             catch (e: SocketTimeoutException) {
-                status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
         }
