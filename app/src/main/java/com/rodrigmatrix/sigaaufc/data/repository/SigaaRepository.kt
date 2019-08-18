@@ -51,4 +51,6 @@ interface SigaaRepository {
 
     suspend fun fetchNews(newsId: String, requestId: String, requestId2: String)
 
+    suspend fun fetchNewsPage(idTurma: String)
+
 }

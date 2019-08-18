@@ -40,7 +40,11 @@ class SigaaNetworkDataSourceImpl(
         newsId: String,
         requestId: String,
         requestId2: String) {
-
         return sigaaApi.fetchNewsContent(cookie, newsId, requestId, requestId2)
     }
+
+    override suspend fun fetchNewsPage(idTurma: String, requestId: String, cookie: String) {
+        return sigaaApi.getNews(idTurma, requestId, cookie)
+    }
+
 }

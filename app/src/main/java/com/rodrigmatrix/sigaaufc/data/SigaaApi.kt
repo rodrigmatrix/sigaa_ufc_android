@@ -374,9 +374,13 @@ class SigaaApi(
             if(response.isSuccessful){
                 val res = response.body?.string()
                 saveViewState(res)
+                val newsRequestId = sigaaSerializer.parseNewsRequestId(res)
+                val studentClass = studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
+                studentClass.code = newsRequestId
+                studentDatabase.studentDao().upsertClass(studentClass)
                 getNews(
                     idTurma,
-                    sigaaSerializer.parseNewsRequestId(res),
+                    newsRequestId,
                     cookie
                 )
                 getAttendance(
@@ -521,7 +525,7 @@ class SigaaApi(
         }
     }
 
-    private suspend fun getNews(idTurma: String, requestId: String, cookie: String){
+    suspend fun getNews(idTurma: String, requestId: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
@@ -596,6 +600,7 @@ class SigaaApi(
                 if(response.isSuccessful){
                     val res = response.body?.string()
                     saveViewState(res)
+                    println(res)
                     val content = sigaaSerializer.parseNewsContent(res)
                     val news = studentDatabase.studentDao().getNewsWithIdAsync(id)
                     news.content = content

@@ -9,6 +9,10 @@ class NewsContentViewModel(
     private val sigaaRepository: SigaaRepository
 ) : ViewModel() {
 
+    suspend fun fetchNewsPage(idTurma: String){
+        sigaaRepository.fetchNewsPage(idTurma)
+    }
+
     suspend fun fetchNews(newsId: String, requestId: String, requestId2: String){
         sigaaRepository.fetchNews(newsId, requestId, requestId2)
     }

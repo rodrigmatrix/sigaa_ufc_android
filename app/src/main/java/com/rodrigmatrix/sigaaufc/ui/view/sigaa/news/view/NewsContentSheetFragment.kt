@@ -32,9 +32,8 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
     private lateinit var viewModel: NewsContentViewModel
 
     private lateinit var newsId: String
-
+    private lateinit var turmaId: String
     private lateinit var requestId: String
-
     private lateinit var requestId2: String
 
     override fun onCreateView(
@@ -51,11 +50,13 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
         newsId = arguments?.getString("idNews")!!
         requestId = arguments?.getString("requestId")!!
         requestId2 = arguments?.getString("requestId2")!!
+        turmaId = arguments?.getString("idTurma")!!
         fetchContent()
     }
 
     private fun fetchContent(){
         launch(handler){
+            viewModel.fetchNewsPage(turmaId)
             viewModel.fetchNews(newsId, requestId, requestId2)
             bindUi()
         }

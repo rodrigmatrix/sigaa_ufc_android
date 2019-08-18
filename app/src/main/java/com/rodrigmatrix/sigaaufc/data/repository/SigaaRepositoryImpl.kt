@@ -93,11 +93,13 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun fetchCurrentClasses() {
-        val student = getStudentAsync()
-        val cookie = student.jsession
-        val login = student.login
-        val password = student.password
-        sigaaNetworkDataSource.fetchCurrentClasses(cookie)
+        withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            val cookie = student.jsession
+            val login = student.login
+            val password = student.password
+            sigaaNetworkDataSource.fetchCurrentClasses(cookie)
+        }
     }
 
     override suspend fun getClass(idTurma: String): LiveData<out StudentClass> {
@@ -137,8 +139,8 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun insertFakeNews(idTurma: String) {
-        withContext(Dispatchers.IO){
-            studentDao.insertNews(News( "","fake", "", idTurma, "", "", ""))
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.insertNews(News( "","fake", "", idTurma, "", "", ""))
         }
     }
 
@@ -154,5 +156,13 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun fetchNewsPage(idTurma: String) {
+        withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            val requestId = studentDao.getClassWithIdTurmaAsync(idTurma).code
+            val cookie = student.jsession
+            sigaaNetworkDataSource.fetchNewsPage(idTurma, requestId, cookie)
+        }
+    }
 
 }

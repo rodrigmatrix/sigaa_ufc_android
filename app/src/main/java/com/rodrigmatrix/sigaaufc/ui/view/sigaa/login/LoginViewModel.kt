@@ -23,13 +23,15 @@ class LoginViewModel(
     }
 
     suspend fun saveLogin(login: String, password: String){
-        withContext(Dispatchers.IO){
-            sigaaRepository.saveLogin(login, password)
+        return withContext(Dispatchers.IO){
+            return@withContext sigaaRepository.saveLogin(login, password)
         }
     }
 
     suspend fun getCookie(): Boolean{
-        return sigaaRepository.getCookie()
+        return withContext(Dispatchers.IO){
+            return@withContext sigaaRepository.getCookie()
+        }
     }
 
     suspend fun getStudent(): LiveData<out Student> {
