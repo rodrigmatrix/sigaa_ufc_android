@@ -39,7 +39,7 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
             .get(ClassesViewModel::class.java)
         launch(handler) {
             val classes = viewModel.getCurrentClasses()
-            val previousClasses = viewModel.getCurrentClasses()
+            //val previousClasses = viewModel.getCurrentClasses()
             println(classes)
             runOnUiThread {
                 recyclerView_classes.layoutManager = LinearLayoutManager(context)

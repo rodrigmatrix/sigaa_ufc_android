@@ -103,8 +103,6 @@ class SigaaRepositoryImpl(
         withContext(Dispatchers.IO){
             val student = getStudentAsync()
             val cookie = student.jsession
-            val login = student.login
-            val password = student.password
             sigaaNetworkDataSource.fetchCurrentClasses(cookie)
         }
     }

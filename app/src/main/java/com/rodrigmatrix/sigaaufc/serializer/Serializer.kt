@@ -87,13 +87,17 @@ class Serializer {
             val studentName = select("div[class=nome_usuario]")
             student.name = studentName.text().toLowerCase().capitalizeWords()
             var matricula = response?.split("<td> Matr&#237;cula: </td>\n" + "\t\t\t\t\t\t<td> ")
-            matricula = matricula!![1].split(" </td>")
-            student.matricula = matricula[0]
-            val curso = response?.split("<td> Curso: </td>\n" + "\t\t\t\t\t\t<td> ")
-            val c = curso?.get(1)!!.split(" </td>")[0]
-            student.course = c.toLowerCase().capitalizeWords()
-            val linkProfilePic = select("img[src]")[0].attr("src")
-            student.profilePic = linkProfilePic
+            try {
+                val linkProfilePic = select("img[src]")[0].attr("src")
+                student.profilePic = linkProfilePic
+                matricula = matricula!![1].split(" </td>")
+                student.matricula = matricula[0]
+                val curso = response?.split("<td> Curso: </td>\n" + "\t\t\t\t\t\t<td> ")
+                val c = curso?.get(1)!!.split(" </td>")[0]
+                student.course = c.toLowerCase().capitalizeWords()
+            }catch(e: IndexOutOfBoundsException){
+                println(e)
+            }
             return Pair(student, classes)
         }
     }
@@ -125,11 +129,16 @@ class Serializer {
 
 
     fun parseIraRequestId(response: String?): Pair<String, String> {
-        val id = response!!.split("<input type=\"hidden\" name=\"id\" value=\"")[1].split("\"")[0]
-        println(id)
-        val script = response!!.split("de IRA', '")[1].split("'")[0]
-        println(script)
-        return Pair(id, script)
+        return try {
+            val id = response!!.split("<input type=\"hidden\" name=\"id\" value=\"")[1].split("\"")[0]
+            println(id)
+            val script = response!!.split("de IRA', '")[1].split("'")[0]
+            println(script)
+            Pair(id, script)
+        }catch(e: IndexOutOfBoundsException){
+            println(e)
+            Pair("", "")
+        }
     }
 
     fun parseIra(response: String?): MutableList<Ira>{
@@ -330,11 +339,15 @@ class Serializer {
     }
 
     fun parseAttendance(response: String?): Attendance{
-        val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0].toInt()
-        val total = response.split("Faltas Permitido: ")[1].split("</div> ")[0].toInt()
-        println("missed: $missed")
-        println("total: $total")
-        return Attendance(total, missed)
+        return try {
+            val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0].toInt()
+            val total = response.split("Faltas Permitido: ")[1].split("</div> ")[0].toInt()
+            println("missed: $missed")
+            println("total: $total")
+            Attendance(total, missed)
+        }catch(e: IndexOutOfBoundsException){
+            Attendance(0, 0)
+        }
     }
 
     fun parseGrades(idTurma: String, response: String?): MutableList<Grade> {

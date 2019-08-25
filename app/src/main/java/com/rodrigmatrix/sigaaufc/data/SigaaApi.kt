@@ -78,7 +78,7 @@ class SigaaApi(
             println("viewstate to save $viewState")
             studentDatabase.studentDao().upsertViewState(JavaxFaces(true, viewStateId))
         }catch(e: IndexOutOfBoundsException){
-            println(e)
+            println("SAVEVIEWSTATE $e")
         }
     }
 
@@ -259,7 +259,6 @@ class SigaaApi(
                 status = "Success"
                 val pairIra = sigaaSerializer.parseIraRequestId(res)
                 getIra(pairIra.first, pairIra.second, cookie)
-
             }
             else{
                 val error = response.body?.string()
