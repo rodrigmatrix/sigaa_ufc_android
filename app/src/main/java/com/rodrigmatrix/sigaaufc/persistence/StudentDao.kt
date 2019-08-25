@@ -116,6 +116,24 @@ interface StudentDao {
     @Query("DELETE FROM ira")
     fun deleteIra()
 
+    @Query("SELECT * FROM files WHERE idTurma LIKE :idTurma")
+    fun getFiles(idTurma: String): LiveData<MutableList<File>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertFile(file: File)
+
+    @Query("DELETE FROM files WHERE idTurma LIKE :idTurma")
+    fun deleteFiles(idTurma: String)
+
+    @Query("SELECT * FROM vinculos")
+    fun getVinculos(): MutableList<Vinculo>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertVinculos(vinculo: Vinculo)
+
+    @Query("DELETE FROM vinculos")
+    fun deleteVinculos()
+
 //
 //
 //

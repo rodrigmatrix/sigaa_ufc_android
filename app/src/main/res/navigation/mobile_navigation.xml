@@ -48,4 +48,9 @@
             android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.SigaaFragment"
             android:label="SIGAA"
             tools:layout="@layout/fragment_sigaa" />
+    <fragment
+            android:id="@+id/nav_ru_menu"
+            android:name="com.rodrigmatrix.sigaaufc.ui.fragments.RuMenuFragment"
+            android:label="Cardápio"
+            tools:layout="@layout/fragment_ru_menu" />
 </navigation>

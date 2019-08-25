@@ -6,10 +6,15 @@
         android:orientation="vertical"
         tools:context=".ui.view.sigaa.files.FilesFragment">
 
-    <TextView
-            android:gravity="center_horizontal"
-            android:layout_width="match_parent"
+    <include
+            android:id="@+id/no_file"
+            android:visibility="invisible"
+            layout="@layout/no_file_error"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_files"
+            android:visibility="invisible"
             android:layout_height="match_parent"
-            android:text="Arquivos estarão disponíveis em uma atualização futura" />
+            android:layout_width="match_parent"/>
 
 </LinearLayout>

@@ -12,7 +12,12 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.News
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.view.NewsContentSheetFragment
 import kotlinx.android.synthetic.main.news_row.view.*
 
-class NewsAdapter(private val newsFragment: NewsFragment, private val newsList: MutableList<News>): RecyclerView.Adapter<NewsViewHolder>(){
+class NewsAdapter(
+    private val newsFragment: NewsFragment,
+    private val newsList: MutableList<News>,
+    private val idTurma: String
+): RecyclerView.Adapter<NewsViewHolder>(){
+
     override fun getItemCount(): Int {
         return newsList.size
     }
@@ -20,7 +25,7 @@ class NewsAdapter(private val newsFragment: NewsFragment, private val newsList: 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val iraRow = layoutInflater.inflate(R.layout.news_row, parent, false)
-        return NewsViewHolder(newsFragment, iraRow)
+        return NewsViewHolder(newsFragment, iraRow, idTurma)
     }
 
     @SuppressLint("SetTextI18n")
@@ -37,13 +42,16 @@ class NewsAdapter(private val newsFragment: NewsFragment, private val newsList: 
 
 class NewsViewHolder(
     private val newsFragment: NewsFragment,
-    val view: View): RecyclerView.ViewHolder(view){
+    val view: View,
+    private val idTurma: String
+): RecyclerView.ViewHolder(view){
     init {
         view.card_news.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("idNews", view.id_news.text.toString())
             bundle.putString("requestId", view.requestId_news.text.toString())
             bundle.putString("requestId2", view.requestId2_news.text.toString())
+            bundle.putString("idTurma", idTurma)
             val newsContentSheetFragment = NewsContentSheetFragment()
             newsContentSheetFragment.arguments = bundle
             newsContentSheetFragment.show(newsFragment.fragmentManager!!, "content_news")

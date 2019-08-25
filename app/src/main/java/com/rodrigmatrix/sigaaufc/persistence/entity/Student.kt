@@ -99,3 +99,44 @@ data class Ira(
     var iraI: Double,
     var iraG: Double
 )
+
+@Entity(tableName = "files")
+data class File(
+    @PrimaryKey
+    var id: String,
+    var idTurma: String,
+    var name: String,
+    var requestId: String
+)
+
+@Entity(tableName = "vinculos", primaryKeys = ["name", "id"])
+data class Vinculo(
+    var name: String,
+    var status: String,
+    var content: String,
+    var id: String
+)
+
+//@Entity(tableName = "city", primaryKeys = ["latitude", "longitude"])
+//data class City(
+//    var latitude: Double,
+//    var longitude: Double,
+//    var id: Int,
+//    var name: String,
+//    var languages: Int,
+//    var area: Double,
+//    var population: Int,
+//    var density: Double
+//)
+//
+//@Entity(tableName = "spokenLanguages")
+//data class Languages(
+//    @PrimaryKey(autoGenerate = true)
+//    var id: Int,
+//    var name: String,
+//    var cityId: Int
+//)
+
+
+
+

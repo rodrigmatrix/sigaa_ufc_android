@@ -98,24 +98,28 @@ class Serializer {
         }
     }
 
-    fun getVinculoId(res: String?): String{
-            Jsoup.parse(res).run {
+    fun getVinculoId(res: String?): MutableList<Vinculo>{
+            return Jsoup.parse(res).run {
                 val names = select("span[class=col-xs-2]")
                 val active = select("span[class=col-xs-1 text-center]")
-                val ids = mutableListOf<String>()
+                val content = select("span[class=col-xs-6]")
+                val ids = mutableListOf<Vinculo>()
                 select("a[href]").forEach {
                     println(it.attr("href"))
                     if(it.attr("href").contains("sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")){
-                        ids.add(it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0])
+                        val idVinculo = it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0]
+                        println(idVinculo)
+                        ids.add(Vinculo("", "", "", idVinculo))
                     }
                 }
                 for((index, value) in names.withIndex()){
-                    if(value.text().contains("Discente (Graduação)") && (active[index+1].text() == "Sim")){
-                        return ids[index]
-                    }
+                    ids[index].name = value.text()
+                    ids[index].status = active[index+1].text()
+                    ids[index].content = content[index+1].text()
                 }
+                println(ids)
+                return@run ids
             }
-        return "error"
     }
 
 
@@ -288,8 +292,41 @@ class Serializer {
         return content
     }
 
-    fun parseFiles(response: String?){
+    fun parseFiles(response: String?, idTurma: String): MutableList<File>{
+        return Jsoup.parse(response).run {
+            val files = mutableListOf<File>()
+            val div = select("div[class=item]")
+            val span = div.select("span")
+            val a = span.select("a")
+            val img = a.select("img")
+            for((index, it) in a.withIndex()){
+                val onclick = it.attr("onclick")
+                val src = parseFileFormat(img.attr("src"))
+                println(src)
+                if(onclick.contains("idInserirMaterialArquivo")){
+                    val pair = parseFileId(onclick)
+                    var name = span[index].text()
+                    if(!name.contains(src)){
+                        name += ".$src"
+                    }
+                    files.add(File(pair.second, idTurma, name, pair.first))
+                }
+            }
+            if(files.size == 0){
+                files.add(File("0",idTurma, "null", "null"))
+            }
+            return@run files
+        }
+    }
 
+    private fun parseFileFormat(res: String): String{
+        return res.split("/porta_arquivos/icones/")[1].split(".png")[0]
+    }
+
+    private fun parseFileId(js: String): Pair<String, String>{
+        val requestId = js.split("['formAva'],'")[1].split(",id,")[0].split(",formAva:")[0]
+        val id = js.split(",id,")[1].split("','")[0]
+        return Pair(requestId, id)
     }
 
     fun parseAttendance(response: String?): Attendance{

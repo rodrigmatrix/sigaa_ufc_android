@@ -38,15 +38,17 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         val bundle = Bundle()
         bundle.putString("idTurma", idTurma)
         val attendanceFragment = AttendanceFragment()
-        attendanceFragment.arguments = bundle
         val gradesFragment = GradesFragment()
         val newsFragment = NewsFragment()
+        val filesFragment = FilesFragment()
+        attendanceFragment.arguments = bundle
         newsFragment.arguments = bundle
         gradesFragment.arguments = bundle
-        sectionsPagerAdapter.addFragment(newsFragment)
+        filesFragment.arguments = bundle
+        sectionsPagerAdapter.addFragment(filesFragment)
         sectionsPagerAdapter.addFragment(gradesFragment)
+        sectionsPagerAdapter.addFragment(newsFragment)
         sectionsPagerAdapter.addFragment(attendanceFragment)
-        sectionsPagerAdapter.addFragment(FilesFragment())
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         viewPager.offscreenPageLimit = 4
@@ -70,10 +72,10 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setTabs(){
-        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_news)
+        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_download)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
-        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_attendance)
-        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_download)
+        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_news)
+        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_attendance)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)

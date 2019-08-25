@@ -36,6 +36,13 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.getCookie()
     }
 
+    override suspend fun getSessionCookie(): String {
+        return withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            return@withContext student.jsession
+        }
+    }
+
     override suspend fun saveLogin(login: String, password: String) {
         withContext(Dispatchers.IO){
             val student = getStudentAsync()
@@ -93,11 +100,13 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun fetchCurrentClasses() {
-        val student = getStudentAsync()
-        val cookie = student.jsession
-        val login = student.login
-        val password = student.password
-        sigaaNetworkDataSource.fetchCurrentClasses(cookie)
+        withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            val cookie = student.jsession
+            val login = student.login
+            val password = student.password
+            sigaaNetworkDataSource.fetchCurrentClasses(cookie)
+        }
     }
 
     override suspend fun getClass(idTurma: String): LiveData<out StudentClass> {
@@ -137,8 +146,8 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun insertFakeNews(idTurma: String) {
-        withContext(Dispatchers.IO){
-            studentDao.insertNews(News( "","fake", "", idTurma, "", "", ""))
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.insertNews(News( "","fake", "", idTurma, "", "", ""))
         }
     }
 
@@ -154,5 +163,42 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun fetchNewsPage(idTurma: String) {
+        withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            val requestId = studentDao.getClassWithIdTurmaAsync(idTurma).code
+            val cookie = student.jsession
+            sigaaNetworkDataSource.fetchNewsPage(idTurma, requestId, cookie)
+        }
+    }
+
+    override suspend fun getFiles(idTurma: String): LiveData<out MutableList<File>> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getFiles(idTurma)
+        }
+    }
+
+    override suspend fun getViewStateId(): String {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getViewStateAsync().valueState
+        }
+    }
+
+    override suspend fun deleteFiles(idTurma: String) {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.deleteFiles(idTurma)
+        }
+    }
+
+    override suspend fun getVinculos(): MutableList<Vinculo> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getVinculos()
+        }
+    }
+
+    override suspend fun setVinculo(vinculo: String) {
+        val cookie = studentDao.getStudentAsync().jsession
+        return sigaaNetworkDataSource.setVinculo(cookie, vinculo)
+    }
 
 }

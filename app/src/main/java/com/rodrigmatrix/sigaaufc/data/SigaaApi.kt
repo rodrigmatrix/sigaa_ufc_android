@@ -1,13 +1,15 @@
 package com.rodrigmatrix.sigaaufc.data
 
+import android.app.DownloadManager
+import android.content.Context.DOWNLOAD_SERVICE
+import android.net.Uri
+import android.os.Environment
 import android.util.Log
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.JavaxFaces
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,8 +40,9 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
+                    val cookie = response.request.url.toString()
                     status = true
-                    val arr = response.request.url.toString().split("jsessionid=")
+                    val arr = cookie.split("jsessionid=")
                     val student = studentDatabase.studentDao().getStudentAsync()
                     if(student == null){
                         studentDatabase.studentDao().upsertStudent(Student(
@@ -125,13 +128,11 @@ class SigaaApi(
                             "Usuário ou senha inválidos"
                         }
                         "Vinculo" -> {
-                            val vinculoId = sigaaSerializer.getVinculoId(res)
-                            if(vinculoId != "error"){
-                                setVinculo(cookie, vinculoId)
+                            studentDatabase.studentDao().deleteVinculos()
+                            sigaaSerializer.getVinculoId(res).forEach {
+                                studentDatabase.studentDao().upsertVinculos(it)
                             }
-                            else{
-                                "Esse app funciona somente para cursos de graduação ativos. Para mais detalhes me envie um email"
-                            }
+                            "Vinculo"
                         }
                         else -> {
                             parser
@@ -159,9 +160,8 @@ class SigaaApi(
 
 
 
-    private suspend fun setVinculo(cookie: String, vinculoId: String): String{
-        return withContext(Dispatchers.IO){
-            var status = ""
+    suspend fun setVinculo(cookie: String, vinculoId: String){
+        withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=$vinculoId")
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -174,27 +174,22 @@ class SigaaApi(
                     .build()
                     .newCall(request)
                     .execute()
-                status = if(response.isSuccessful){
+                if(response.isSuccessful){
                     val res = response.body?.string()
                     println(res)
                     getClasses(cookie)
-                    "Success"
                 } else{
                     val res = response.body?.string()
                     println(res)
-                    "Erro de conexão"
                 }
             }
             catch(e: NoConnectivityException){
-                status = "Sem conexão com a internet"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
             catch (e: SocketTimeoutException) {
                 println("catch expirou")
-                status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
-            return@withContext status
         }
     }
 
@@ -353,11 +348,12 @@ class SigaaApi(
         println(viewState)
         println("cookie getclass $cookie")
         withContext(Dispatchers.IO){
+            studentDatabase.studentDao().deleteFiles(idTurma)
             val formBody = FormBody.Builder()
-                .add("form_acessarTurmaVirtual$id", "form_acessarTurmaVirtual$id")
                 .add("idTurma", idTurma)
-                .add("javax.faces.ViewState", viewState)
+                .add("form_acessarTurmaVirtual$id", "form_acessarTurmaVirtual$id")
                 .add("form_acessarTurmaVirtual$id:turmaVirtual$id", "form_acessarTurmaVirtual$id:turmaVirtual$id")
+                .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf#")
@@ -374,9 +370,17 @@ class SigaaApi(
             if(response.isSuccessful){
                 val res = response.body?.string()
                 saveViewState(res)
+                val files = sigaaSerializer.parseFiles(res, idTurma)
+                files.forEach {
+                    studentDatabase.studentDao().upsertFile(it)
+                }
+                val newsRequestId = sigaaSerializer.parseNewsRequestId(res)
+                val studentClass = studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
+                studentClass.code = newsRequestId
+                studentDatabase.studentDao().upsertClass(studentClass)
                 getNews(
                     idTurma,
-                    sigaaSerializer.parseNewsRequestId(res),
+                    newsRequestId,
                     cookie
                 )
                 getAttendance(
@@ -521,7 +525,7 @@ class SigaaApi(
         }
     }
 
-    private suspend fun getNews(idTurma: String, requestId: String, cookie: String){
+    suspend fun getNews(idTurma: String, requestId: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
@@ -549,6 +553,7 @@ class SigaaApi(
                     val news = sigaaSerializer.parseNews(idTurma, res)
                     studentDatabase.studentDao().deleteNews(idTurma)
                     news.forEach {
+                        println(it)
                         studentDatabase.studentDao().insertNews(it)
                     }
                 }
@@ -570,7 +575,6 @@ class SigaaApi(
     suspend fun fetchNewsContent(cookie: String, id: String, requestId: String, requestId2: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
-            var status = "Tempo de conexão expirou"
             println(requestId)
             println(requestId2)
             println(id)
@@ -582,9 +586,7 @@ class SigaaApi(
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/ava/NoticiaTurma/listar.jsf")
-                .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/ava/NoticiaTurma/mostrar.jsf")
                 .post(formBody)
                 .build()
             try {
@@ -595,7 +597,6 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    saveViewState(res)
                     val content = sigaaSerializer.parseNewsContent(res)
                     val news = studentDatabase.studentDao().getNewsWithIdAsync(id)
                     news.content = content
@@ -606,11 +607,9 @@ class SigaaApi(
                 }
             }
             catch(e: NoConnectivityException){
-                status = "Sem conexão com a internet"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
             catch (e: SocketTimeoutException) {
-                status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
         }
