@@ -14,10 +14,12 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
         News::class,
         JavaxFaces::class,
         Grade::class,
-        Ira::class],
-    version = 3,
+        Ira::class,
+        File::class],
+    version = 4,
     exportSchema = false
 )
+
 abstract class StudentDatabase : RoomDatabase() {
 
     abstract fun studentDao(): StudentDao

@@ -1,13 +1,14 @@
 package com.rodrigmatrix.sigaaufc.data
 
+import android.app.DownloadManager
+import android.content.Context.DOWNLOAD_SERVICE
+import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
-import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.JavaxFaces
-import com.rodrigmatrix.sigaaufc.persistence.entity.Student
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,8 +39,9 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
+                    val cookie = response.request.url.toString()
                     status = true
-                    val arr = response.request.url.toString().split("jsessionid=")
+                    val arr = cookie.split("jsessionid=")
                     val student = studentDatabase.studentDao().getStudentAsync()
                     if(student == null){
                         studentDatabase.studentDao().upsertStudent(Student(
@@ -353,11 +355,12 @@ class SigaaApi(
         println(viewState)
         println("cookie getclass $cookie")
         withContext(Dispatchers.IO){
+            studentDatabase.studentDao().deleteFiles(idTurma)
             val formBody = FormBody.Builder()
-                .add("form_acessarTurmaVirtual$id", "form_acessarTurmaVirtual$id")
                 .add("idTurma", idTurma)
-                .add("javax.faces.ViewState", viewState)
+                .add("form_acessarTurmaVirtual$id", "form_acessarTurmaVirtual$id")
                 .add("form_acessarTurmaVirtual$id:turmaVirtual$id", "form_acessarTurmaVirtual$id:turmaVirtual$id")
+                .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf#")
@@ -374,6 +377,10 @@ class SigaaApi(
             if(response.isSuccessful){
                 val res = response.body?.string()
                 saveViewState(res)
+                val files = sigaaSerializer.parseFiles(res, idTurma)
+                files.forEach {
+                    studentDatabase.studentDao().upsertFile(it)
+                }
                 val newsRequestId = sigaaSerializer.parseNewsRequestId(res)
                 val studentClass = studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
                 studentClass.code = newsRequestId

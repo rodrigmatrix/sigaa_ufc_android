@@ -100,6 +100,15 @@ data class Ira(
     var iraG: Double
 )
 
+@Entity(tableName = "files")
+data class File(
+    @PrimaryKey
+    var id: String,
+    var idTurma: String,
+    var name: String,
+    var requestId: String
+)
+
 //@Entity(tableName = "city", primaryKeys = ["latitude", "longitude"])
 //data class City(
 //    var latitude: Double,

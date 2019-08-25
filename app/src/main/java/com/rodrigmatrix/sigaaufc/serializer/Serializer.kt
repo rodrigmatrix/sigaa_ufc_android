@@ -288,8 +288,30 @@ class Serializer {
         return content
     }
 
-    fun parseFiles(response: String?){
+    fun parseFiles(response: String?, idTurma: String): MutableList<File>{
+        return Jsoup.parse(response).run {
+            val files = mutableListOf<File>()
+            val div = select("div[class=item]")
+            val span = div.select("span")
+            val a = span.select("a")
+            for((index, it) in a.withIndex()){
+                val onclick = it.attr("onclick")
+                if(onclick.contains("idInserirMaterialArquivo")){
+                    val pair = parseFileId(onclick)
+                    files.add(File(pair.second, idTurma, span[index].text(), pair.first))
+                }
+            }
+            if(files.size == 0){
+                files.add(File("0",idTurma, "null", "null"))
+            }
+            return@run files
+        }
+    }
 
+    private fun parseFileId(js: String): Pair<String, String>{
+        val requestId = js.split("['formAva'],'")[1].split(",id,")[0].split(",formAva:")[0]
+        val id = js.split(",id,")[1].split("','")[0]
+        return Pair(requestId, id)
     }
 
     fun parseAttendance(response: String?): Attendance{

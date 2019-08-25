@@ -38,15 +38,17 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         val bundle = Bundle()
         bundle.putString("idTurma", idTurma)
         val attendanceFragment = AttendanceFragment()
-        attendanceFragment.arguments = bundle
         val gradesFragment = GradesFragment()
         val newsFragment = NewsFragment()
+        val filesFragment = FilesFragment()
+        attendanceFragment.arguments = bundle
         newsFragment.arguments = bundle
         gradesFragment.arguments = bundle
+        filesFragment.arguments = bundle
         sectionsPagerAdapter.addFragment(newsFragment)
         sectionsPagerAdapter.addFragment(gradesFragment)
         sectionsPagerAdapter.addFragment(attendanceFragment)
-        sectionsPagerAdapter.addFragment(FilesFragment())
+        sectionsPagerAdapter.addFragment(filesFragment)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         viewPager.offscreenPageLimit = 4

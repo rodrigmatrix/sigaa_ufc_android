@@ -19,6 +19,8 @@ interface SigaaRepository {
 
     suspend fun getCookie(): Boolean
 
+    suspend fun getSessionCookie(): String
+
     suspend fun getHistoryRu(): LiveData<out MutableList<HistoryRU>>
 
     suspend fun getRuCard(): LiveData<out RuCard>
@@ -52,5 +54,11 @@ interface SigaaRepository {
     suspend fun fetchNews(newsId: String, requestId: String, requestId2: String)
 
     suspend fun fetchNewsPage(idTurma: String)
+
+    suspend fun getFiles(idTurma: String): LiveData<out MutableList<File>>
+
+    suspend fun getViewStateId(): String
+
+    suspend fun deleteFiles(idTurma: String)
 
 }

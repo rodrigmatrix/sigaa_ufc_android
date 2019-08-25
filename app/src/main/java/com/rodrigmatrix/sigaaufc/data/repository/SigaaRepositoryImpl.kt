@@ -36,6 +36,13 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.getCookie()
     }
 
+    override suspend fun getSessionCookie(): String {
+        return withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            return@withContext student.jsession
+        }
+    }
+
     override suspend fun saveLogin(login: String, password: String) {
         withContext(Dispatchers.IO){
             val student = getStudentAsync()
@@ -162,6 +169,24 @@ class SigaaRepositoryImpl(
             val requestId = studentDao.getClassWithIdTurmaAsync(idTurma).code
             val cookie = student.jsession
             sigaaNetworkDataSource.fetchNewsPage(idTurma, requestId, cookie)
+        }
+    }
+
+    override suspend fun getFiles(idTurma: String): LiveData<out MutableList<File>> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getFiles(idTurma)
+        }
+    }
+
+    override suspend fun getViewStateId(): String {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getViewStateAsync().valueState
+        }
+    }
+
+    override suspend fun deleteFiles(idTurma: String) {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.deleteFiles(idTurma)
         }
     }
 
