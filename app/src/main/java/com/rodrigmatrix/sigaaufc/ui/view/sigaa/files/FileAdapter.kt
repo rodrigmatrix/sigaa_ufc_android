@@ -132,6 +132,7 @@ class FileViewHolder(
         progress.setMessage(name)
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         progress.isIndeterminate = true
+        progress.setCancelable(false)
         progress.show()
         var status = true
         withContext(Dispatchers.IO){
