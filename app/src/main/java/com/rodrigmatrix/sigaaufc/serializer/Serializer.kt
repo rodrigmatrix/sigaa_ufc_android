@@ -310,9 +310,9 @@ class Serializer {
             val img = a.select("img")
             for((index, it) in a.withIndex()){
                 val onclick = it.attr("onclick")
-                val src = parseFileFormat(img.attr("src"))
-                println(src)
                 if(onclick.contains("idInserirMaterialArquivo")){
+                    val src = parseFileFormat(img[index].attr("src"))
+                    println(src)
                     val pair = parseFileId(onclick)
                     var name = span[index].text()
                     if(!name.contains(src)){

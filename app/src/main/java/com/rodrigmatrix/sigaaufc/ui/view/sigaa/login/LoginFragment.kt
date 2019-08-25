@@ -219,14 +219,20 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     .setPositiveButton("Sim"){ _, _ ->
                         launch(handler) {
                             viewModel.saveLogin(login, password)
-                            openSigaa()
+                            if(!isVinculo){
+                                openSigaa()
+                            }
                         }
                     }
                     .setNegativeButton("Agora Não"){_, _ ->
-                        openSigaa()
+                        if(!isVinculo){
+                            openSigaa()
+                        }
                     }
                     .setOnCancelListener {
-                        openSigaa()
+                        if(!isVinculo){
+                            openSigaa()
+                        }
                     }
                     .show()
             }
