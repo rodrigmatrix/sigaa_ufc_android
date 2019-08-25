@@ -15,8 +15,9 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
         JavaxFaces::class,
         Grade::class,
         Ira::class,
-        File::class],
-    version = 4,
+        File::class,
+        Vinculo::class],
+    version = 6,
     exportSchema = false
 )
 

@@ -190,4 +190,15 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun getVinculos(): MutableList<Vinculo> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getVinculos()
+        }
+    }
+
+    override suspend fun setVinculo(vinculo: String) {
+        val cookie = studentDao.getStudentAsync().jsession
+        return sigaaNetworkDataSource.setVinculo(cookie, vinculo)
+    }
+
 }

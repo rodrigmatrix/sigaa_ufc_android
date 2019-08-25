@@ -61,4 +61,8 @@ interface SigaaRepository {
 
     suspend fun deleteFiles(idTurma: String)
 
+    suspend fun getVinculos(): MutableList<Vinculo>
+
+    suspend fun setVinculo(vinculo: String)
+
 }

@@ -125,6 +125,15 @@ interface StudentDao {
     @Query("DELETE FROM files WHERE idTurma LIKE :idTurma")
     fun deleteFiles(idTurma: String)
 
+    @Query("SELECT * FROM vinculos")
+    fun getVinculos(): MutableList<Vinculo>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertVinculos(vinculo: Vinculo)
+
+    @Query("DELETE FROM vinculos")
+    fun deleteVinculos()
+
 //
 //
 //

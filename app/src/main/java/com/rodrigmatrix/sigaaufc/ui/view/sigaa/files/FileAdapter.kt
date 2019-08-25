@@ -168,7 +168,7 @@ class FileViewHolder(
                         target.setDataAndType((Uri.fromFile(openFile)), "application/${getFileType(name)}")
                         target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                         try {
-                            val intent = createChooser(target, "Abrir arquivo")
+                            val intent = createChooser(target, "Abrir arquivo ${getFileType(name)}")
                             view.context.startActivity(intent)
                         } catch (e: android.content.ActivityNotFoundException){
                             Snackbar.make(view,

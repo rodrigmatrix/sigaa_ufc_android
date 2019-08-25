@@ -5,6 +5,7 @@ import android.content.Context.DOWNLOAD_SERVICE
 import android.net.Uri
 import android.os.Environment
 import android.util.Log
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
@@ -127,13 +128,11 @@ class SigaaApi(
                             "Usuário ou senha inválidos"
                         }
                         "Vinculo" -> {
-                            val vinculoId = sigaaSerializer.getVinculoId(res)
-                            if(vinculoId != "error"){
-                                setVinculo(cookie, vinculoId)
+                            studentDatabase.studentDao().deleteVinculos()
+                            sigaaSerializer.getVinculoId(res).forEach {
+                                studentDatabase.studentDao().upsertVinculos(it)
                             }
-                            else{
-                                "Esse app funciona somente para cursos de graduação ativos. Para mais detalhes me envie um email"
-                            }
+                            "Vinculo"
                         }
                         else -> {
                             parser
@@ -161,9 +160,8 @@ class SigaaApi(
 
 
 
-    private suspend fun setVinculo(cookie: String, vinculoId: String): String{
-        return withContext(Dispatchers.IO){
-            var status = ""
+    suspend fun setVinculo(cookie: String, vinculoId: String){
+        withContext(Dispatchers.IO){
             val request = Request.Builder()
                 .url("https://si3.ufc.br/sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=$vinculoId")
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -176,27 +174,22 @@ class SigaaApi(
                     .build()
                     .newCall(request)
                     .execute()
-                status = if(response.isSuccessful){
+                if(response.isSuccessful){
                     val res = response.body?.string()
                     println(res)
                     getClasses(cookie)
-                    "Success"
                 } else{
                     val res = response.body?.string()
                     println(res)
-                    "Erro de conexão"
                 }
             }
             catch(e: NoConnectivityException){
-                status = "Sem conexão com a internet"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
             catch (e: SocketTimeoutException) {
                 println("catch expirou")
-                status = "Tempo de conexão expirou"
                 Log.e("Connectivity", "No internet Connection.", e)
             }
-            return@withContext status
         }
     }
 

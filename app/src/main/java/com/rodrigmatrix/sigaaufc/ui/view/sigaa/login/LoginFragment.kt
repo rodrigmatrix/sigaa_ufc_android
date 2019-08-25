@@ -2,6 +2,7 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.login
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.main.SigaaActivity
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -78,20 +80,59 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     }
 
     private suspend fun handleLogin(login: String, password: String, res: String){
-        if(res == "Success"){
-            runOnUiThread {
-                progress_login.isVisible = false
+        when (res) {
+            "Success" -> {
+                runOnUiThread {
+                    progress_login.isVisible = false
+                }
+                saveCredentials(login, password, false)
             }
-            saveCredentials(login, password)
-        }
-        else{
-            runOnUiThread {
+            "Vinculo" -> {
+                saveCredentials(login, password, true)
+                setVinculo(viewModel.getVinculos())
+            }
+            else -> runOnUiThread {
                 Snackbar.make(fragment_login, res, Snackbar.LENGTH_LONG).show()
                 login_btn.isEnabled = true
                 progress_login.isVisible = false
+
             }
         }
     }
+
+    private fun setVinculo(vinculos: MutableList<Vinculo>){
+        val arrayList = arrayListOf<String>()
+        vinculos.forEach {
+            arrayList.add(it.content)
+            println(it)
+        }
+        arrayList.forEach {
+            println(it)
+        }
+        val array = arrayOfNulls<String>(arrayList.size)
+        arrayList.toArray(array)
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Escolher Vínculo")
+            .setSingleChoiceItems(array, -1) { dialogInterface, i ->
+                println(array[i])
+                println(vinculos[i].id)
+                setVinculo(vinculos[i].id)
+                dialogInterface.dismiss()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun setVinculo(vinculo: String){
+        launch {
+            viewModel.setVinculo(vinculo)
+            runOnUiThread {
+                progress_login.isVisible = false
+                openSigaa()
+            }
+        }
+    }
+
 
     private fun loadCookie(){
         launch(handler) {
@@ -119,16 +160,16 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         loadCookie()
     }
 
-    private fun saveCredentials(login: String, password: String){
+    private fun saveCredentials(login: String, password: String, isVinculo: Boolean){
         launch(handler) {
             val student = viewModel.getStudentAsync()
             if(student?.login == ""){
-                saveDialog(true, login, password)
+                saveDialog(true, login, password, isVinculo)
             }
             else if((student?.login != login) || (student?.password != password)){
-                saveDialog(false, login, password)
+                saveDialog(false, login, password, isVinculo)
             }
-            else{
+            else if(!isVinculo){
                 openSigaa()
             }
         }
@@ -143,7 +184,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    private fun saveDialog(newLogin: Boolean, login: String, password: String){
+    private fun saveDialog(newLogin: Boolean, login: String, password: String, isVinculo: Boolean){
         if(newLogin){
             runOnUiThread {
                 MaterialAlertDialogBuilder(fragment_login.context)
@@ -152,14 +193,20 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                     .setPositiveButton("Sim"){ _, _ ->
                         launch(handler) {
                             viewModel.saveLogin(login, password)
-                            openSigaa()
+                            if(!isVinculo){
+                                openSigaa()
+                            }
                         }
                     }
                     .setNegativeButton("Agora Não"){_, _ ->
-                        openSigaa()
+                        if(!isVinculo){
+                            openSigaa()
+                        }
                     }
                     .setOnCancelListener {
-                        openSigaa()
+                        if(!isVinculo){
+                            openSigaa()
+                        }
                     }
                     .show()
             }

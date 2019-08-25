@@ -47,4 +47,8 @@ class SigaaNetworkDataSourceImpl(
         return sigaaApi.getNews(idTurma, requestId, cookie)
     }
 
+    override suspend fun setVinculo(cookie: String, vinculo: String) {
+        return sigaaApi.setVinculo(cookie, vinculo)
+    }
+
 }

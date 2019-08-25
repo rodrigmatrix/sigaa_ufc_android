@@ -109,6 +109,14 @@ data class File(
     var requestId: String
 )
 
+@Entity(tableName = "vinculos", primaryKeys = ["name", "id"])
+data class Vinculo(
+    var name: String,
+    var status: String,
+    var content: String,
+    var id: String
+)
+
 //@Entity(tableName = "city", primaryKeys = ["latitude", "longitude"])
 //data class City(
 //    var latitude: Double,

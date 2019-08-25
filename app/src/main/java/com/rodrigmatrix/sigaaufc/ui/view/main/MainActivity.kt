@@ -53,7 +53,6 @@ class MainActivity : ScopedActivity(), KodeinAware {
             setOf(
                 R.id.nav_login,
                 R.id.nav_ru,
-                R.id.nav_ru_menu,
                 R.id.nav_library,
                 R.id.nav_settings,
                 R.id.nav_about

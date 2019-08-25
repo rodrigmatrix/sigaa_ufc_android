@@ -12,10 +12,10 @@
                 android:id="@+id/nav_ru"
                 android:icon="@drawable/ic_credit_card"
                 android:title="@string/ru_shortcut" />
-        <item
-                android:id="@+id/nav_ru_menu"
-                android:icon="@drawable/ic_event_note"
-                android:title="@string/ru_menu" />
+<!--        <item-->
+<!--                android:id="@+id/nav_ru_menu"-->
+<!--                android:icon="@drawable/ic_event_note"-->
+<!--                android:title="@string/ru_menu" />-->
         <item
             android:id="@+id/nav_library"
             android:icon="@drawable/ic_local_library"

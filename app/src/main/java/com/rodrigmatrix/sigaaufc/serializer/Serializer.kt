@@ -98,24 +98,28 @@ class Serializer {
         }
     }
 
-    fun getVinculoId(res: String?): String{
-            Jsoup.parse(res).run {
+    fun getVinculoId(res: String?): MutableList<Vinculo>{
+            return Jsoup.parse(res).run {
                 val names = select("span[class=col-xs-2]")
                 val active = select("span[class=col-xs-1 text-center]")
-                val ids = mutableListOf<String>()
+                val content = select("span[class=col-xs-6]")
+                val ids = mutableListOf<Vinculo>()
                 select("a[href]").forEach {
                     println(it.attr("href"))
                     if(it.attr("href").contains("sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")){
-                        ids.add(it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0])
+                        val idVinculo = it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0]
+                        println(idVinculo)
+                        ids.add(Vinculo("", "", "", idVinculo))
                     }
                 }
                 for((index, value) in names.withIndex()){
-                    if(value.text().contains("Discente (Graduação)") && (active[index+1].text() == "Sim")){
-                        return ids[index]
-                    }
+                    ids[index].name = value.text()
+                    ids[index].status = active[index+1].text()
+                    ids[index].content = content[index+1].text()
                 }
+                println(ids)
+                return@run ids
             }
-        return "error"
     }
 
 

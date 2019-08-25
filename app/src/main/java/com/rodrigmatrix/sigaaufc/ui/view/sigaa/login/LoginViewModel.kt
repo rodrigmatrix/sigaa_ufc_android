@@ -6,6 +6,7 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.lazyDeferred
 import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
+import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -43,6 +44,18 @@ class LoginViewModel(
     suspend fun getStudentAsync(): Student{
         return withContext(Dispatchers.IO){
             return@withContext sigaaRepository.getStudentAsync()
+        }
+    }
+
+    suspend fun getVinculos(): MutableList<Vinculo>{
+        return withContext(Dispatchers.IO){
+            return@withContext sigaaRepository.getVinculos()
+        }
+    }
+
+    suspend fun setVinculo(vinculo: String){
+        return withContext(Dispatchers.IO){
+            return@withContext sigaaRepository.setVinculo(vinculo)
         }
     }
 }
