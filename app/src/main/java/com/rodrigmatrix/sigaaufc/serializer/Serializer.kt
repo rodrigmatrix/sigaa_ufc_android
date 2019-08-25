@@ -294,11 +294,18 @@ class Serializer {
             val div = select("div[class=item]")
             val span = div.select("span")
             val a = span.select("a")
+            val img = a.select("img")
             for((index, it) in a.withIndex()){
                 val onclick = it.attr("onclick")
+                val src = parseFileFormat(img.attr("src"))
+                println(src)
                 if(onclick.contains("idInserirMaterialArquivo")){
                     val pair = parseFileId(onclick)
-                    files.add(File(pair.second, idTurma, span[index].text(), pair.first))
+                    var name = span[index].text()
+                    if(!name.contains(src)){
+                        name += ".$src"
+                    }
+                    files.add(File(pair.second, idTurma, name, pair.first))
                 }
             }
             if(files.size == 0){
@@ -306,6 +313,10 @@ class Serializer {
             }
             return@run files
         }
+    }
+
+    private fun parseFileFormat(res: String): String{
+        return res.split("/porta_arquivos/icones/")[1].split(".png")[0]
     }
 
     private fun parseFileId(js: String): Pair<String, String>{

@@ -34,6 +34,9 @@ import android.widget.ProgressBar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassActivity
+import java.io.ByteArrayInputStream
+import java.net.URLConnection
 
 
 class FileAdapter(
@@ -69,6 +72,7 @@ class FileViewHolder(
     private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
+    private var viewState = "4"
 
     init {
         view.download_button.setOnClickListener {
@@ -118,7 +122,7 @@ class FileViewHolder(
             .add("formAva", "formAva")
             .add(requestId, requestId)
             .add("id", id)
-            .add("javax.faces.ViewState", "j_id4")
+            .add("javax.faces.ViewState", "j_id$viewState")
             .build()
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/ava/index.jsf")
@@ -126,11 +130,11 @@ class FileViewHolder(
             .header("Cookie", "JSESSIONID=$cookie")
             .post(formBody)
             .build()
-        val progress = ProgressDialog(view.context)
-        progress.setMessage(name)
-        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-        progress.isIndeterminate = true
-        progress.show()
+//        val progress = ProgressDialog(view.context)
+//        progress.setMessage(name)
+//        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+//        progress.isIndeterminate = true
+//        progress.show()
 //        val progress = MaterialAlertDialogBuilder(view.context)
 //            .setTitle(name)
 //            .setMessage("Aguarde o download do arquivo")
@@ -145,44 +149,47 @@ class FileViewHolder(
                     .newCall(request)
                     .execute()
                 if(response.isSuccessful){
-                    val res = response.body?.string()
-                    if(res!!.contains("html")){
-                        progress.dismiss()
+                    val content = response.body?.byteStream()!!.readBytes()
+                    val directory = Environment.getExternalStorageDirectory().toString() + "/Download"
+                    val dir = java.io.File(directory)
+                    if(!dir.exists()){
+                        dir.mkdirs()
+                    }
+                    val file = java.io.File("$directory/$name")
+                    file.createNewFile()
+                    java.io.File(directory, name).writeBytes(content)
+                    val res = java.io.File(directory, name).readLines().toString()
+                    if(res.contains("html")){
                         Snackbar.make(view,
-                            "Erro ao efetuar download. Feche a disciplina e tente novamente.", Snackbar.LENGTH_LONG).show()
+                            "Erro ao efetuar download. Tentando novamente.", Snackbar.LENGTH_LONG).show()
+                        viewState = getViewState(res)
+                        downloadFile()
                     }
                     else{
-                        val directory = Environment.getExternalStorageDirectory().toString() + "/Download"
-                        val content = response.body?.byteStream()!!.readBytes()
-                        val dir = java.io.File(directory)
-                        if(!dir.exists()){
-                            dir.mkdirs()
-                        }
-                        val file = java.io.File("$directory/$name")
-                        file.createNewFile()
-                        java.io.File(directory, name).writeBytes(content)
-                        progress.dismiss()
                         Snackbar.make(view,
                             "Arquivo baixado com sucesso. Verifique seus downloads", Snackbar.LENGTH_LONG).show()
+                    }
 //                    val m = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
 //                    m.invoke(null)
 //                    val intent = Intent(Intent.ACTION_VIEW)
 //                    intent.setDataAndType(Uri.fromFile(file), "pdf")
 //                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 //                    startActivity(view.context, intent, null)
-                    }
                 }
                 else{
-                    progress.dismiss()
                     Snackbar.make(view,
                         "Erro ao efetuar download. Feche a disciplina e tente novamente.", Snackbar.LENGTH_LONG).show()
                 }
             }
             catch(e: TimeoutException){
-                progress.dismiss()
                 Snackbar.make(view,
                     "Tempo de conexão expirou. Tente novamente", Snackbar.LENGTH_LONG).show()
             }
+            //progress.dismiss()
         }
+    }
+
+    private fun getViewState(res: String): String{
+        return res.split("value=\"j_id")[1].split("\"")[0]
     }
 }
