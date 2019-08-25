@@ -8,8 +8,6 @@ import android.app.ProgressDialog
 import android.content.Context.DOWNLOAD_SERVICE
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
 import android.system.Os.read
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +27,9 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 import androidx.core.content.ContextCompat.startActivity
 import android.content.Intent
-import android.os.StrictMode
+import android.content.Intent.createChooser
+import android.os.*
+import android.util.Log
 import android.widget.ProgressBar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rodrigmatrix.sigaaufc.R
@@ -73,6 +73,7 @@ class FileViewHolder(
     private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
+    private lateinit var progress: ProgressDialog
 
     init {
         view.download_button.setOnClickListener {
@@ -94,8 +95,12 @@ class FileViewHolder(
         }
     }
 
+    val handler = CoroutineExceptionHandler { _, throwable ->
+        Log.e("Exception", ":$throwable")
+    }
+
     private fun startDownload(){
-        launch {
+        launch(handler) {
             downloadFile("4")
         }
     }
@@ -123,15 +128,12 @@ class FileViewHolder(
             .header("Cookie", "JSESSIONID=$cookie")
             .post(formBody)
             .build()
-//        val progress = ProgressDialog(view.context)
-//        progress.setMessage(name)
-//        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-//        progress.isIndeterminate = true
-//        progress.show()
-//        val progress = MaterialAlertDialogBuilder(view.context)
-//            .setTitle(name)
-//            .setMessage("Aguarde o download do arquivo")
-//            .show()
+        progress = ProgressDialog(view.context)
+        progress.setMessage(name)
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progress.isIndeterminate = true
+        progress.show()
+        var status = true
         withContext(Dispatchers.IO){
             try {
                 val response = OkHttpClient
@@ -153,30 +155,26 @@ class FileViewHolder(
                     java.io.File(directory, name).writeBytes(content)
                     val res = java.io.File(directory, name).readLines().toString()
                     if(res.contains("html")){
-                        file.delete()
-                        Snackbar.make(view,
-                            "Erro ao efetuar download. Tentando novamente.", Snackbar.LENGTH_LONG).show()
-                        downloadFile(getViewState(res))
+                        status = false
                     }
                     else{
                         Snackbar.make(view,
-                            "Arquivo baixado com sucesso. Verifique sua pasta Sigaa", Snackbar.LENGTH_LONG).show()
-                        val intent = Intent(Intent.ACTION_GET_CONTENT)
-                        intent.addCategory(Intent.CATEGORY_OPENABLE)
-                        intent.setDataAndType((Uri.parse(directory)), "*/*")
+                            "Arquivo baixado com sucesso. Verifique sua pasta de Downloads", Snackbar.LENGTH_LONG).show()
+                        val builder = StrictMode.VmPolicy.Builder()
+                        StrictMode.setVmPolicy(builder.build())
+                        builder.detectFileUriExposure()
+                        val openFile = java.io.File("$directory/$name")
+                        val target = Intent(Intent.ACTION_VIEW)
+                        target.setDataAndType((Uri.fromFile(openFile)), "application/${getFileType(name)}")
+                        target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
                         try {
+                            val intent = createChooser(target, "Abrir arquivo")
                             view.context.startActivity(intent)
                         } catch (e: android.content.ActivityNotFoundException){
                             Snackbar.make(view,
                                 "Por favor instale um gerenciador de arquivos para visualizar seus downloads.", Snackbar.LENGTH_LONG).show()
                         }
                     }
-//                    val m = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
-//                    m.invoke(null)
-//                    val intent = Intent(Intent.ACTION_VIEW)
-//                    intent.setDataAndType(Uri.fromFile(file), "pdf")
-//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//                    startActivity(view.context, intent, null)
                 }
                 else{
                     Snackbar.make(view,
@@ -187,11 +185,21 @@ class FileViewHolder(
                 Snackbar.make(view,
                     "Tempo de conexão expirou. Tente novamente", Snackbar.LENGTH_LONG).show()
             }
-            //progress.dismiss()
+            progress.dismiss()
+        }
+        if(!status){
+            val directory = Environment.getExternalStorageDirectory().toString() + "/Download"
+            val res = java.io.File(directory, name).readLines().toString()
+            downloadFile(getViewState(res))
         }
     }
 
+
+
     private fun getViewState(res: String): String{
         return res.split("value=\"j_id")[1].split("\"")[0]
+    }
+    private fun getFileType(name: String): String{
+        return name.split('.').last()
     }
 }

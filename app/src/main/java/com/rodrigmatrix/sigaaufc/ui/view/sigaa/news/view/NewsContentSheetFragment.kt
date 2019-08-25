@@ -56,7 +56,7 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
 
     private fun fetchContent(){
         launch(handler){
-            viewModel.fetchNewsPage(turmaId)
+            //viewModel.fetchNewsPage(turmaId)
             viewModel.fetchNews(newsId, requestId, requestId2)
             bindUi()
         }
