@@ -35,6 +35,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassActivity
+import okhttp3.internal.waitMillis
 import java.io.ByteArrayInputStream
 import java.net.URLConnection
 
@@ -72,38 +73,30 @@ class FileViewHolder(
     private var job = Job()
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
-    private var viewState = "4"
 
     init {
         view.download_button.setOnClickListener {
-            val url = "https://si3.ufc.br/sigaa/ava/index.jsf"
-            checkFilesPermission(url)
+            checkFilesPermission()
         }
     }
 
-    private fun checkFilesPermission(url: String){
+    private fun checkFilesPermission(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             if(checkSelfPermission(view.context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
                 makeRequest()
             }
             else{
-                startDownload(url)
+                startDownload()
             }
         }
         else{
-            startDownload(url)
+            startDownload()
         }
     }
 
-    private fun startDownload(url: String){
-        val fileName  = view.file_name.text.toString()
-        if(fileName == "Nenhum arquivo disponível nessa disciplina"){
-            Snackbar.make(view,"Nenhum arquivo disponível nessa disciplina", Snackbar.LENGTH_LONG).show()
-        }
-        else{
-            launch {
-                downloadFile()
-            }
+    private fun startDownload(){
+        launch {
+            downloadFile("4")
         }
     }
 
@@ -114,7 +107,7 @@ class FileViewHolder(
             1000)
     }
 
-    private suspend fun downloadFile(){
+    private suspend fun downloadFile(viewState: String){
         val id = view.id_file.text.toString()
         val requestId = view.request_id_file.text.toString()
         val name = view.file_name.text.toString()
@@ -160,14 +153,23 @@ class FileViewHolder(
                     java.io.File(directory, name).writeBytes(content)
                     val res = java.io.File(directory, name).readLines().toString()
                     if(res.contains("html")){
+                        file.delete()
                         Snackbar.make(view,
                             "Erro ao efetuar download. Tentando novamente.", Snackbar.LENGTH_LONG).show()
-                        viewState = getViewState(res)
-                        downloadFile()
+                        downloadFile(getViewState(res))
                     }
                     else{
                         Snackbar.make(view,
-                            "Arquivo baixado com sucesso. Verifique seus downloads", Snackbar.LENGTH_LONG).show()
+                            "Arquivo baixado com sucesso. Verifique sua pasta Sigaa", Snackbar.LENGTH_LONG).show()
+                        val intent = Intent(Intent.ACTION_GET_CONTENT)
+                        intent.addCategory(Intent.CATEGORY_OPENABLE)
+                        intent.setDataAndType((Uri.parse(directory)), "*/*")
+                        try {
+                            view.context.startActivity(intent)
+                        } catch (e: android.content.ActivityNotFoundException){
+                            Snackbar.make(view,
+                                "Por favor instale um gerenciador de arquivos para visualizar seus downloads.", Snackbar.LENGTH_LONG).show()
+                        }
                     }
 //                    val m = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
 //                    m.invoke(null)

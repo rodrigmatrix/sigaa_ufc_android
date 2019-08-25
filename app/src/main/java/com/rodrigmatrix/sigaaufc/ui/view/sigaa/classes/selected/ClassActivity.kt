@@ -45,10 +45,10 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         newsFragment.arguments = bundle
         gradesFragment.arguments = bundle
         filesFragment.arguments = bundle
-        sectionsPagerAdapter.addFragment(newsFragment)
-        sectionsPagerAdapter.addFragment(gradesFragment)
-        sectionsPagerAdapter.addFragment(attendanceFragment)
         sectionsPagerAdapter.addFragment(filesFragment)
+        sectionsPagerAdapter.addFragment(gradesFragment)
+        sectionsPagerAdapter.addFragment(newsFragment)
+        sectionsPagerAdapter.addFragment(attendanceFragment)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
         viewPager.offscreenPageLimit = 4
@@ -72,10 +72,10 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setTabs(){
-        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_news)
+        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_download)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
-        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_attendance)
-        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_download)
+        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_news)
+        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_attendance)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
