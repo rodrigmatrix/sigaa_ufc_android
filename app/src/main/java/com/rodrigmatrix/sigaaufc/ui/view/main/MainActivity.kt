@@ -80,8 +80,11 @@ class MainActivity : ScopedActivity(), KodeinAware {
                 .load("https://si3.ufc.br/$profilePic")
                 .into(nav_view.getHeaderView(0).profile_pic_image)
         }
+        else{
+            nav_view.getHeaderView(0).profile_pic_image.setImageResource(R.drawable.avatar_circle_blue)
+        }
         if(name != ""){
-            nav_view.getHeaderView(0).student_name_menu_text.text = "Olá ${name.split(" ")[0]}"
+            nav_view.getHeaderView(0).student_name_menu_text.text = "Olá ${name.split(" ")[0]} ${name.split(" ").last()}"
             nav_view.getHeaderView(0).matricula_menu_text.text = "Matrícula: $matricula"
         }
     }
