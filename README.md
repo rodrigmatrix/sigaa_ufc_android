@@ -24,7 +24,7 @@ Aplicativo do Sigaa da Universidade Federal do Ceará
 ## Screenshots Dark Theme
 | Disciplinas | RU | Nav View | Login |
 |---|---|---|---|
-|![](https://user-images.githubusercontent.com/7853887/62407681-ebf40000-b592-11e9-9433-95b489693537.png)|![](https://user-images.githubusercontent.com/7853887/62407679-ebf40000-b592-11e9-9e9c-13394cdeaf63.png)|![](https://user-images.githubusercontent.com/7853887/62407685-ec8c9680-b592-11e9-9830-a770a3083082.png)|![](https://user-images.githubusercontent.com/7853887/62407680-ebf40000-b592-11e9-9ce9-43a7a4ada51d.png)|
+|![](https://user-images.githubusercontent.com/7853887/62407681-ebf40000-b592-11e9-9433-95b489693537.png)|![](https://user-images.githubusercontent.com/7853887/63657683-0167de80-c77b-11e9-85fa-2ada473a8dbc.png)|![](https://user-images.githubusercontent.com/7853887/62407685-ec8c9680-b592-11e9-9830-a770a3083082.png)|![](https://user-images.githubusercontent.com/7853887/62407680-ebf40000-b592-11e9-9ce9-43a7a4ada51d.png)|
 
 
 | Frequência | Notas | Biblioteca | Sobre |
