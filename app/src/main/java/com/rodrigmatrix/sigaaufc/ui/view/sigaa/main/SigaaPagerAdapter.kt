@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 private var fragmentList = arrayListOf<Fragment>()
 private val titleList = listOf( "Disciplinas", "IRA")
 
+@Suppress("DEPRECATION")
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         return fragmentList[position]

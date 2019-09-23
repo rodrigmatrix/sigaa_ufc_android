@@ -83,18 +83,14 @@ class Serializer {
                 println(classes[id-1])
                 id++
             }
-
-            val studentName = select("div[class=nome_usuario]")
-            student.name = studentName.text().toLowerCase().capitalizeWords()
-            var matricula = response?.split("<td> Matr&#237;cula: </td>\n" + "\t\t\t\t\t\t<td> ")
             try {
+                val studentName = select("div[class=nome_usuario]")
+                student.name = studentName.text().toLowerCase().capitalizeWords()
+                var matricula = response?.split("<td> Matr&#237;cula: </td>\n" + "\t\t\t\t\t\t<td> ")
                 val linkProfilePic = select("img[src]")[0].attr("src")
                 student.profilePic = linkProfilePic
                 matricula = matricula!![1].split(" </td>")
                 student.matricula = matricula[0]
-                val curso = response?.split("<td> Curso: </td>\n" + "\t\t\t\t\t\t<td> ")
-                val c = curso?.get(1)!!.split(" </td>")[0]
-                student.course = c.toLowerCase().capitalizeWords()
             }catch(e: IndexOutOfBoundsException){
                 println(e)
             }
@@ -315,7 +311,12 @@ class Serializer {
                     println(src)
                     val pair = parseFileId(onclick)
                     var name = span[index].text()
-                    if(!name.contains(src)){
+                    if(name.contains(".docx")){
+                        name = name.replace(".docx", "")
+                        name += ".docx"
+                    }
+                    else{
+                        name = name.replace(".$src", "")
                         name += ".$src"
                     }
                     files.add(File(pair.second, idTurma, name, pair.first))
@@ -354,17 +355,31 @@ class Serializer {
         val grades = mutableListOf<Grade>()
         Jsoup.parse(response).run {
             val th = select("th")
-            val tbody = select("tbody").select("td")
+            val td = select("td")
             var index = 0
             th.forEach {
 //                println("nome: ${it.text()}")
 //                println("nota: ${tbody[index].text()}")
                 if(index >= 2){
-                    grades.add(Grade(
-                        Random.nextDouble().toString(),
-                        idTurma,
-                        it.text(),
-                        tbody[index].text()))
+                    if(td[2].text() == "Imprimir") {
+                        grades.add(Grade(
+                            Random.nextDouble().toString(),
+                            idTurma,
+                            it.text(),
+                            ""))
+                    }
+                    else {
+                        val grade = try {
+                            td[index].text()
+                        }catch(e: IndexOutOfBoundsException){
+                            "Erro ao visualizar nota"
+                        }
+                        grades.add(Grade(
+                            Random.nextDouble().toString(),
+                            idTurma,
+                            it.text(),
+                            grade))
+                    }
                 }
                 index++
             }

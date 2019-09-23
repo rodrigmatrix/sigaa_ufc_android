@@ -65,4 +65,6 @@ interface SigaaRepository {
 
     suspend fun setVinculo(vinculo: String)
 
+    suspend fun getHistorico()
+
 }

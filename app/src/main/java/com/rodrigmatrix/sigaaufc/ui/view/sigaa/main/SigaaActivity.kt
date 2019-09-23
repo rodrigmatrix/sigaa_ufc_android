@@ -8,6 +8,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
 
@@ -23,6 +24,7 @@ class SigaaActivity : AppCompatActivity() {
             supportFragmentManager
         )
         sectionsPagerAdapter.addFragment(ClassesFragment())
+        //sectionsPagerAdapter.addFragment(DocumentsFragment())
         sectionsPagerAdapter.addFragment(IraFragment())
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
@@ -30,6 +32,7 @@ class SigaaActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
         tabs.getTabAt(0)!!.setIcon(R.drawable.ic_classes)
+        //tabs.getTabAt(1)!!.setIcon(R.drawable.ic_description)
         tabs.getTabAt(1)!!.setIcon(R.drawable.ic_assessment)
         setSupportActionBar(toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)

@@ -199,4 +199,10 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.setVinculo(cookie, vinculo)
     }
 
+    override suspend fun getHistorico() {
+        val id = studentDao.getStudentAsync().lastUpdate
+        val cookie = studentDao.getStudentAsync().jsession
+        return sigaaNetworkDataSource.getHistorico(id, cookie)
+    }
+
 }
