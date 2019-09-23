@@ -2,10 +2,13 @@ package com.rodrigmatrix.sigaaufc.data
 
 import android.app.DownloadManager
 import android.content.Context.DOWNLOAD_SERVICE
+import android.content.Intent
 import android.net.Uri
 import android.os.Environment
+import android.os.StrictMode
 import android.util.Log
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
@@ -19,6 +22,7 @@ import okhttp3.Request
 import java.net.SocketTimeoutException
 
 
+@Suppress("DEPRECATION")
 class SigaaApi(
     private val httpClient: OkHttpClient.Builder,
     private val sigaaSerializer: Serializer,
@@ -254,6 +258,7 @@ class SigaaApi(
                     student.matricula = pairStudent.matricula
                     student.name = pairStudent.name
                     student.profilePic = pairStudent.profilePic
+                    student.lastUpdate = sigaaSerializer.parseIraRequestId(res).first
                     studentDatabase.studentDao().upsertStudent(student)
                 }
                 status = "Success"
@@ -311,6 +316,103 @@ class SigaaApi(
             }
             catch (e: SocketTimeoutException) {
                 status = "Tempo de conexão expirou"
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+        }
+    }
+
+    private suspend fun getAtestado(id: String, cookie: String){
+        val viewState = getViewStateAsync().valueState
+        withContext(Dispatchers.IO){
+            val formBody = FormBody.Builder()
+                .add("menu:form_menu_discente", "menu:form_menu_discente")
+                .add("id", id)
+                .add("jscook_action", "menu_form_menu_discente_j_id_jsp_440181972_4_menu:A]#{ portalDiscente.atestadoMatricula }")
+                .add("javax.faces.ViewState", viewState)
+                .build()
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .post(formBody)
+                .build()
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    saveViewState(res)
+                    println(res)
+                }
+                else{
+                }
+            }
+            catch(e: NoConnectivityException){
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+        }
+    }
+
+    suspend fun getHistorico(id: String, cookie: String){
+        val viewState = getViewStateAsync().valueState
+        withContext(Dispatchers.IO){
+            val formBody = FormBody.Builder()
+                .add("menu:form_menu_discente", "menu:form_menu_discente")
+                .add("id", id)
+                .add("jscook_action", "menu_form_menu_discente_j_id_jsp_440181972_4_menu:A]#{ portalDiscente.historico }")
+                .add("javax.faces.ViewState", viewState)
+                .build()
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .post(formBody)
+                .build()
+            try {
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val content = response.body?.byteStream()!!.readBytes()
+                    val directory = Environment.getExternalStorageDirectory().toString() + "/Download"
+                    val dir = java.io.File(directory)
+                    if(!dir.exists()){
+                        dir.mkdirs()
+                    }
+                    val file = java.io.File("$directory/historico_sigaa.pdf")
+                    file.createNewFile()
+                    java.io.File(directory, "historico_sigaa.pdf").writeBytes(content)
+//                    val builder = StrictMode.VmPolicy.Builder()
+//                    StrictMode.setVmPolicy(builder.build())
+//                    builder.detectFileUriExposure()
+//                    val openFile = java.io.File("$directory/$name")
+//                    val target = Intent(Intent.ACTION_VIEW)
+//                    target.setDataAndType((Uri.fromFile(openFile)), "application/pdf")
+//                    target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+//                    try {
+//                        val intent =
+//                            Intent.createChooser(target, "Abrir Histórico Escolar")
+//                        view.context.startActivity(intent)
+//                    } catch (e: android.content.ActivityNotFoundException){
+//                        Snackbar.make(view,
+//                            "Por favor instale um gerenciador de arquivos para visualizar seus downloads.", Snackbar.LENGTH_LONG).show()
+//                    }
+                }
+                else{
+                }
+            }
+            catch(e: NoConnectivityException){
+                Log.e("Connectivity", "No internet Connection.", e)
+            }
+            catch (e: SocketTimeoutException) {
                 Log.e("Connectivity", "No internet Connection.", e)
             }
         }
@@ -458,6 +560,7 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
+                    println(res)
                     sigaaSerializer.parseGrades(idTurma, res).forEach {
                         studentDatabase.studentDao().upsertGrade(it)
                     }

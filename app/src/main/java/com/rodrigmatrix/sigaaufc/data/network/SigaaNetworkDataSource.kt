@@ -28,4 +28,6 @@ interface SigaaNetworkDataSource {
 
     suspend fun setVinculo(cookie: String, vinculo: String)
 
+    suspend fun getHistorico(id: String, cookie: String)
+
 }

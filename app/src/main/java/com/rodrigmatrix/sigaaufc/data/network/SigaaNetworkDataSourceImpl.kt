@@ -51,4 +51,8 @@ class SigaaNetworkDataSourceImpl(
         return sigaaApi.setVinculo(cookie, vinculo)
     }
 
+    override suspend fun getHistorico(id: String, cookie: String) {
+        return sigaaApi.getHistorico(id, cookie)
+    }
+
 }
