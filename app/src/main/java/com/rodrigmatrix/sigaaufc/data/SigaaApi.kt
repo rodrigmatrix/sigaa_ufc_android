@@ -560,7 +560,6 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    println(res)
                     sigaaSerializer.parseGrades(idTurma, res).forEach {
                         studentDatabase.studentDao().upsertGrade(it)
                     }

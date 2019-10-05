@@ -308,7 +308,7 @@ class Serializer {
                 val onclick = it.attr("onclick")
                 if(onclick.contains("idInserirMaterialArquivo")){
                     val src = parseFileFormat(img[index].attr("src"))
-                    println(src)
+                    val key = parseKey(onclick)
                     val pair = parseFileId(onclick)
                     var name = span[index].text()
                     if(name.contains(".docx")){
@@ -319,7 +319,7 @@ class Serializer {
                         name = name.replace(".$src", "")
                         name += ".$src"
                     }
-                    files.add(File(pair.second, idTurma, name, pair.first))
+                    files.add(File(pair.second, idTurma, name, "${pair.first}/$key"))
                 }
             }
             if(files.size == 0){
@@ -329,13 +329,17 @@ class Serializer {
         }
     }
 
+    private fun parseKey(onclick: String): String{
+        return onclick.split(",key,")[1].split("','")[0]
+    }
+
     private fun parseFileFormat(res: String): String{
         return res.split("/porta_arquivos/icones/")[1].split(".png")[0]
     }
 
     private fun parseFileId(js: String): Pair<String, String>{
         val requestId = js.split("['formAva'],'")[1].split(",id,")[0].split(",formAva:")[0]
-        val id = js.split(",id,")[1].split("','")[0]
+        val id = js.split(",id,")[1].split(",key")[0]
         return Pair(requestId, id)
     }
 
