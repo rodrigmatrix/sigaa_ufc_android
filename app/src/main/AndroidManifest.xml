@@ -19,7 +19,8 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true"
             android:windowSoftInputMode="adjustPan"
-            tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+            tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
+            android:requestLegacyExternalStorage="true">
         <activity
                 android:name=".ui.view.sigaa.classes.selected.ClassActivity"
                 android:label="@string/title_activity_class"

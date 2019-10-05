@@ -114,17 +114,22 @@ class FileViewHolder(
 
     private suspend fun downloadFile(viewState: String){
         val id = view.id_file.text.toString()
-        val requestId = view.request_id_file.text.toString()
+        val requestId = view.request_id_file.text.toString().split("/")[0]
+        val key = view.request_id_file.text.toString().split("/")[1]
+        println(requestId)
+        println(key)
+        println(id)
         val name = view.file_name.text.toString()
         val formBody = FormBody.Builder()
             .add("formAva", "formAva")
             .add(requestId, requestId)
-            .add("id", id)
+            .add("formAva:idTopicoSelecionado", "0")
             .add("javax.faces.ViewState", "j_id$viewState")
+            .add("id", id)
+            .add("key", key)
             .build()
         val request = Request.Builder()
             .url("https://si3.ufc.br/sigaa/ava/index.jsf")
-            .header("Content-Type","multipart/form-data; boundary=--------------------------147775816780075215793937")
             .header("Cookie", "JSESSIONID=$cookie")
             .post(formBody)
             .build()
@@ -132,7 +137,6 @@ class FileViewHolder(
         progress.setMessage(name)
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         progress.isIndeterminate = true
-        progress.setCancelable(false)
         progress.show()
         var status = true
         withContext(Dispatchers.IO){
