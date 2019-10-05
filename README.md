@@ -5,8 +5,15 @@
 # Sigaa_Ufc_Android
 Aplicativo do Sigaa da Universidade Federal do Ceará
 
+
 ## Sobre
  Esse app tem o objetivo de migrar 3 sistemas (Sigaa, Restaurante Universitário e Biblioteca) e otimizar a experiência de uso desses sistemas legados. O app usa o modelo de arquitetura MVVM(Model–view–viewmodel) usando as apis mais recentes do Android Jetpack como LiveData, Lifecycle, viewModels, Android Room... A injeção de dependência é feita com o Kodein. Kotlin Coroutines são usadas para requisições e observers em livedata. A filtragem dos dados é feita usando a lib Jsoup.
+ 
+ # Youtube
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=P8B1Qb1wu30
+" target="_blank"><img src="https://user-images.githubusercontent.com/7853887/62407707-5b69ef80-b593-11e9-888b-d4f657dd3fe6.png" 
+alt="" width="240" height="500" border="10" /></a>
+ 
 ## Dependências presentes
 
 [Material Theme](https://material.io) 
