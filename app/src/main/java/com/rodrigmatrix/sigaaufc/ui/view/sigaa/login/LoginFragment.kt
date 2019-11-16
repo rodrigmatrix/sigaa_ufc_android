@@ -155,11 +155,6 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadCookie()
-    }
-
     private fun saveCredentials(login: String, password: String, isVinculo: Boolean){
         launch(handler) {
             val student = viewModel.getStudentAsync()

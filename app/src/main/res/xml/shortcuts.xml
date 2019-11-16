@@ -9,23 +9,33 @@
             android:shortcutShortLabel="@string/ru_shortcut"
             android:shortcutLongLabel="@string/ru_long_shortcut"
             tools:targetApi="n_mr1">
+
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="com.example.myapplication"
-                android:targetClass="com.example.myapplication.ComposeActivity" />
+                android:targetPackage="com.rodrigmatrix.sigaaufc"
+                android:targetClass="com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity">
+            <extra android:name="shortcut" android:value="ru" />
+        </intent>
+
     </shortcut>
+
     <shortcut
-            android:shortcutId="compose"
+            android:shortcutId="library"
             android:enabled="true"
             android:icon="@drawable/ic_local_library"
             android:shortcutShortLabel="@string/library_shortcut"
             android:shortcutLongLabel="@string/library_shortcut"
             tools:targetApi="n_mr1">
+
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="com.example.myapplication"
-                android:targetClass="com.example.myapplication.ComposeActivity" />
+                android:targetPackage="com.rodrigmatrix.sigaaufc"
+                android:targetClass="com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity">
+            <extra android:name="shortcut" android:value="library" />
+        </intent>
+
     </shortcut>
+
     <shortcut
             android:shortcutId="sigaa"
             android:enabled="true"
@@ -33,9 +43,13 @@
             android:shortcutShortLabel="@string/sigaa_shortcut"
             android:shortcutLongLabel="@string/sigaa_shortcut"
             tools:targetApi="n_mr1">
+
         <intent
-                android:action="com.rodrigmatrix.SIGAA"
-                android:targetPackage="com.rodrigmatrix.sigaaufc.ui.fragments"
-                android:targetClass="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.SigaaFragment"/>
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.rodrigmatrix.sigaaufc"
+                android:targetClass="com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity">
+            <extra android:name="shortcut" android:value="sigaa" />
+        </intent>
+
     </shortcut>
 </PreferenceScreen>
