@@ -68,8 +68,11 @@ class FirebaseCloudMessaging: FirebaseMessagingService() {
             .setAutoCancel(true)
             .setSound(soundUri)
             .setContentIntent(pendingIntent)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .build()
+
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(0, notificationBuilder)
     }
 
     private fun openNormalNotification(title: String?, body: String?) {
