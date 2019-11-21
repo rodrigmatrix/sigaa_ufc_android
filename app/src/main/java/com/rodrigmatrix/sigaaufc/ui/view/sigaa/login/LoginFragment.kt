@@ -64,7 +64,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         login_btn.setOnClickListener {
             fragment_login.hideKeyboard()
             if(isValid()){
-                progress_login.isVisible = true
+                progress_login?.isVisible = true
                 login_btn.isEnabled = false
                 val login = login_input.text.toString()
                 val password = password_input.text.toString()
@@ -83,7 +83,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         when (res) {
             "Success" -> {
                 runOnUiThread {
-                    progress_login.isVisible = false
+                    progress_login?.isVisible = false
                 }
                 saveCredentials(login, password, false)
             }
@@ -93,8 +93,8 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             }
             else -> runOnUiThread {
                 Snackbar.make(fragment_login, res, Snackbar.LENGTH_LONG).show()
-                login_btn.isEnabled = true
-                progress_login.isVisible = false
+                login_btn?.isEnabled = true
+                progress_login?.isVisible = false
 
             }
         }
@@ -127,7 +127,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         launch {
             viewModel.setVinculo(vinculo)
             runOnUiThread {
-                progress_login.isVisible = false
+                progress_login?.isVisible = false
                 openSigaa()
             }
         }
@@ -137,7 +137,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
     private fun loadCookie(){
         launch(handler) {
             runOnUiThread {
-                progress_login.isVisible = true
+                progress_login?.isVisible = true
                 login_btn.isEnabled = false
             }
             if(!viewModel.getCookie()){
@@ -149,7 +149,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 }
             }
             runOnUiThread {
-                progress_login.isVisible = false
+                progress_login?.isVisible = false
                 login_btn.isEnabled = true
             }
         }

@@ -479,9 +479,9 @@ class SigaaApi(
                 val studentClass = studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
                 studentClass.code = newsRequestId
                 studentDatabase.studentDao().upsertClass(studentClass)
-                getNews(
+                getGrades(
+                    sigaaSerializer.parseGradesRequestId(res),
                     idTurma,
-                    newsRequestId,
                     cookie
                 )
                 getAttendance(
@@ -489,9 +489,10 @@ class SigaaApi(
                     idTurma,
                     cookie
                 )
-                getGrades(
-                    sigaaSerializer.parseGradesRequestId(res),
+
+                getNews(
                     idTurma,
+                    newsRequestId,
                     cookie
                 )
             }
@@ -652,6 +653,7 @@ class SigaaApi(
                 if(response.isSuccessful){
                     val res = response.body?.string()
                     val news = sigaaSerializer.parseNews(idTurma, res)
+                    saveViewState(res)
                     studentDatabase.studentDao().deleteNews(idTurma)
                     news.forEach {
                         println(it)
@@ -676,9 +678,6 @@ class SigaaApi(
     suspend fun fetchNewsContent(cookie: String, id: String, requestId: String, requestId2: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
-            println(requestId)
-            println(requestId2)
-            println(id)
             val formBody = FormBody.Builder()
                 .add(requestId, requestId)
                 .add("javax.faces.ViewState", viewState)
