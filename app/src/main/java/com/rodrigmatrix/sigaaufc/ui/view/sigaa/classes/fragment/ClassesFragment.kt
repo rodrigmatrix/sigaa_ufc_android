@@ -64,6 +64,10 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
     }
 
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
 //    private fun onSwitchChange(classes: MutableList<StudentClass>, previousClasses: MutableList<StudentClass>){
 //        switch_classes.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
 //        when(switch_classes.isChecked){

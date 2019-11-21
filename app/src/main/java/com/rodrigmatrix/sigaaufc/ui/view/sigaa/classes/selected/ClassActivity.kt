@@ -30,7 +30,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sigaa)
+        setContentView(R.layout.activity_class_selected)
         sectionsPagerAdapter = ClassPagerAdapter(this, supportFragmentManager)
         idTurma = intent.getStringExtra("idTurma")!!
         id = intent.getStringExtra("id")!!

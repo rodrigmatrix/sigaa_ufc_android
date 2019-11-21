@@ -56,15 +56,13 @@ class NewsFragment : ScopedFragment(), KodeinAware {
                         empty_news_view.isVisible = true
                         recycler_view_news.isVisible = false
                     }
-
                 }
                 else{
                     runOnUiThread {
                         empty_news_view.isVisible = false
                         recycler_view_news.isVisible = true
                         recycler_view_news.layoutManager = LinearLayoutManager(context)
-                        recycler_view_news.adapter =
-                            NewsAdapter(this@NewsFragment, it, idTurma)
+                        recycler_view_news.adapter = NewsAdapter(this@NewsFragment, it, idTurma)
                     }
                 }
             })
