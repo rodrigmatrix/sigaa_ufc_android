@@ -110,7 +110,7 @@ class SigaaApplication: Application(), KodeinAware {
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         setTheme(preferences.getString("THEME", null))
-        //fcmId()
+        fcmId()
     }
 
     private fun fcmId(){
