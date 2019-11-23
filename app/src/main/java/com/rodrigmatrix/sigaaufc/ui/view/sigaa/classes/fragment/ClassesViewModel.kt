@@ -25,6 +25,18 @@ class ClassesViewModel(
         }
     }
 
+    suspend fun getPreviousClasses(): LiveData<MutableList<StudentClass>>{
+        return withContext(Dispatchers.IO){
+            return@withContext sigaaRepository.getPreviousClasses()
+        }
+    }
+
+    suspend fun fetchPreviousClasses(){
+        return withContext(Dispatchers.IO){
+            return@withContext sigaaRepository.fetchPreviousClasses()
+        }
+    }
+
     suspend fun getStudent(): LiveData<out Student> {
         return withContext(Dispatchers.IO) {
             return@withContext sigaaRepository.getStudent()

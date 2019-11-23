@@ -94,9 +94,27 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun getPreviousClasses(): LiveData<MutableList<StudentClass>>  {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getPreviousClasses()
+        }
+    }
+
+    override suspend fun fetchPreviousClasses() {
+        return withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            return@withContext sigaaNetworkDataSource.fetchPreviousClasses(student.jsession)
+        }
+    }
+
     override suspend fun setClass(id: String, idTurma: String) {
         val cookie = studentDao.getStudentAsync().jsession
         return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie)
+    }
+
+    override suspend fun setPreviousClass(id: String, idTurma: String) {
+        val cookie = studentDao.getStudentAsync().jsession
+        return sigaaNetworkDataSource.fetchPreviousClass(id, idTurma, cookie)
     }
 
     override suspend fun fetchCurrentClasses() {
@@ -110,6 +128,12 @@ class SigaaRepositoryImpl(
     override suspend fun getClass(idTurma: String): LiveData<out StudentClass> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getClassWithIdTurma(idTurma)
+        }
+    }
+
+    override suspend fun getPreviousClass(idTurma: String): LiveData<out StudentClass> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getPreviousClassWithIdTurma(idTurma)
         }
     }
 

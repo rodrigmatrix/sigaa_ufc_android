@@ -278,6 +278,30 @@ class SigaaApi(
         }
     }
 
+    suspend fun getPreviousClasses(cookie: String) {
+        withContext(Dispatchers.IO){
+            var listClasses = mutableListOf<StudentClass>()
+            val request = Request.Builder()
+                .url("https://si3.ufc.br/sigaa/portais/discente/turmas.jsf")
+                .header("Cookie", "JSESSIONID=$cookie")
+                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
+                .build()
+            val response = httpClient
+                .addInterceptor(connectivityInterceptor)
+                .build()
+                .newCall(request)
+                .execute()
+            if(response.isSuccessful){
+                val res = response.body?.string()
+                saveViewState(res)
+                listClasses = sigaaSerializer.parsePreviousClasses(res)
+                listClasses.forEach {
+                    studentDatabase.studentDao().upsertClass(it)
+                }
+            }
+        }
+    }
+
     private suspend fun getIra(id: String, script: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
@@ -418,36 +442,10 @@ class SigaaApi(
         }
     }
 
-    suspend fun getPreviousClasses(cookie: String): Pair<String, MutableList<StudentClass>>{
-        return withContext(Dispatchers.IO){
-            var status = ""
-            var listClasses = mutableListOf<StudentClass>()
-            val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/portais/discente/turmas.jsf")
-                .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
-                .build()
-            val response = httpClient
-                .addInterceptor(connectivityInterceptor)
-                .build()
-                .newCall(request)
-                .execute()
-            if(response.isSuccessful){
-                val res = response.body?.string()
-                listClasses = sigaaSerializer.parsePreviousClasses(res)
-                status = "Success"
-            }
-            else{
-                status = "Erro ao efetuar login. Tente novamente"
-            }
-            return@withContext Pair(status, listClasses)
-        }
-    }
+
 
     suspend fun getClass(id: String, idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
-        println(viewState)
-        println("cookie getclass $cookie")
         withContext(Dispatchers.IO){
             studentDatabase.studentDao().deleteFiles(idTurma)
             val formBody = FormBody.Builder()
@@ -485,6 +483,7 @@ class SigaaApi(
                     cookie
                 )
                 getAttendance(
+                    false,
                     sigaaSerializer.parseAttendanceRequestId(res),
                     idTurma,
                     cookie
@@ -503,14 +502,14 @@ class SigaaApi(
         }
     }
 
-    suspend fun getPreviousClass(cookie: String, idTurma: String, id: String, viewStateId: String): Pair<String, MutableList<StudentClass>>{
+    suspend fun getPreviousClass(id: String, idTurma: String, cookie: String){
         var status = ""
         val list = mutableListOf<StudentClass>()
+        val viewStateId = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             val formBody = FormBody.Builder()
-                .add("idTurma", idTurma)
-                .add("j_id_jsp_1344809141_$id", "j_id_jsp_1344809141_$id")
-                .add("j_id_jsp_1344809141_2:j_id_jsp_1344809141_4", "j_id_jsp_1344809141_2:j_id_jsp_1344809141_4")
+                .add("j_id_jsp_1344809141_2", "j_id_jsp_1344809141_2")
+                .add("j_id_jsp_1344809141_2:j_id_jsp_1344809141_4$id", "j_id_jsp_1344809141_2:j_id_jsp_1344809141_4$id")
                 .add("javax.faces.ViewState", viewStateId)
                 .add("idTurma", idTurma)
                 .build()
@@ -528,13 +527,36 @@ class SigaaApi(
             status = when {
                 response.isSuccessful -> {
                     val res = response.body?.string()
-                    sigaaSerializer.parseNews(idTurma, res)
+                    saveViewState(res)
+                    val files = sigaaSerializer.parseFiles(res, idTurma)
+                    files.forEach {
+                        studentDatabase.studentDao().upsertFile(it)
+                    }
+                    val newsRequestId = sigaaSerializer.parseNewsRequestId(res)
+                    val studentClass = studentDatabase.studentDao().getPreviousClassWithIdTurmaAsync(idTurma)
+                    studentClass.code = newsRequestId
+                    studentDatabase.studentDao().upsertClass(studentClass)
+                    getGrades(
+                        sigaaSerializer.parseGradesRequestId(res),
+                        idTurma,
+                        cookie
+                    )
+                    getAttendance(
+                        true,
+                        sigaaSerializer.parseAttendanceRequestId(res),
+                        idTurma,
+                        cookie
+                    )
+                    getNews(
+                        idTurma,
+                        newsRequestId,
+                        cookie
+                    )
                     "Success"
                 }
                 else -> "Tempo de conexão expirou"
             }
         }
-        return Pair(status, list)
     }
 
     private suspend fun getGrades(requestId: String, idTurma: String, cookie: String){
@@ -561,6 +583,7 @@ class SigaaApi(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
+                    saveViewState(res)
                     sigaaSerializer.parseGrades(idTurma, res).forEach {
                         studentDatabase.studentDao().upsertGrade(it)
                     }
@@ -580,7 +603,7 @@ class SigaaApi(
         }
     }
 
-    private suspend fun getAttendance(requestId: String, idTurma: String, cookie: String){
+    private suspend fun getAttendance(isPrevious: Boolean, requestId: String, idTurma: String, cookie: String){
         val viewState = getViewStateAsync().valueState
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
@@ -606,11 +629,13 @@ class SigaaApi(
                 if(response.isSuccessful){
                     val res = response.body?.string()
                     val attendance = sigaaSerializer.parseAttendance(res)
-                    val studentClass = studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
+                    val studentClass = when(isPrevious){
+                        true -> studentDatabase.studentDao().getPreviousClassWithIdTurmaAsync(idTurma)
+                        false -> studentDatabase.studentDao().getClassWithIdTurmaAsync(idTurma)
+                    }
                     studentClass.attendance = attendance.attended
                     studentClass.missed = attendance.missed
                     studentDatabase.studentDao().upsertClass(studentClass)
-                    println(studentClass)
                 }
                 else{
                     println("erro")

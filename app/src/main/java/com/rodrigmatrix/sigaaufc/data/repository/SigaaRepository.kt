@@ -31,11 +31,20 @@ interface SigaaRepository {
 
     suspend fun getCurrentClasses(): MutableList<StudentClass>
 
+    suspend fun getPreviousClasses() : LiveData<MutableList<StudentClass>>
+
+    suspend fun fetchPreviousClasses()
+
     suspend fun setClass(id: String, idTurma: String)
 
     suspend fun fetchCurrentClasses()
 
     suspend fun getClass(idTurma: String): LiveData<out StudentClass>
+
+
+    suspend fun setPreviousClass(id: String, idTurma: String)
+
+    suspend fun getPreviousClass(idTurma: String): LiveData<out StudentClass>
 
     suspend fun getGrades(idTurma: String): LiveData<out MutableList<Grade>>
 

@@ -117,26 +117,6 @@ data class Vinculo(
     var id: String
 )
 
-//@Entity(tableName = "city", primaryKeys = ["latitude", "longitude"])
-//data class City(
-//    var latitude: Double,
-//    var longitude: Double,
-//    var id: Int,
-//    var name: String,
-//    var languages: Int,
-//    var area: Double,
-//    var population: Int,
-//    var density: Double
-//)
-//
-//@Entity(tableName = "spokenLanguages")
-//data class Languages(
-//    @PrimaryKey(autoGenerate = true)
-//    var id: Int,
-//    var name: String,
-//    var cityId: Int
-//)
-
 
 
 

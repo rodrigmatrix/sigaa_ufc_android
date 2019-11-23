@@ -6,23 +6,35 @@
         android:id="@+id/classes_fragment"
         android:orientation="vertical"
         tools:context=".ui.view.sigaa.classes.fragment.ClassesFragment">
-<!--    <com.google.android.material.switchmaterial.SwitchMaterial-->
-<!--            android:id="@+id/switch_classes"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="15dp"-->
-<!--            android:layout_marginRight="15dp"-->
-<!--            android:clickable="true"-->
-<!--            android:focusable="true"-->
-<!--            android:text="Exibir disciplinas anteriores"/>-->
+
+    <ProgressBar
+            android:id="@+id/progress_classes"
+            style="@style/AppTheme.ProgressBar"
+            android:visibility="gone"
+            android:layout_marginBottom="-8dp"
+            android:layout_marginTop="-4dp"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_classes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Exibir disciplinas anteriores"/>
     <include
             android:id="@+id/no_class"
             layout="@layout/no_class_error"
             tools:visibility="visible"/>
 
-
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_classes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_previous_classes"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

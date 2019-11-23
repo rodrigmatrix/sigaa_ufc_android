@@ -1,13 +1,16 @@
 package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment
 
 import android.os.Bundle
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_classes.*
 import kotlinx.coroutines.launch
@@ -23,6 +26,7 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
     private val viewModelFactory: ClassesViewModelFactory by instance()
 
     private lateinit var viewModel: ClassesViewModel
+    private var fetched = false
 
 
     override fun onCreateView(
@@ -39,14 +43,25 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
             .get(ClassesViewModel::class.java)
         launch(handler) {
             val classes = viewModel.getCurrentClasses()
-            //val previousClasses = viewModel.getCurrentClasses()
-            println(classes)
+            viewModel.getPreviousClasses().observe(this@ClassesFragment, Observer {
+                if(it == null) return@Observer
+                if(switch_classes.isChecked){
+                    if(it.size == 0){
+                        no_class.isVisible = true
+                        recyclerView_previous_classes.isVisible = false
+                    }
+                    else{
+                        no_class.isVisible = false
+                        recyclerView_previous_classes.isVisible = true
+                        recyclerView_previous_classes.layoutManager = LinearLayoutManager(context)
+                        recyclerView_previous_classes.adapter = PreviousClassesAdapter(it)
+                        setRecycler(false)
+                    }
+                }
+            })
             runOnUiThread {
                 recyclerView_classes.layoutManager = LinearLayoutManager(context)
-                recyclerView_classes.adapter =
-                    CurrentClassesAdapter(
-                        classes
-                    )
+                recyclerView_classes.adapter = CurrentClassesAdapter(classes)
                 if(classes.size == 0){
                     no_class.isVisible = true
                     recyclerView_classes.isVisible = false
@@ -55,48 +70,57 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
                     no_class.isVisible = false
                     recyclerView_classes.isVisible = true
                 }
-//                switch_classes.setOnClickListener {
-//                    onSwitchChange(classes, previousClasses)
-//                }
+                switch_classes.setOnClickListener {
+                   onSwitchChange(classes)
+                }
+            }
+
+        }
+    }
+
+    private fun onSwitchChange(classes: MutableList<StudentClass>){
+        switch_classes.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        when(switch_classes.isChecked){
+            true -> {
+                    if(!fetched){
+                        launch {
+                            runOnUiThread {
+                                progress_classes.visibility = View.VISIBLE
+                            }
+                            viewModel.fetchPreviousClasses()
+                            runOnUiThread {
+                                progress_classes.visibility = View.GONE
+                                fetched = true
+                            }
+                        }
+                    }
+                    setRecycler(false)
+            }
+            false -> {
+                if(classes.size == 0){
+                    no_class.isVisible = true
+                    recyclerView_classes.isVisible = false
+                }
+                else{
+                    no_class.isVisible = false
+                    recyclerView_classes.isVisible = true
+                    recyclerView_classes.layoutManager = LinearLayoutManager(context)
+                    recyclerView_classes.adapter = CurrentClassesAdapter(classes)
+                }
+                setRecycler(true)
             }
         }
-
     }
 
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
+    private fun setRecycler(current: Boolean){
+        if(current){
+            recyclerView_classes.visibility = View.VISIBLE
+            recyclerView_previous_classes.visibility = View.GONE
+        }
+        else{
+            recyclerView_classes.visibility = View.GONE
+            recyclerView_previous_classes.visibility = View.VISIBLE
+        }
     }
-
-//    private fun onSwitchChange(classes: MutableList<StudentClass>, previousClasses: MutableList<StudentClass>){
-//        switch_classes.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-//        when(switch_classes.isChecked){
-//            true -> {
-//                    if(previousClasses.size == 0){
-//                        no_class.isVisible = true
-//                        recyclerView_classes.isVisible = false
-//                    }
-//                    else{
-//                        no_class.isVisible = false
-//                        recyclerView_classes.isVisible = true
-//                        recyclerView_classes.layoutManager = LinearLayoutManager(context)
-//                        recyclerView_classes.adapter = CurrentClassesAdapter(previousClasses)
-//                    }
-//            }
-//            false -> {
-//                if(classes.size == 0){
-//                    no_class.isVisible = true
-//                    recyclerView_classes.isVisible = false
-//                }
-//                else{
-//                    no_class.isVisible = false
-//                    recyclerView_classes.isVisible = true
-//                    recyclerView_classes.layoutManager = LinearLayoutManager(context)
-//                    recyclerView_classes.adapter = CurrentClassesAdapter(classes)
-//                }
-//
-//            }
-//        }
-//    }
 
 }

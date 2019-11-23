@@ -14,4 +14,8 @@ class AttendanceViewModel(
     suspend fun getAttendance(idTurma: String): LiveData<out StudentClass>{
         return sigaaRepository.getClass(idTurma)
     }
+
+    suspend fun getPreviousAttendance(idTurma: String): LiveData<out StudentClass>{
+        return sigaaRepository.getPreviousClass(idTurma)
+    }
 }

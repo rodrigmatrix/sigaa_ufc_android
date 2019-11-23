@@ -53,8 +53,17 @@ interface StudentDao {
     @Query("SELECT * FROM classes WHERE (isPrevious = 0) AND (turmaId = :idTurma)")
     fun getClassWithIdTurma(idTurma: String): LiveData<StudentClass>
 
+    @Query("SELECT * FROM classes WHERE (isPrevious = 1) AND (turmaId = :idTurma)")
+    fun getPreviousClassWithIdTurmaAsync(idTurma: String): StudentClass
+
+    @Query("SELECT * FROM classes WHERE (isPrevious = 1) AND (turmaId = :idTurma)")
+    fun getPreviousClassWithIdTurma(idTurma: String): LiveData<StudentClass>
+
     @Query("SELECT * FROM classes where isPrevious = 1")
-    fun getPreviousClasses(): MutableList<StudentClass>
+    fun getPreviousClasses(): LiveData<MutableList<StudentClass>>
+
+    @Query("SELECT * FROM classes where isPrevious = 1")
+    fun getPreviousClassesAsync(): MutableList<StudentClass>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertClass(studentStudentClass: StudentClass)
@@ -71,8 +80,6 @@ interface StudentDao {
 
     @Query("DELETE FROM historyru")
     fun deleteHistoryRU()
-
-
 
 
     @Query("SELECT * FROM news WHERE idTurma LIKE :idTurma")
