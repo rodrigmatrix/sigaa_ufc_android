@@ -22,6 +22,7 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
     override val kodein by closestKodein()
     private val viewModelFactory: AttendanceViewModelFactory by instance()
     private lateinit var idTurma: String
+    private var isPrevious = false
 
     private lateinit var viewModel: AttendanceViewModel
 
@@ -37,24 +38,43 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(AttendanceViewModel::class.java)
         idTurma = arguments?.getString("idTurma")!!
+        isPrevious = arguments?.getBoolean("isPrevious", false)!!
         observeAttendance()
     }
 
     @SuppressLint("SetTextI18n")
     private fun observeAttendance(){
-        launch {
-            viewModel.getAttendance(idTurma).observe(this@AttendanceFragment, Observer {
-                if(it == null) return@Observer
-                if(it.attendance != 0){
-                    attendance_view.isVisible = true
-                    total_hour_text.text = "Horas: ${it.attendance}"
-                    total_class_text.text = "Aulas: ${it.attendance/2}"
+        if(isPrevious){
+            launch {
+                viewModel.getPreviousAttendance(idTurma).observe(this@AttendanceFragment, Observer {
+                    if(it == null) return@Observer
+                    if(it.attendance != 0){
+                        attendance_view.isVisible = true
+                        total_hour_text.text = "Horas: ${it.attendance}"
+                        total_class_text.text = "Aulas: ${it.attendance/2}"
 
-                    missed_hour_text.text = "Horas: ${it.missed}"
-                    missed_class_text.text = "Aulas: ${it.missed/2}"
-                }
-            })
+                        missed_hour_text.text = "Horas: ${it.missed}"
+                        missed_class_text.text = "Aulas: ${it.missed/2}"
+                    }
+                })
+            }
         }
+        else{
+            launch {
+                viewModel.getAttendance(idTurma).observe(this@AttendanceFragment, Observer {
+                    if(it == null) return@Observer
+                    if(it.attendance != 0){
+                        attendance_view.isVisible = true
+                        total_hour_text.text = "Horas: ${it.attendance}"
+                        total_class_text.text = "Aulas: ${it.attendance/2}"
+
+                        missed_hour_text.text = "Horas: ${it.missed}"
+                        missed_class_text.text = "Aulas: ${it.missed/2}"
+                    }
+                })
+            }
+        }
+
 
     }
 

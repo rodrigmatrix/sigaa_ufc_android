@@ -94,9 +94,27 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun getPreviousClasses(): LiveData<MutableList<StudentClass>>  {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getPreviousClasses()
+        }
+    }
+
+    override suspend fun fetchPreviousClasses() {
+        return withContext(Dispatchers.IO){
+            val student = getStudentAsync()
+            return@withContext sigaaNetworkDataSource.fetchPreviousClasses(student.jsession)
+        }
+    }
+
     override suspend fun setClass(id: String, idTurma: String) {
         val cookie = studentDao.getStudentAsync().jsession
         return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie)
+    }
+
+    override suspend fun setPreviousClass(id: String, idTurma: String) {
+        val cookie = studentDao.getStudentAsync().jsession
+        return sigaaNetworkDataSource.fetchPreviousClass(id, idTurma, cookie)
     }
 
     override suspend fun fetchCurrentClasses() {
@@ -110,6 +128,12 @@ class SigaaRepositoryImpl(
     override suspend fun getClass(idTurma: String): LiveData<out StudentClass> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getClassWithIdTurma(idTurma)
+        }
+    }
+
+    override suspend fun getPreviousClass(idTurma: String): LiveData<out StudentClass> {
+        return withContext(Dispatchers.IO){
+            return@withContext studentDao.getPreviousClassWithIdTurma(idTurma)
         }
     }
 
@@ -182,6 +206,20 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun saveViewState(res: String?){
+        withContext(Dispatchers.IO){
+            try {
+                val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
+                val viewStateId = viewStateString[1].split("\" ")[0]
+                val viewState = studentDao.getViewStateAsync()
+                println("viewstate to save $viewState")
+                studentDao.upsertViewState(JavaxFaces(true, viewStateId))
+            }catch(e: IndexOutOfBoundsException){
+                println("SAVEVIEWSTATE $e")
+            }
+        }
+    }
+
     override suspend fun deleteFiles(idTurma: String) {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.deleteFiles(idTurma)
@@ -200,9 +238,12 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun getHistorico() {
-        val id = studentDao.getStudentAsync().lastUpdate
-        val cookie = studentDao.getStudentAsync().jsession
-        return sigaaNetworkDataSource.getHistorico(id, cookie)
+        return withContext(Dispatchers.IO){
+            val id = studentDao.getStudentAsync().lastUpdate
+            val cookie = studentDao.getStudentAsync().jsession
+            return@withContext sigaaNetworkDataSource.getHistorico(id, cookie)
+        }
+
     }
 
 }

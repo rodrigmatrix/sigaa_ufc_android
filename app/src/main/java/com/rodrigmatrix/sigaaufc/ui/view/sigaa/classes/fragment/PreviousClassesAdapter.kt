@@ -27,25 +27,28 @@ class PreviousClassesAdapter(private val classesList: MutableList<StudentClass>)
     override fun onBindViewHolder(holder: PreviousClassesViewHolder, position: Int) {
         val classElement = classesList[position]
         holder.view.name_text.text = classElement.name
-        holder.view.code_text.text = "Código: ${classElement.code}"
         holder.view.idTurma_text.text = classElement.turmaId
-        holder.view.id_text.text = classElement.id.toString()
-        when {
-            classElement.credits == "" -> {
+        holder.view.id_text.text = classElement.id
+        when (classElement.credits) {
+            "" -> {
                 holder.view.credits_text.visibility = View.GONE
             }
             else -> {
                 holder.view.credits_text.text = "Créditos: ${classElement.credits}"
             }
         }
-        holder.view.period_text.text = classElement.days
+        when(classElement.days){
+            "" -> holder.view.days_text.visibility = View.GONE
+            else -> holder.view.days_text.text = classElement.days
+        }
     }
 }
 
 class PreviousClassesViewHolder(val view: View): RecyclerView.ViewHolder(view){
     init {
-        view.open_class_btn.setOnClickListener {
+        view.card_previous_class.setOnClickListener {
             val intent = Intent(view.context, ClassActivity::class.java)
+            intent.putExtra("isPrevious", true)
             intent.putExtra("idTurma", view.idTurma_text.text.toString())
             intent.putExtra("id", view.id_text.text.toString())
             view.context.startActivity(intent)

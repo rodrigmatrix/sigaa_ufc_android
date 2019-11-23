@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.lang.IndexOutOfBoundsException
 
 class ClassActivity : ScopedActivity(), KodeinAware {
 
@@ -27,6 +28,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     private lateinit var sectionsPagerAdapter: ClassPagerAdapter
     lateinit var idTurma: String
     lateinit var id: String
+    private var isPrevious = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +36,11 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         sectionsPagerAdapter = ClassPagerAdapter(this, supportFragmentManager)
         idTurma = intent.getStringExtra("idTurma")!!
         id = intent.getStringExtra("id")!!
+        isPrevious = intent.getBooleanExtra("isPrevious", false)
         println("idturma activity string $idTurma")
         val bundle = Bundle()
         bundle.putString("idTurma", idTurma)
+        bundle.putBoolean("isPrevious", isPrevious)
         val attendanceFragment = AttendanceFragment()
         val gradesFragment = GradesFragment()
         val newsFragment = NewsFragment()
@@ -58,7 +62,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(ClassViewModel::class.java)
         setTabs()
-        observeClass()
+
         setClass()
     }
 
@@ -66,7 +70,26 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         launch {
             viewModel.getCurrentClass(idTurma).observe(this@ClassActivity, Observer {
                 if(it == null) return@Observer
-                title = it.name.split(" - ")[1]
+                title = try {
+                    it.name.split(" - ")[1]
+                } catch(e: IndexOutOfBoundsException){
+                    it.name
+                }
+
+            })
+        }
+    }
+
+    private fun observePreviousClass(){
+        launch {
+            viewModel.getPreviousClass(idTurma).observe(this@ClassActivity, Observer {
+                if(it == null) return@Observer
+                title = try {
+                    it.name.split(" - ")[1]
+                } catch(e: IndexOutOfBoundsException){
+                    it.name
+                }
+
             })
         }
     }
@@ -86,11 +109,24 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun setClass(){
-        launch(handler) {
-            viewModel.fetchCurrentClasses()
-            viewModel.setClass(id, idTurma)
-            runOnUiThread {
-                progress_sigaa.isVisible = false
+        if(isPrevious){
+            observePreviousClass()
+            launch(handler) {
+                viewModel.fetchPreviousClasses()
+                viewModel.setPreviousClass(id, idTurma)
+                runOnUiThread {
+                    progress_sigaa.isVisible = false
+                }
+            }
+        }
+        else{
+            observeClass()
+            launch(handler) {
+                viewModel.fetchCurrentClasses()
+                viewModel.setClass(id, idTurma)
+                runOnUiThread {
+                    progress_sigaa.isVisible = false
+                }
             }
         }
     }

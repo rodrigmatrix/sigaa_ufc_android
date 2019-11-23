@@ -19,9 +19,25 @@ class ClassViewModel(
         return sigaaRepository.getClass(idTurma)
     }
 
+    suspend fun getPreviousClass(idTurma: String): LiveData<out StudentClass> {
+        return sigaaRepository.getPreviousClass(idTurma)
+    }
+
+    suspend fun fetchPreviousClasses(){
+        return sigaaRepository.fetchPreviousClasses()
+    }
+
+
+
     suspend fun setClass(id: String, idTurma: String){
         withContext(Dispatchers.IO){
             sigaaRepository.setClass(id, idTurma)
+        }
+    }
+
+    suspend fun setPreviousClass(id: String, idTurma: String){
+        withContext(Dispatchers.IO){
+            sigaaRepository.setPreviousClass(id, idTurma)
         }
     }
 
