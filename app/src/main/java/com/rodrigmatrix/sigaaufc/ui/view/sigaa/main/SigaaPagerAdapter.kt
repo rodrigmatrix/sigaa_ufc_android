@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
 private var fragmentList = arrayListOf<Fragment>()
-private val titleList = listOf( "Disciplinas", "IRA")
+private val titleList = listOf( "Disciplinas", "Documentos", "IRA")
 
 @Suppress("DEPRECATION")
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) : FragmentPagerAdapter(fm) {

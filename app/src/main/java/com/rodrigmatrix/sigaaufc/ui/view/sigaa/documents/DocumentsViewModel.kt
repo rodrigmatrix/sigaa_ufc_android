@@ -10,4 +10,8 @@ class DocumentsViewModel(
     suspend fun getHistorico(){
         sigaaRepository.getHistorico()
     }
+
+    suspend fun saveViewState(res: String?){
+        sigaaRepository.saveViewState(res)
+    }
 }

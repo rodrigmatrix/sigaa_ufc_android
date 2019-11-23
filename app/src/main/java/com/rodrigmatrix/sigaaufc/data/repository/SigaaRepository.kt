@@ -76,4 +76,6 @@ interface SigaaRepository {
 
     suspend fun getHistorico()
 
+    suspend fun saveViewState(res: String?)
+
 }

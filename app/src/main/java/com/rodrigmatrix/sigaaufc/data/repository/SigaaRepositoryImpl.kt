@@ -206,6 +206,20 @@ class SigaaRepositoryImpl(
         }
     }
 
+    override suspend fun saveViewState(res: String?){
+        withContext(Dispatchers.IO){
+            try {
+                val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
+                val viewStateId = viewStateString[1].split("\" ")[0]
+                val viewState = studentDao.getViewStateAsync()
+                println("viewstate to save $viewState")
+                studentDao.upsertViewState(JavaxFaces(true, viewStateId))
+            }catch(e: IndexOutOfBoundsException){
+                println("SAVEVIEWSTATE $e")
+            }
+        }
+    }
+
     override suspend fun deleteFiles(idTurma: String) {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.deleteFiles(idTurma)
@@ -224,9 +238,12 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun getHistorico() {
-        val id = studentDao.getStudentAsync().lastUpdate
-        val cookie = studentDao.getStudentAsync().jsession
-        return sigaaNetworkDataSource.getHistorico(id, cookie)
+        return withContext(Dispatchers.IO){
+            val id = studentDao.getStudentAsync().lastUpdate
+            val cookie = studentDao.getStudentAsync().jsession
+            return@withContext sigaaNetworkDataSource.getHistorico(id, cookie)
+        }
+
     }
 
 }

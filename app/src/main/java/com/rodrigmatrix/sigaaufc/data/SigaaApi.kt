@@ -414,13 +414,13 @@ class SigaaApi(
                     val file = java.io.File("$directory/historico_sigaa.pdf")
                     file.createNewFile()
                     java.io.File(directory, "historico_sigaa.pdf").writeBytes(content)
-//                    val builder = StrictMode.VmPolicy.Builder()
-//                    StrictMode.setVmPolicy(builder.build())
-//                    builder.detectFileUriExposure()
-//                    val openFile = java.io.File("$directory/$name")
-//                    val target = Intent(Intent.ACTION_VIEW)
-//                    target.setDataAndType((Uri.fromFile(openFile)), "application/pdf")
-//                    target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+                    val builder = StrictMode.VmPolicy.Builder()
+                    StrictMode.setVmPolicy(builder.build())
+                    builder.detectFileUriExposure()
+                    val openFile = java.io.File("$directory/historico_sigaa.pdf")
+                    val target = Intent(Intent.ACTION_VIEW)
+                    target.setDataAndType((Uri.fromFile(openFile)), "application/pdf")
+                    target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
 //                    try {
 //                        val intent =
 //                            Intent.createChooser(target, "Abrir Histórico Escolar")
