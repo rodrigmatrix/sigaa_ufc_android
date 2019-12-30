@@ -11,6 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
+import com.rodrigmatrix.sigaaufc.internal.TimeoutException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
@@ -286,19 +287,23 @@ class SigaaApi(
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
                 .build()
-            val response = httpClient
-                .addInterceptor(connectivityInterceptor)
-                .build()
-                .newCall(request)
-                .execute()
-            if(response.isSuccessful){
-                val res = response.body?.string()
-                saveViewState(res)
-                listClasses = sigaaSerializer.parsePreviousClasses(res)
-                listClasses.forEach {
-                    studentDatabase.studentDao().upsertClass(it)
+            try{
+                val response = httpClient
+                    .addInterceptor(connectivityInterceptor)
+                    .build()
+                    .newCall(request)
+                    .execute()
+                if(response.isSuccessful){
+                    val res = response.body?.string()
+                    saveViewState(res)
+                    listClasses = sigaaSerializer.parsePreviousClasses(res)
+                    listClasses.forEach {
+                        studentDatabase.studentDao().upsertClass(it)
+                    }
                 }
+            }catch(e: TimeoutException){
             }
+
         }
     }
 
@@ -421,14 +426,6 @@ class SigaaApi(
                     val target = Intent(Intent.ACTION_VIEW)
                     target.setDataAndType((Uri.fromFile(openFile)), "application/pdf")
                     target.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-//                    try {
-//                        val intent =
-//                            Intent.createChooser(target, "Abrir Histórico Escolar")
-//                        view.context.startActivity(intent)
-//                    } catch (e: android.content.ActivityNotFoundException){
-//                        Snackbar.make(view,
-//                            "Por favor instale um gerenciador de arquivos para visualizar seus downloads.", Snackbar.LENGTH_LONG).show()
-//                    }
                 }
                 else{
                 }

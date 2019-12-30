@@ -16,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,9 +26,26 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.formats.UnifiedNativeAdView
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.igorronner.irinterstitial.init.IRAds
+import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.BuildConfig
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
+import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -41,11 +59,25 @@ class MainActivity : ScopedActivity(), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: MainActivityViewModelFactory by instance()
+    private val remoteConfig: RemoteConfig by instance()
+    private val premiumPreferences: PremiumPreferences by instance()
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var mInterstitialAd: InterstitialAd
+    private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var navController: NavController
+    val UPDATE_REQUEST_CODE = 400
+    private val appUpdatedListener: InstallStateUpdatedListener by lazy {
+        object : InstallStateUpdatedListener {
+            @SuppressLint("SwitchIntDef")
+            override fun onStateUpdate(installState: InstallState) {
+                when(installState.installStatus()) {
+                    InstallStatus.DOWNLOADED -> popupSnackbarForCompleteUpdate()
+                    InstallStatus.INSTALLED -> appUpdateManager.unregisterListener(this)
+                }
+            }
+        }
+    }
 
     @SuppressLint("SetTextI18n", "SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,10 +90,17 @@ class MainActivity : ScopedActivity(), KodeinAware {
                 val newIntent = Intent(Intent.ACTION_VIEW)
                 newIntent.data = Uri.parse(link)
                 startActivity(newIntent)
+                setContentView(R.layout.activity_main)
+            }
+            else{
+                setContentView(R.layout.activity_main)
+                loadAd()
             }
         }
-        setContentView(R.layout.activity_main)
-        loadAd()
+        else{
+            setContentView(R.layout.activity_main)
+            loadAd()
+        }
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
@@ -90,7 +129,73 @@ class MainActivity : ScopedActivity(), KodeinAware {
                 }
             })
         }
+        appUpdateManager = AppUpdateManagerFactory.create(this)
+        checkForUpdates()
+    }
 
+    private fun popupSnackbarForCompleteUpdate() {
+        Snackbar.make(
+            findViewById(R.id.main_view),
+            "Update pronto para instalar.",
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction("INSTALAR") { appUpdateManager.completeUpdate() }
+            setActionTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            show()
+        }
+    }
+
+    private fun checkForUpdates(){
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        val versions = remoteConfig.getVersions()
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            val updateType = checkUpdateType(appUpdateInfo.availableVersionCode(), versions)
+            if (appUpdateInfo.updateAvailability() == UPDATE_AVAILABLE && appUpdateInfo.isUpdateTypeAllowed(updateType)){
+                if(updateType == AppUpdateType.FLEXIBLE){
+                    appUpdateManager.registerListener(appUpdatedListener)
+                }
+                appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    updateType,
+                    this,
+                    UPDATE_REQUEST_CODE
+                )
+            }
+        }
+    }
+
+    private fun checkUpdateType(availableVersionCode: Int, versions: List<Version>): Int{
+        var updateType = 0
+        versions.forEach {
+            if(availableVersionCode == it.versionCode){
+                updateType = it.updateType
+            }
+        }
+        if(updateType !in 0..1){
+            return 0
+        }
+        return updateType
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appUpdateManager
+            .appUpdateInfo
+            .addOnSuccessListener { appUpdateInfo ->
+                if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    popupSnackbarForCompleteUpdate()
+                }
+                if (appUpdateInfo.updateAvailability()
+                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+                ) {
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        IMMEDIATE,
+                        this,
+                        UPDATE_REQUEST_CODE
+                    )
+                }
+            }
     }
 
     private fun getShortcut(){
@@ -105,26 +210,9 @@ class MainActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun loadAd(){
-        MobileAds.initialize(this){}
-        var adUnitInterstitial = getString(R.string.ad_unit_interstitial)
-        val adRequest = AdRequest.Builder()
-        if(BuildConfig.DEBUG){
-            adRequest.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-            adUnitInterstitial = "ca-app-pub-3940256099942544/1033173712"
+        if(premiumPreferences.isNotPremium()){
+            IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
         }
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = adUnitInterstitial
-        mInterstitialAd.loadAd(adRequest.build())
-        mInterstitialAd.adListener = object: AdListener() {
-            override fun onAdLoaded() {
-                mInterstitialAd.show()
-            }
-        }
-        val adRequestBanner = AdRequest.Builder()
-        if(BuildConfig.DEBUG){
-            adRequestBanner.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-        }
-        adView?.loadAd(adRequestBanner.build())
     }
 
 

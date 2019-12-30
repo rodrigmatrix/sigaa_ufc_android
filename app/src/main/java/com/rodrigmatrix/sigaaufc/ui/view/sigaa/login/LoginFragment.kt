@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
@@ -61,11 +62,12 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 }
             })
         }
-        login_btn.setOnClickListener {
+
+        login_btn?.setOnClickListener {
             fragment_login.hideKeyboard()
             if(isValid()){
                 progress_login?.isVisible = true
-                login_btn.isEnabled = false
+                login_btn?.isEnabled = false
                 val login = login_input.text.toString()
                 val password = password_input.text.toString()
                 launch(handler) {
@@ -138,7 +140,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
         launch(handler) {
             runOnUiThread {
                 progress_login?.isVisible = true
-                login_btn.isEnabled = false
+                login_btn?.isEnabled = false
             }
             if(!viewModel.getCookie()){
                 runOnUiThread {
@@ -150,7 +152,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
             }
             runOnUiThread {
                 progress_login?.isVisible = false
-                login_btn.isEnabled = true
+                login_btn?.isEnabled = true
             }
         }
     }
@@ -173,7 +175,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
 
     private fun openSigaa(){
         runOnUiThread {
-            login_btn.isEnabled = true
+            login_btn?.isEnabled = true
             val intent = Intent(fragment_login.context, SigaaActivity::class.java)
             this.startActivity(intent)
         }

@@ -22,7 +22,7 @@
             android:layout_marginRight="15dp"
             android:clickable="true"
             android:focusable="true"
-            android:text="Exibir disciplinas anteriores"/>
+            android:text="Exibir apenas disciplinas anteriores"/>
     <include
             android:id="@+id/no_class"
             layout="@layout/no_class_error"

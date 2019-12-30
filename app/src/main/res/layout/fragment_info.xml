@@ -72,6 +72,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="15sp" />
         <TextView
+                android:id="@+id/premium_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
