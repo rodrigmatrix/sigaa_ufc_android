@@ -51,6 +51,11 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
                         recyclerView_previous_classes.isVisible = false
                     }
                     else{
+                        try {
+                            if(classes.size-1 > 0){
+                                it.removeRange(IntRange(0, classes.size-1))
+                            }
+                        }catch(e: Exception){}
                         no_class.isVisible = false
                         recyclerView_previous_classes.isVisible = true
                         recyclerView_previous_classes.layoutManager = LinearLayoutManager(context)
@@ -78,11 +83,43 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
         }
     }
 
+    private inline fun <reified T> MutableList<T>.removeRange(range: IntRange) {
+        val fromIndex = range.first
+        val toIndex = range.last
+        if (fromIndex == toIndex) {
+            return
+        }
+
+        if (fromIndex >= size) {
+            throw Throwable("fromIndex $fromIndex >= size $size")
+        }
+        if (toIndex > size) {
+            throw IndexOutOfBoundsException("toIndex $toIndex > size $size")
+        }
+        if (fromIndex > toIndex) {
+            throw IndexOutOfBoundsException("fromIndex $fromIndex > toIndex $toIndex")
+        }
+
+        val filtered = filterIndexed { i, t -> i < fromIndex || i > toIndex }
+        clear()
+        addAll(filtered)
+    }
+
+    private fun deleteRange(list: MutableList<StudentClass>, ini: Int, len: Int) {
+        for((index, value) in list.withIndex()){
+            if(index in ini..len){
+                list.removeAt(index)
+            }
+
+        }
+    }
+
     private fun onSwitchChange(classes: MutableList<StudentClass>){
         switch_classes.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         when(switch_classes.isChecked){
             true -> {
                     if(!fetched){
+                        fetched = true
                         launch {
                             runOnUiThread {
                                 progress_classes.visibility = View.VISIBLE
@@ -90,7 +127,6 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
                             viewModel.fetchPreviousClasses()
                             runOnUiThread {
                                 progress_classes.visibility = View.GONE
-                                fetched = true
                             }
                         }
                     }

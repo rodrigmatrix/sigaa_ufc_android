@@ -10,17 +10,24 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
+import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.BuildConfig
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 
-class SigaaActivity : AppCompatActivity() {
+class SigaaActivity : AppCompatActivity(), KodeinAware {
 
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
-    private lateinit var mInterstitialAd: InterstitialAd
+    override val kodein by closestKodein()
+    private val premiumPreferences: PremiumPreferences by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +62,10 @@ class SigaaActivity : AppCompatActivity() {
             MaterialAlertDialogBuilder(activity_sigaa.context)
                 .setTitle("Encerrar Sessão")
                 .setMessage("Deseja fechar o Sigaa e encerrar sua sessão? Será necessário efetuar login novamente")
-                .setPositiveButton("Sim"){ _, _ ->
+                .setPositiveButton("Sim"){ i, _ ->
                     sectionsPagerAdapter.removeFragments()
-                    this.finish()
+                    i.dismiss()
+                    finish()
                 }
                 .setNegativeButton("Não"){_, _ ->
                 }
@@ -66,26 +74,9 @@ class SigaaActivity : AppCompatActivity() {
     }
 
     private fun loadAd(){
-        MobileAds.initialize(this){}
-        var adUnitInterstitial = getString(R.string.ad_unit_interstitial)
-        val adRequest = AdRequest.Builder()
-        if(BuildConfig.DEBUG){
-            adRequest.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-            adUnitInterstitial = "ca-app-pub-3940256099942544/1033173712"
+        if(premiumPreferences.isNotPremium()){
+            IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
         }
-        mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = adUnitInterstitial
-        mInterstitialAd.loadAd(adRequest.build())
-        mInterstitialAd.adListener = object: AdListener() {
-            override fun onAdLoaded() {
-                mInterstitialAd.show()
-            }
-        }
-        val adRequestBanner = AdRequest.Builder()
-        if(BuildConfig.DEBUG){
-            adRequestBanner.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-        }
-        adView?.loadAd(adRequestBanner.build())
     }
 
     override fun onBackPressed() {

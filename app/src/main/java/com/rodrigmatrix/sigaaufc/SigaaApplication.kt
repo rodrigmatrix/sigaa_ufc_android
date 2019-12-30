@@ -1,15 +1,21 @@
 package com.rodrigmatrix.sigaaufc
 
 import android.app.Application
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.igorronner.irinterstitial.init.IRAdsInit
+import com.rodrigmatrix.sigaaufc.BuildConfig.*
 import com.rodrigmatrix.sigaaufc.data.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.network.*
+import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
+import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
@@ -40,6 +46,12 @@ class SigaaApplication: Application(), KodeinAware {
         import(androidXModule(this@SigaaApplication))
         bind() from singleton { StudentDatabase(instance()) }
         bind() from singleton { instance<StudentDatabase>().studentDao() }
+        bind() from singleton { RemoteConfig(FirebaseRemoteConfig.getInstance())}
+        bind() from singleton {
+            PremiumPreferences(sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication)
+            )
+        }
         bind<ConnectivityInterceptor>() with singleton {
             ConnectivityInterceptorImpl(context = instance())
         }
@@ -105,12 +117,22 @@ class SigaaApplication: Application(), KodeinAware {
         }
     }
 
+
     override fun onCreate() {
         super.onCreate()
+        val adBuilder = IRAdsInit.Builder()
+            .setAppId("ca-app-pub-7958407055458953~7361028198")
+            .setInterstitialId(INTERSTITIAL)
+            .setExpensiveInterstitialId(EXPENSIVE_INTERSTITIAL)
+            .setAppPrefix("sigaa")
+            .enablePurchace("premium")
+        adBuilder.build(this)
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         setTheme(preferences.getString("THEME", "SYSTEM_DEFAULT"))
-        fcmId()
+        val remoteConfig: RemoteConfig by instance()
+        remoteConfig.initRemoteConfig()
+        //fcmId()
     }
 
     private fun fcmId(){
@@ -121,7 +143,6 @@ class SigaaApplication: Application(), KodeinAware {
                     Log.w(TAG, "getInstanceId failed", task.exception)
                     return@OnCompleteListener
                 }
-
                 // Get new Instance ID token
                 val token = task.result?.token
 
