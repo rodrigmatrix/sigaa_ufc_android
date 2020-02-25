@@ -1,7 +1,6 @@
 package com.rodrigmatrix.sigaaufc
 
 import android.app.Application
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
@@ -10,7 +9,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.igorronner.irinterstitial.init.IRAdsInit
 import com.rodrigmatrix.sigaaufc.BuildConfig.*
-import com.rodrigmatrix.sigaaufc.data.SigaaApi
+import com.rodrigmatrix.sigaaufc.data.SigaaOkHttp
 import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
@@ -52,6 +51,7 @@ class SigaaApplication: Application(), KodeinAware {
                 PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication)
             )
         }
+        bind() from singleton { SigaaApi(this@SigaaApplication) }
         bind<ConnectivityInterceptor>() with singleton {
             ConnectivityInterceptorImpl(context = instance())
         }
@@ -62,7 +62,7 @@ class SigaaApplication: Application(), KodeinAware {
                 .connectTimeout(25, TimeUnit.SECONDS)
         }
         bind() from singleton {
-            SigaaApi(httpClient = instance(),
+            SigaaOkHttp(httpClient = instance(),
                 sigaaSerializer = instance(),
                 studentDatabase = instance(),
                 connectivityInterceptor = instance())
@@ -123,7 +123,7 @@ class SigaaApplication: Application(), KodeinAware {
         val adBuilder = IRAdsInit.Builder()
             .setAppId("ca-app-pub-7958407055458953~7361028198")
             .setInterstitialId(INTERSTITIAL)
-            .setExpensiveInterstitialId(EXPENSIVE_INTERSTITIAL)
+            .setExpensiveInterstitialId(INTERSTITIAL)
             .setAppPrefix("sigaa")
             .enablePurchace("premium")
         adBuilder.build(this)

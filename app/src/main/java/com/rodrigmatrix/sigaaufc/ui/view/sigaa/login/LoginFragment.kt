@@ -15,6 +15,10 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.igorronner.irinterstitial.init.IRAds
+import com.igorronner.irinterstitial.services.ProductPurchasedListListener
+import com.igorronner.irinterstitial.services.ProductPurchasedListener
+import com.igorronner.irinterstitial.services.ProductsListListener
+import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
@@ -43,16 +47,15 @@ class LoginFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(LoginViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadCookie()
         launch(handler) {
-            viewModel.getStudent().observe(this@LoginFragment, Observer {student ->
-                if(student == null){
+            viewModel.getStudent().observe(this@LoginFragment, Observer { student ->
+                if (student == null) {
                     return@Observer
                 }
                 println(student)
@@ -65,7 +68,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
 
         login_btn?.setOnClickListener {
             fragment_login.hideKeyboard()
-            if(isValid()){
+            if (isValid()) {
                 progress_login?.isVisible = true
                 login_btn?.isEnabled = false
                 val login = login_input.text.toString()
@@ -73,12 +76,12 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 launch(handler) {
                     val cookie = viewModel.getStudentAsync().jsession
                     val loginResponse = viewModel.login(cookie, login, password)
-                    handleLogin(login, password,loginResponse)
+                    handleLogin(login, password, loginResponse)
                 }
             }
+            fragment_login.hideKeyboard()
+            super.onViewCreated(view, savedInstanceState)
         }
-        fragment_login.hideKeyboard()
-        super.onViewCreated(view, savedInstanceState)
     }
 
     private suspend fun handleLogin(login: String, password: String, res: String){
