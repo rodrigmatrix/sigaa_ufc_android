@@ -205,8 +205,7 @@ class Serializer {
 
     fun parsePreviousClasses(response: String?): MutableList<StudentClass>{
         val classes = mutableListOf<StudentClass>()
-        val classItem =
-            StudentClass("", "", true, "", "", "", "", "", "", 0, 0)
+        val classItem = StudentClass("", "", true, "", "", "", "", "", "", 0, 0)
         var index = 0
         var count = 1
         Jsoup.parse(response).run {

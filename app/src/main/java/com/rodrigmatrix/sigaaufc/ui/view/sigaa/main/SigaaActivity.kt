@@ -10,7 +10,11 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
+import com.igorronner.irinterstitial.dto.IRSkuDetails
 import com.igorronner.irinterstitial.init.IRAds
+import com.igorronner.irinterstitial.services.ProductPurchasedListener
+import com.igorronner.irinterstitial.services.ProductsListListener
+import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.BuildConfig
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
@@ -45,11 +49,11 @@ class SigaaActivity : AppCompatActivity(), KodeinAware {
         viewPager.offscreenPageLimit = 3
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
-        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_classes)
-        tabs.getTabAt(1)!!.setIcon(R.drawable.ic_description)
-        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_assessment)
+        tabs.getTabAt(0)?.setIcon(R.drawable.ic_classes)
+        tabs.getTabAt(1)?.setIcon(R.drawable.ic_description)
+        tabs.getTabAt(2)?.setIcon(R.drawable.ic_assessment)
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
             confirmClose()
@@ -74,10 +78,13 @@ class SigaaActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun loadAd(){
-        if(premiumPreferences.isNotPremium()){
-            IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
+        val irAds = IRAds.newInstance(this)
+        if(premiumPreferences.isNotPremium() || !IRAds.isPremium(this)){
+            irAds.forceShowExpensiveInterstitial(false)
         }
     }
+
+
 
     override fun onBackPressed() {
         confirmClose()

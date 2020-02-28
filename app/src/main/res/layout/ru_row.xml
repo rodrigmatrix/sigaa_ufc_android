@@ -29,25 +29,22 @@
 
             <TextView
                     android:id="@+id/total_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="95dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="15dp"
-                    android:layout_marginEnd="85dp"
                     android:text="Refeição: Almoço"
-                    android:textAlignment="center"
                     android:textColor="@color/colorPrimary"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.233"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/image_ru"
                     app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                     android:id="@+id/date_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="112dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginBottom="28dp"
                     android:text="Data: 24-06-2019"
                     android:textColor="@color/colorTextSecondary"
@@ -58,11 +55,10 @@
 
             <TextView
                     android:id="@+id/time_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="128dp"
+                    android:layout_marginStart="8dp"
                     android:text="Hora: 12:59:46"
                     android:textColor="@color/colorTextSecondary"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -74,14 +70,14 @@
                     android:id="@+id/image_ru"
                     android:layout_width="50dp"
                     android:layout_height="48dp"
-                    android:tint="@color/colorPrimary"
                     android:layout_marginStart="36dp"
-                    android:layout_marginTop="26dp"
-                    android:layout_marginBottom="26dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"
+                    android:tint="@color/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0"
+                    app:layout_constraintVertical_bias="0.79"
                     app:srcCompat="@drawable/lunch" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,12 +33,4 @@
     <string name="ver_mais">Ver Mais</string>
     <string name="ru_menu">Cardápio</string>
 
-    <string name="ad_unit_banner" translatable="false">ca-app-pub-7958407055458953/3094480126</string>
-    <string name="ad_unit_interstitial" translatable="false">ca-app-pub-7958407055458953/1091133316</string>
-
-
-    <!--    Test Ads-->
-<!--        <string name="ad_unit_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
-<!--        <string name="ad_unit_interstitial" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
-
 </resources>
