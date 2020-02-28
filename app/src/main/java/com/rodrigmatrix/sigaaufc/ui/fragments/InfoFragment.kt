@@ -2,10 +2,12 @@ package com.rodrigmatrix.sigaaufc.ui.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.igorronner.irinterstitial.init.IRAds
+import com.igorronner.irinterstitial.services.PurchaseService
 
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
@@ -33,6 +35,21 @@ class InfoFragment : Fragment(R.layout.fragment_info), KodeinAware {
                 requestPremium()
             }
         }
+        buy_premium_button?.setOnClickListener {
+            PurchaseService(requireActivity()).purchase()
+        }
+    }
+
+    override fun onResume() {
+        if(IRAds.isPremium(requireContext())){
+            buy_premium_button.visibility = View.GONE
+            premium_message.visibility = View.GONE
+        }
+        else{
+            buy_premium_button.visibility = View.VISIBLE
+            premium_message.visibility = View.VISIBLE
+        }
+        super.onResume()
     }
 
     private fun requestPremium(){

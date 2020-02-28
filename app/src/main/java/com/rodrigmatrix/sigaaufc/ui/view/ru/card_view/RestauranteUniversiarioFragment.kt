@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.ui.view.ru.card_view
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -33,8 +34,13 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(RuViewModel::class.java)
         add_card.setOnClickListener {
+            val options =  ActivityOptions.makeSceneTransitionAnimation(
+                requireActivity(),
+                add_card,
+                "shared_element_container"
+            )
             val intent = Intent(context, AddCardActivity::class.java)
-            this.startActivity(intent)
+            this.startActivity(intent, options.toBundle())
         }
     }
 

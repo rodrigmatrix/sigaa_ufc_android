@@ -5,12 +5,15 @@ import android.content.Context
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.View
+import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
@@ -30,6 +33,17 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        //findViewById(android.R.id.content).transitionName = "shared_element_container"
+        window.sharedElementEnterTransition = MaterialContainerTransform(this).apply {
+            addTarget(android.R.id.content)
+            duration = 300L
+        }
+        window.sharedElementReturnTransition = MaterialContainerTransform(this).apply {
+            addTarget(android.R.id.content)
+            duration = 300L
+        }
+        window.sharedElementEnterTransition = MaterialContainerTransform(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_card)
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)

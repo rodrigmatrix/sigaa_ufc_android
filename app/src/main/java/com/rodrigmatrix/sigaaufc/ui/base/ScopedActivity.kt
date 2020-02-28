@@ -4,27 +4,20 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import kotlin.coroutines.CoroutineContext
 
 abstract class ScopedActivity: AppCompatActivity(), CoroutineScope {
-    private lateinit var job: Job
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        job = Job()
-    }
+    private val job = SupervisorJob()
+
+    override val coroutineContext = Dispatchers.Main + job
 
     override fun onDestroy() {
         super.onDestroy()
-        job.cancel()
+        job.cancelChildren()
     }
 
     val handler = CoroutineExceptionHandler { _, throwable ->

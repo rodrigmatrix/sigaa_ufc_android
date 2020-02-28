@@ -2,65 +2,59 @@ package com.rodrigmatrix.sigaaufc.ui.view.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
-import android.widget.Toast
+import android.view.Window
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.preference.PreferenceManager
-import com.crashlytics.android.Crashlytics
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.formats.UnifiedNativeAdView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.igorronner.irinterstitial.dto.IRSkuDetails
 import com.igorronner.irinterstitial.init.IRAds
-import com.igorronner.irinterstitial.services.PurchaseService
-import com.rodrigmatrix.sigaaufc.BuildConfig
+import com.igorronner.irinterstitial.services.ProductPurchasedListener
+import com.igorronner.irinterstitial.services.ProductsListListener
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.FormBody
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import retrofit2.HttpException
+import java.lang.Exception
 
-class MainActivity : ScopedActivity(), KodeinAware {
+class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, ProductPurchasedListener {
 
     override val kodein by closestKodein()
     private val viewModelFactory: MainActivityViewModelFactory by instance()
     private val remoteConfig: RemoteConfig by instance()
     private val premiumPreferences: PremiumPreferences by instance()
+    private val sigaaApi: SigaaApi by instance()
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -79,10 +73,12 @@ class MainActivity : ScopedActivity(), KodeinAware {
         }
     }
 
-    @SuppressLint("SetTextI18n", "SourceLockedOrientationActivity")
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         val bundle = intent.extras
         if(bundle != null){
             val link = bundle.getString("link")
@@ -178,24 +174,13 @@ class MainActivity : ScopedActivity(), KodeinAware {
     }
 
     override fun onResume() {
-        super.onResume()
-        appUpdateManager
-            .appUpdateInfo
+        appUpdateManager.appUpdateInfo
             .addOnSuccessListener { appUpdateInfo ->
                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                     popupSnackbarForCompleteUpdate()
                 }
-                if (appUpdateInfo.updateAvailability()
-                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-                ) {
-                    appUpdateManager.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        IMMEDIATE,
-                        this,
-                        UPDATE_REQUEST_CODE
-                    )
-                }
             }
+        super.onResume()
     }
 
     private fun getShortcut(){
@@ -210,7 +195,7 @@ class MainActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun loadAd(){
-        if(premiumPreferences.isNotPremium()){
+        if(premiumPreferences.isNotPremium() || !IRAds.isPremium(this)){
             IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
         }
     }
@@ -230,6 +215,18 @@ class MainActivity : ScopedActivity(), KodeinAware {
             nav_view.getHeaderView(0).student_name_menu_text.text = "Olá ${name.split(" ")[0]} ${name.split(" ").last()}"
             nav_view.getHeaderView(0).matricula_menu_text.text = "Matrícula: $matricula"
         }
+    }
+
+    override fun onProductList(list: List<IRSkuDetails>) {
+        list.forEach { sku ->
+            if (sku.sku == "premium") {
+                //weeksPremiumPrice.text = sku.price
+            }
+        }
+    }
+
+    override fun onProductsPurchased() {
+//
     }
 
 
