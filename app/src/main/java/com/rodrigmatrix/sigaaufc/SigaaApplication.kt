@@ -46,7 +46,7 @@ class SigaaApplication: Application(), KodeinAware {
         bind() from singleton { StudentDatabase(instance()) }
         bind() from singleton { instance<StudentDatabase>().studentDao() }
         bind() from singleton { SigaaApi(this@SigaaApplication) }
-        bind() from singleton { SigaaDataSource(sigaaApi = instance()) }
+        bind() from singleton { SigaaDataSource(sigaaApi = instance(), sigaaRepository = instance()) }
         bind() from singleton { RemoteConfig(FirebaseRemoteConfig.getInstance())}
         bind() from singleton {
             SigaaPreferences(sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication))

@@ -1,5 +1,6 @@
 package com.rodrigmatrix.sigaaufc.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.rodrigmatrix.sigaaufc.data.network.SigaaNetworkDataSource
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
@@ -212,10 +213,10 @@ class SigaaRepositoryImpl(
                 val viewStateString = res!!.split("id=\"javax.faces.ViewState\" value=\"")
                 val viewStateId = viewStateString[1].split("\" ")[0]
                 val viewState = studentDao.getViewStateAsync()
-                println("viewstate to save $viewState")
+                //println("viewstate to save $viewState")
                 studentDao.upsertViewState(JavaxFaces(true, viewStateId))
             }catch(e: IndexOutOfBoundsException){
-                println("SAVEVIEWSTATE $e")
+                Log.d("VIEW_STATE_SAVE_ERROR", e.message.toString())
             }
         }
     }

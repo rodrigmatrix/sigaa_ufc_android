@@ -28,10 +28,19 @@ interface SigaaApi {
         @QueryMap params: HashMap<String, String>
     ): ResponseBody
 
+    @GET("paginaInicial.do")
+    suspend fun openHomePage(): ResponseBody
+
     @GET("verPortalDiscente.do")
     suspend fun getCurrentClasses(
         @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/pag-inaInicial.do",
         @Header("Host") host: String = "si3.ufc.br"
+    ): ResponseBody
+
+    @POST("portais/discente/discente.jsf#")
+    suspend fun setCurrentClass(
+        @Body formBody: FormBody,
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/portais/discente/discente.jsf"
     ): ResponseBody
 
 

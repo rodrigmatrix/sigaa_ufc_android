@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
@@ -94,7 +95,8 @@ class NewSerializer {
                 matricula = matricula!![1].split(" </td>")
                 student.matricula = matricula[0]
             }catch(e: IndexOutOfBoundsException){
-                println(e)
+                Log.d("ERRO_STUDENT_DATA", e.message.toString())
+                e.printStackTrace()
             }
             return classes.toList()
         }
@@ -297,7 +299,7 @@ class NewSerializer {
         return content
     }
 
-    fun parseFiles(response: String?, idTurma: String): MutableList<File>{
+    fun parseFiles(response: String?, idTurma: String): List<File>{
         return Jsoup.parse(response).run {
             val files = mutableListOf<File>()
             val div = select("div[class=item]")
@@ -322,10 +324,7 @@ class NewSerializer {
                     files.add(File(pair.second, idTurma, name, "${pair.first}/$key"))
                 }
             }
-            if(files.size == 0){
-                files.add(File("0",idTurma, "null", "null"))
-            }
-            return@run files
+            return@run files.toList()
         }
     }
 

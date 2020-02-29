@@ -10,7 +10,9 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.Result.Error
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNotification
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_REDIRECT
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
 import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
@@ -31,7 +33,8 @@ class NotificationsCoroutineWork(
     private val serializer = NewSerializer()
 
     private fun login(): Result = runBlocking {
-        val student = sigaaRepository.getStudentAsync() ?: return@runBlocking Result.failure()
+        val student = sigaaRepository.getStudentAsync() ?: return@runBlocking Result.success()
+        if(student.login == "") return@runBlocking Result.success()
         val result = sigaaDataSource.login(student.login, student.password)
         if(result is Success){
             return@runBlocking when(result.data.loginStatus){
@@ -43,6 +46,7 @@ class NotificationsCoroutineWork(
             //context.sendNotification("Nova notícia em Introducao a arquitetura e organizacao de computadores", "Titulo: Nome da Noticia \nConteudo: Conteudo da noticia")
         }
         if(result is Error){
+            // TODO handle error
             context.sendNotification("erro login", "erro login")
             return@runBlocking Result.success()
         }
@@ -55,20 +59,43 @@ class NotificationsCoroutineWork(
             return@runBlocking handleClasses()
         }
         if(response is Error){
+            response.exception.printStackTrace()
             return@runBlocking Result.retry()
         }
         return@runBlocking Result.success()
     }
 
     private fun handleClasses(): Result = runBlocking {
+        sigaaDataSource.redirectHome()
+        val response = sigaaDataSource.getClasses()
+        if(response is Success){
+            response.data.forEach {
+                loadClassAndCheckForNotifications(it)
+            }
+            return@runBlocking Result.success()
+        }
+        if(response is Error){
+            response.exception.printStackTrace()
+            return@runBlocking Result.failure()
+        }
+        return@runBlocking Result.success()
+    }
 
+    private fun loadClassAndCheckForNotifications(studentClass: StudentClass): Result = runBlocking {
+        val result = sigaaDataSource.setCurrentClass(studentClass)
+        if(result is Success){
+            val files = serializer.parseFiles(result.data, studentClass.turmaId)
+            return@runBlocking Result.success()
+        }
+        if(result is Error){
+            result.exception.printStackTrace()
+            return@runBlocking Result.failure()
+        }
         return@runBlocking Result.success()
     }
 
     override suspend fun doWork(): Result {
-        //context.sendNotification("teste", "teste")
         return login()
     }
-
 
 }
