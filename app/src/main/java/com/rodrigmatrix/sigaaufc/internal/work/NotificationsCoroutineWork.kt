@@ -3,6 +3,7 @@ package com.rodrigmatrix.sigaaufc.internal.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.network.SigaaDataSource
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
@@ -10,6 +11,7 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.Result.Error
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNotification
+import com.rodrigmatrix.sigaaufc.internal.util.getClassNameWithoutCode
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_REDIRECT
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
@@ -84,7 +86,7 @@ class NotificationsCoroutineWork(
     private fun loadClassAndCheckForNotifications(studentClass: StudentClass): Result = runBlocking {
         val result = sigaaDataSource.setCurrentClass(studentClass)
         if(result is Success){
-            val files = serializer.parseFiles(result.data, studentClass.turmaId)
+            checkForFiles(result.data, studentClass)
             return@runBlocking Result.success()
         }
         if(result is Error){
@@ -92,6 +94,18 @@ class NotificationsCoroutineWork(
             return@runBlocking Result.failure()
         }
         return@runBlocking Result.success()
+    }
+
+    private fun checkForFiles(res: String, studentClass: StudentClass){
+        val files = serializer.parseFiles(res, studentClass.turmaId)
+        files.forEach {
+            val className = studentClass.name.getClassNameWithoutCode()
+            context.sendNotification(
+                context.getString(R.string.file_notification_title, className),
+                context.getString(R.string.file_notification_body, it.name)
+            )
+        }
+
     }
 
     override suspend fun doWork(): Result {
