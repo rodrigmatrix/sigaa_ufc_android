@@ -76,6 +76,8 @@ class NotificationsCoroutineWork(
         if(response is Success){
             response.data.forEach {
                 loadClassAndCheckForNotifications(it)
+                it.synced = true
+                studentDao.upsertClass(it)
                 sigaaDataSource.getClasses()
             }
             return@runBlocking Result.success()
@@ -91,6 +93,7 @@ class NotificationsCoroutineWork(
         val result = sigaaDataSource.setCurrentClass(studentClass)
         if(result is Success){
             checkForFiles(result.data, studentClass)
+            checkForGrades()
             return@runBlocking Result.success()
         }
         if(result is Error){
@@ -100,20 +103,25 @@ class NotificationsCoroutineWork(
         return@runBlocking Result.success()
     }
 
+    private fun checkForGrades() = runBlocking {
+
+    }
+
     private fun checkForFiles(res: String, studentClass: StudentClass) = runBlocking{
         val files = serializer.parseFiles(res, studentClass.turmaId)
         val cashedFiles = studentDao.getFilesAsync(studentClass.turmaId)
-
+        if(!studentClass.synced){
+            studentDao.upsertFiles(files)
+            return@runBlocking
+        }
         if(files.isNotEmpty()){
-            if(cashedFiles.size < files.size){
-                val newFiles = files.getUncommonElements(cashedFiles)
-                newFiles.forEach {
-                    val className = studentClass.name.getClassNameWithoutCode()
-                    context.sendDownloadNotification(
-                        context.getString(R.string.file_notification_title, className),
-                        context.getString(R.string.file_notification_body, it.name)
-                    )
-                }
+            val newFiles = files.getUncommonElements(cashedFiles)
+            newFiles.forEach {
+                val className = studentClass.name.getClassNameWithoutCode()
+                context.sendDownloadNotification(
+                    context.getString(R.string.file_notification_title, className),
+                    context.getString(R.string.file_notification_body, it.name)
+                )
             }
         }
         studentDao.upsertFiles(files)
