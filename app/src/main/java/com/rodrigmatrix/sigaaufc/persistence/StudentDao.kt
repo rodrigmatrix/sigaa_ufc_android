@@ -126,8 +126,14 @@ interface StudentDao {
     @Query("SELECT * FROM files WHERE idTurma LIKE :idTurma")
     fun getFiles(idTurma: String): LiveData<MutableList<File>>
 
+    @Query("SELECT * FROM files WHERE idTurma LIKE :idTurma")
+    fun getFilesAsync(idTurma: String): List<File>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertFile(file: File)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun upsertFiles(file: List<File>)
 
     @Query("DELETE FROM files WHERE idTurma LIKE :idTurma")
     fun deleteFiles(idTurma: String)

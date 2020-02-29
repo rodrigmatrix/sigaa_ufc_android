@@ -10,8 +10,12 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.Result.Error
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
+import com.rodrigmatrix.sigaaufc.internal.notification.sendDownloadNotification
+import com.rodrigmatrix.sigaaufc.internal.notification.sendGradeNotification
+import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNotification
 import com.rodrigmatrix.sigaaufc.internal.util.getClassNameWithoutCode
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_REDIRECT
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
@@ -32,6 +36,7 @@ class NotificationsCoroutineWork(
     private val sigaaDataSource: SigaaDataSource by instance()
     private val sigaaRepository: SigaaRepository by instance()
     private val sigaaPreferences: SigaaPreferences by instance()
+    private val studentDao: StudentDao by instance()
     private val serializer = NewSerializer()
 
     private fun login(): Result = runBlocking {
@@ -43,13 +48,10 @@ class NotificationsCoroutineWork(
                 LOGIN_VINCULO -> handleVinculo()
                 else -> handleClasses()
             }
-            //context.sendNotification("Nova nota em Introducao a arquitetura e organizacao de computadores", "Nota da AP2 disponivel")
-            //context.sendNotification("Novo arquivo em Introducao a arquitetura e organizacao de computadores", "Arquivo NomeDoArquivo.pdf")
-            //context.sendNotification("Nova notícia em Introducao a arquitetura e organizacao de computadores", "Titulo: Nome da Noticia \nConteudo: Conteudo da noticia")
         }
         if(result is Error){
             // TODO handle error
-            context.sendNotification("erro login", "erro login")
+            //context.sendNotification("erro login", "erro login")
             return@runBlocking Result.success()
         }
         return@runBlocking Result.success()
@@ -73,6 +75,7 @@ class NotificationsCoroutineWork(
         if(response is Success){
             response.data.forEach {
                 loadClassAndCheckForNotifications(it)
+                sigaaDataSource.getClasses()
             }
             return@runBlocking Result.success()
         }
@@ -96,16 +99,21 @@ class NotificationsCoroutineWork(
         return@runBlocking Result.success()
     }
 
-    private fun checkForFiles(res: String, studentClass: StudentClass){
+    private fun checkForFiles(res: String, studentClass: StudentClass) = runBlocking{
         val files = serializer.parseFiles(res, studentClass.turmaId)
-        files.forEach {
-            val className = studentClass.name.getClassNameWithoutCode()
-            context.sendNotification(
-                context.getString(R.string.file_notification_title, className),
-                context.getString(R.string.file_notification_body, it.name)
-            )
+        val cashedFiles = studentDao.getFilesAsync(studentClass.turmaId)
+        if(cashedFiles.isNotEmpty()){
+            if(cashedFiles.size < files.size){
+                files.takeLast(files.size - cashedFiles.size).forEach {
+                    val className = studentClass.name.getClassNameWithoutCode()
+                    context.sendDownloadNotification(
+                        context.getString(R.string.file_notification_title, className),
+                        context.getString(R.string.file_notification_body, it.name)
+                    )
+                }
+            }
         }
-
+        studentDao.upsertFiles(files)
     }
 
     override suspend fun doWork(): Result {

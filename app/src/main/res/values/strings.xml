@@ -33,7 +33,7 @@
     <string name="ru_menu">Cardápio</string>
 
     <string name="file_notification_title">Novo arquivo em <b>%s</b></string>
-    <string name="file_notification_body">Nome do arquivo <b>%s</b></string>
+    <string name="file_notification_body">Nome do arquivo:\n<b>%s</b></string>
 
 
     <string name="news_notification_title">Nova notícia em <b>%s</b></string>
