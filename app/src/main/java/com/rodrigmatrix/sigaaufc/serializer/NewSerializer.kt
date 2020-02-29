@@ -1,24 +1,25 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
 import org.jsoup.Jsoup
 import java.lang.IndexOutOfBoundsException
-import java.text.Normalizer
 import kotlin.random.Random
 
-class Serializer {
+class NewSerializer {
 
-    fun parseLogin(response: String?): String{
+
+    fun parseLogin(response: String?): LoginStatus{
         return when {
-            response!!.contains("value=\"Continuar") -> "Continuar"
-            response.contains("Menu Principal") -> "Menu Principal"
-            response.contains("Usuário e/ou senha inválidos") -> "Aluno e/ou senha não encontrado"
-            response.contains("Por favor, aguarde enquanto carregamos as suas") -> "Menu Principal"
-            response.contains("Tentativa de acesso por aplicativo externo. Operação negada") -> "Tentativa de acesso por aplicativo externo."
-            response.contains("nculo ativo com a universidade") -> "Vinculo"
-            else -> "Erro ao efetuar login. Por favor me envie um email (tela sobre)"
+            response!!.contains("value=\"Continuar") -> LoginStatus(LOGIN_SUCCESS, "")
+            response.contains("Menu Principal") -> LoginStatus(LOGIN_SUCCESS, "Menu Principal")
+            response.contains("Usuário e/ou senha inválidos") -> LoginStatus(LOGIN_ERROR, "Aluno e/ou senha não encontrado")
+            response.contains("Por favor, aguarde enquanto carregamos as suas") -> LoginStatus(LOGIN_SUCCESS, "Menu Principal")
+            response.contains("Tentativa de acesso por aplicativo externo. Operação negada") -> LoginStatus(LOGIN_ERROR, "Tentativa de acesso por aplicativo externo.")
+            response.contains("nculo ativo com a universidade") -> LoginStatus(LOGIN_SUCCESS, "Vinculo")
+            else -> LoginStatus(LOGIN_ERROR, "Erro ao efetuar login. Por favor me envie um email (tela sobre)")
         }
     }
 
@@ -99,30 +100,28 @@ class Serializer {
     }
 
     fun getVinculoId(res: String?): MutableList<Vinculo>{
-            return Jsoup.parse(res).run {
-                val names = select("span[class=col-xs-2]")
-                val active = select("span[class=col-xs-1 text-center]")
-                val content = select("span[class=col-xs-6]")
-                val ids = mutableListOf<Vinculo>()
-                select("a[href]").forEach {
-                    println(it.attr("href"))
-                    if(it.attr("href").contains("sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")){
-                        val idVinculo = it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0]
-                        println(idVinculo)
-                        ids.add(Vinculo("", "", "", idVinculo))
-                    }
+        return Jsoup.parse(res).run {
+            val names = select("span[class=col-xs-2]")
+            val active = select("span[class=col-xs-1 text-center]")
+            val content = select("span[class=col-xs-6]")
+            val ids = mutableListOf<Vinculo>()
+            select("a[href]").forEach {
+                println(it.attr("href"))
+                if(it.attr("href").contains("sigaa/escolhaVinculo.do?dispatch=escolher&vinculo=")){
+                    val idVinculo = it.attr("href").split("?dispatch=escolher&vinculo=")[1].split("\"")[0]
+                    println(idVinculo)
+                    ids.add(Vinculo("", "", "", idVinculo))
                 }
-                for((index, value) in names.withIndex()){
-                    ids[index].name = value.text()
-                    ids[index].status = active[index+1].text()
-                    ids[index].content = content[index+1].text()
-                }
-                println(ids)
-                return@run ids
             }
+            for((index, value) in names.withIndex()){
+                ids[index].name = value.text()
+                ids[index].status = active[index+1].text()
+                ids[index].content = content[index+1].text()
+            }
+            println(ids)
+            return@run ids
+        }
     }
-
-
 
     fun parseIraRequestId(response: String?): Pair<String, String> {
         return try {
@@ -155,12 +154,14 @@ class Serializer {
                         ira.iraG = it.text().toDouble()
                     }
                     4 -> {
-                        iraList.add(Ira(
-                            Random.nextDouble().toString(),
-                            ira.period,
-                            ira.iraI,
-                            ira.iraG
-                        ))
+                        iraList.add(
+                            Ira(
+                                Random.nextDouble().toString(),
+                                ira.period,
+                                ira.iraI,
+                                ira.iraG
+                            )
+                        )
                         index = 0
                     }
                 }
@@ -200,8 +201,6 @@ class Serializer {
             Pair(text, "")
         }
     }
-
-
 
     fun parsePreviousClasses(response: String?): MutableList<StudentClass>{
         val classes = mutableListOf<StudentClass>()
@@ -267,12 +266,13 @@ class Serializer {
             var dateIndex = 0
             for((index, it) in title.withIndex()){
                 val pair = getNewsId(onclick[index].attr("onclick"))
-                news.add(News(pair.first,
-                    pair.second,
-                    pair.third,
-                    idTurma,
-                    it.text(),
-                    dates[dateIndex].text(),"")
+                news.add(
+                    News(pair.first,
+                        pair.second,
+                        pair.third,
+                        idTurma,
+                        it.text(),
+                        dates[dateIndex].text(),"")
                 )
                 dateIndex += 2
             }
@@ -342,7 +342,7 @@ class Serializer {
         return Pair(requestId, id)
     }
 
-    fun parseAttendance(response: String?): Attendance{
+    fun parseAttendance(response: String?): Attendance {
         return try {
             val missed = response!!.split("Total de Faltas: ")[1].split("<br/>")[0].toInt()
             val total = response.split("Faltas Permitido: ")[1].split("</div> ")[0].toInt()
@@ -361,15 +361,17 @@ class Serializer {
             val td = select("td")
             var index = 0
             th.forEach {
-//                println("nome: ${it.text()}")
+                //                println("nome: ${it.text()}")
 //                println("nota: ${tbody[index].text()}")
                 if(index >= 2){
                     if(td[2].text() == "Imprimir") {
-                        grades.add(Grade(
-                            Random.nextDouble().toString(),
-                            idTurma,
-                            it.text(),
-                            ""))
+                        grades.add(
+                            Grade(
+                                Random.nextDouble().toString(),
+                                idTurma,
+                                it.text(),
+                                "")
+                        )
                     }
                     else {
                         val grade = try {
@@ -377,11 +379,13 @@ class Serializer {
                         }catch(e: IndexOutOfBoundsException){
                             "Erro ao visualizar nota"
                         }
-                        grades.add(Grade(
-                            Random.nextDouble().toString(),
-                            idTurma,
-                            it.text(),
-                            grade))
+                        grades.add(
+                            Grade(
+                                Random.nextDouble().toString(),
+                                idTurma,
+                                it.text(),
+                                grade)
+                        )
                     }
                 }
                 index++
@@ -464,4 +468,7 @@ class Serializer {
         }
         return Triple("Erro ao converter dados", Pair("", 1), mutableListOf())
     }
+
+
+
 }

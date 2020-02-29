@@ -1,14 +1,10 @@
 package com.rodrigmatrix.sigaaufc.data
 
-import android.app.DownloadManager
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.os.StrictMode
 import android.util.Log
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
@@ -121,7 +117,7 @@ class SigaaOkHttp(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    val parser = sigaaSerializer.loginParse(res)
+                    val parser = sigaaSerializer.parseLogin(res)
                     status = when(parser){
                         "Continuar" -> {
                             redirectMenu(cookie)

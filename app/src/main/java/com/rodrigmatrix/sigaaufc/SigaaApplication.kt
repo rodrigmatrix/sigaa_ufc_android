@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import androidx.work.*
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -15,6 +16,7 @@ import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
+import com.rodrigmatrix.sigaaufc.internal.work.NotificationsCoroutineWork
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
@@ -130,22 +132,30 @@ class SigaaApplication: Application(), KodeinAware {
         setTheme(preferences.getString("THEME", "SYSTEM_DEFAULT"))
         val remoteConfig: RemoteConfig by instance()
         remoteConfig.initRemoteConfig()
+        setNotificationWorkManager()
         //fcmId()
     }
 
-    private fun fcmId(){
-        val TAG = "fcm"
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "getInstanceId failed", task.exception)
-                    return@OnCompleteListener
-                }
-                // Get new Instance ID token
-                val token = task.result?.token
-
-                Log.d(TAG, token)
-            })
+    private fun setNotificationWorkManager(){
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<NotificationsCoroutineWork>().build()
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(
+            NotificationsCoroutineWork::class.java,
+            1,
+            TimeUnit.HOURS,
+            30,
+            TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
+        val workManager = WorkManager.getInstance(applicationContext)
+        workManager.enqueueUniquePeriodicWork(
+            NOTIFICATIONS_WORK_ID,
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicWorkRequest
+        )
+        workManager.enqueue(oneTimeWorkRequest)
     }
 
     private fun setTheme(theme: String?){
@@ -155,6 +165,10 @@ class SigaaApplication: Application(), KodeinAware {
             "BATTERY_SAVER" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
             "SYSTEM_DEFAULT" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
+    }
+
+    companion object {
+        const val NOTIFICATIONS_WORK_ID = "work_notifications"
     }
 
 
