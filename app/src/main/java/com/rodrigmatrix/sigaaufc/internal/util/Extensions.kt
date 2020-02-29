@@ -5,7 +5,10 @@ import java.lang.IndexOutOfBoundsException
 
 
 fun <T> List<T>.getUncommonElements(other: List<T>): List<T>{
-    return this.toSet().minus(other.toSet()).toList()
+    val sum = this + other
+    return sum.groupBy { it }
+        .filter { it.value.size == 1 }
+        .flatMap { it.value }
 }
 
 fun String.getClassNameWithoutCode(): String {

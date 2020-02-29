@@ -103,6 +103,7 @@ class NotificationsCoroutineWork(
     private fun checkForFiles(res: String, studentClass: StudentClass) = runBlocking{
         val files = serializer.parseFiles(res, studentClass.turmaId)
         val cashedFiles = studentDao.getFilesAsync(studentClass.turmaId)
+
         if(files.isNotEmpty()){
             if(cashedFiles.size < files.size){
                 val newFiles = files.getUncommonElements(cashedFiles)
@@ -113,13 +114,6 @@ class NotificationsCoroutineWork(
                         context.getString(R.string.file_notification_body, it.name)
                     )
                 }
-//                files.takeLast(files.size - cashedFiles.size).forEach {
-//                    val className = studentClass.name.getClassNameWithoutCode()
-//                    context.sendDownloadNotification(
-//                        context.getString(R.string.file_notification_title, className),
-//                        context.getString(R.string.file_notification_body, it.name)
-//                    )
-//                }
             }
         }
         studentDao.upsertFiles(files)
