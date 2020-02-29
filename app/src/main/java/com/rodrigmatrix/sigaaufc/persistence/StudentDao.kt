@@ -132,9 +132,6 @@ interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertFile(file: File)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsertFiles(file: List<File>)
-
     @Query("DELETE FROM files WHERE idTurma LIKE :idTurma")
     fun deleteFiles(idTurma: String)
 

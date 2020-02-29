@@ -73,8 +73,9 @@ class NotificationsCoroutineWork(
     private fun handleClasses(): Result = runBlocking {
         sigaaDataSource.redirectHome()
         val response = sigaaDataSource.getClasses()
+        val studentClasses = studentDao.getClasses()
         if(response is Success){
-            response.data.forEach {
+            studentClasses.forEach {
                 loadClassAndCheckForNotifications(it)
                 it.synced = true
                 studentDao.upsertClass(it)
@@ -111,20 +112,20 @@ class NotificationsCoroutineWork(
         val files = serializer.parseFiles(res, studentClass.turmaId)
         val cashedFiles = studentDao.getFilesAsync(studentClass.turmaId)
         if(!studentClass.synced){
-            studentDao.upsertFiles(files)
+            files.forEach {
+                studentDao.upsertFile(it)
+            }
             return@runBlocking
         }
-        if(files.isNotEmpty()){
-            val newFiles = files.getUncommonElements(cashedFiles)
-            newFiles.forEach {
-                val className = studentClass.name.getClassNameWithoutCode()
-                context.sendDownloadNotification(
-                    context.getString(R.string.file_notification_title, className),
-                    context.getString(R.string.file_notification_body, it.name)
-                )
-            }
+        val newFiles = files.getUncommonElements(cashedFiles)
+        newFiles.forEach {
+            studentDao.upsertFile(it)
+            val className = studentClass.name.getClassNameWithoutCode()
+            context.sendDownloadNotification(
+                context.getString(R.string.file_notification_title, className),
+                context.getString(R.string.file_notification_body, it.name)
+            )
         }
-        studentDao.upsertFiles(files)
     }
 
     override suspend fun doWork(): Result {
