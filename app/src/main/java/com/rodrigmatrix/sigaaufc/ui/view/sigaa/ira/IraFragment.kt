@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_ira.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -31,14 +33,13 @@ class IraFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(IraViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[IraViewModel::class.java]
         observeIra()
     }
 
     private fun observeIra(){
         launch {
-            viewModel.getIra().observe(this@IraFragment, Observer {
+            viewModel.getIra().observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 recycler_view_ira.layoutManager = LinearLayoutManager(context)
                 recycler_view_ira.adapter = IraAdapter(it)

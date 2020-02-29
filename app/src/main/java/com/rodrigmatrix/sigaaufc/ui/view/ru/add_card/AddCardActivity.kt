@@ -9,6 +9,7 @@ import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -17,6 +18,7 @@ import com.google.android.material.transition.MaterialContainerTransformSharedEl
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceViewModel
 import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*
@@ -50,8 +52,7 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
         toolbar.setNavigationOnClickListener {
             this.finish()
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(AddCardViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[AddCardViewModel::class.java]
         bindData()
         progress_add_card.isVisible = false
         add_card_button.setOnClickListener {

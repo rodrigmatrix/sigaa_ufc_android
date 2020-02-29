@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -24,6 +25,7 @@ import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.persistence.entity.JavaxFaces
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.documents_fragment.*
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -48,8 +50,7 @@ class DocumentsFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(DocumentsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[DocumentsViewModel::class.java]
         card_history.setOnClickListener {
             checkFilesPermission()
         }

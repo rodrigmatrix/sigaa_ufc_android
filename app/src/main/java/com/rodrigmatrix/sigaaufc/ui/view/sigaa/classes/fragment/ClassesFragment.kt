@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_classes.*
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -39,11 +41,10 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(ClassesViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ClassesViewModel::class.java]
         launch(handler) {
             val classes = viewModel.getCurrentClasses()
-            viewModel.getPreviousClasses().observe(this@ClassesFragment, Observer {
+            viewModel.getPreviousClasses().observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 if(switch_classes.isChecked){
                     if(it.size == 0){

@@ -9,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardActivity
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -31,8 +33,7 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RuViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[RuViewModel::class.java]
         add_card.setOnClickListener {
             val options =  ActivityOptions.makeSceneTransitionAnimation(
                 requireActivity(),

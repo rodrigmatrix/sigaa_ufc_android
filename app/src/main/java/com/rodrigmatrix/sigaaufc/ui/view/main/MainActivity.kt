@@ -13,6 +13,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -115,8 +116,7 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         getShortcut()
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
         launch(handler) {
             viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
                 if(student == null) return@Observer

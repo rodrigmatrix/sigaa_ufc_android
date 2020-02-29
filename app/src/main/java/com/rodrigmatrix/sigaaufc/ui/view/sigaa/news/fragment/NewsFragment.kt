@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_news.*
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -36,8 +38,7 @@ class NewsFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(NewsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[NewsViewModel::class.java]
         idTurma = arguments?.getString("idTurma")!!
         bindNews(idTurma)
     }
@@ -46,7 +47,7 @@ class NewsFragment : ScopedFragment(), KodeinAware {
         launch(handler) {
             viewModel.deleteNews(idTurma)
             viewModel.insertFakeNews(idTurma)
-            viewModel.getNews(idTurma).observe(this@NewsFragment, Observer {
+            viewModel.getNews(idTurma).observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 if((it.size == 1) && (it[0].requestId == "fake")){
                     return@Observer

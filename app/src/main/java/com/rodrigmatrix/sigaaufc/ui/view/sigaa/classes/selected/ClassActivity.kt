@@ -3,11 +3,13 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.ViewModelProviders
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
@@ -59,8 +61,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         val tabs: TabLayout = findViewById(R.id.tabs)
         title = "Disciplina"
         tabs.setupWithViewPager(viewPager)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(ClassViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ClassViewModel::class.java]
         setTabs()
 
         setClass()

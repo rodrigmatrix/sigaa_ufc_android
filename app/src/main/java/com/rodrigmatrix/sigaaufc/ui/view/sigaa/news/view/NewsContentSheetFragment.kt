@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_news_content.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -21,10 +23,9 @@ import kotlin.coroutines.CoroutineContext
 
 class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, CoroutineScope {
 
-    private lateinit var job: Job
+    private val job = SupervisorJob()
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+    override val coroutineContext = job + Dispatchers.Main
 
     override val kodein by closestKodein()
     private val viewModelFactory: NewsContentViewModelFactory by instance()
@@ -45,12 +46,11 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(NewsContentViewModel::class.java)
-        newsId = arguments?.getString("idNews")!!
-        requestId = arguments?.getString("requestId")!!
-        requestId2 = arguments?.getString("requestId2")!!
-        turmaId = arguments?.getString("idTurma")!!
+        viewModel = ViewModelProvider(this, viewModelFactory)[NewsContentViewModel::class.java]
+        newsId = arguments?.getString("idNews") ?: ""
+        requestId = arguments?.getString("requestId") ?: ""
+        requestId2 = arguments?.getString("requestId2") ?: ""
+        turmaId = arguments?.getString("idTurma") ?: ""
         fetchContent()
     }
 
@@ -64,7 +64,7 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
 
     private fun bindUi(){
         launch(handler) {
-            viewModel.getNews(newsId).observe(this@NewsContentSheetFragment, Observer {
+            viewModel.getNews(newsId).observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 if(it.content != ""){
                     println(it)
@@ -80,14 +80,9 @@ class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, Corou
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        job = Job()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
-        job?.cancel()
+        job.cancelChildren()
     }
 
     val handler = CoroutineExceptionHandler { _, throwable ->

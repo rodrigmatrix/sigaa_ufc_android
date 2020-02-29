@@ -29,7 +29,6 @@ interface SigaaApi {
     ): ResponseBody
 
 
-
     companion object {
         operator fun invoke(context: Context): SigaaApi {
             val requestInterceptor = Interceptor { chain ->

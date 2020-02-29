@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.File
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesAdapter
 import kotlinx.android.synthetic.main.fragment_files.*
 import kotlinx.android.synthetic.main.fragment_grades.*
@@ -39,8 +41,7 @@ class FilesFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(FilesViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[FilesViewModel::class.java]
         idTurma = arguments?.getString("idTurma")!!
         bindUI()
     }
@@ -49,7 +50,7 @@ class FilesFragment : ScopedFragment(), KodeinAware {
         launch(handler) {
             cookie = viewModel.getCookie()
             viewModel.deleteFiles(idTurma)
-            viewModel.getFiles(idTurma).observe(this@FilesFragment, Observer {
+            viewModel.getFiles(idTurma).observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 if(it.size == 1){
                     if(it[0].name == "null"){

@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_grades.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,12 +24,8 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import kotlin.coroutines.CoroutineContext
 
-class GradesFragment: Fragment(), KodeinAware, CoroutineScope {
+class GradesFragment: ScopedFragment(), KodeinAware {
 
-    private lateinit var job: Job
-
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
 
     private lateinit var idTurma: String
 
@@ -36,18 +35,17 @@ class GradesFragment: Fragment(), KodeinAware, CoroutineScope {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        job = Job()
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(GradesViewModel::class.java)
+
+        viewModel = ViewModelProvider(this, viewModelFactory)[GradesViewModel::class.java]
         idTurma = arguments?.getString("idTurma")!!
         println("idturma grade $idTurma")
         observeGrades()
     }
 
     private fun observeGrades(){
-        job = launch {
+        launch {
             viewModel.deleteGrades()
-            viewModel.fetchGrades(idTurma).observe(this@GradesFragment, Observer {
+            viewModel.fetchGrades(idTurma).observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 println(it)
                 println(idTurma)
@@ -59,13 +57,6 @@ class GradesFragment: Fragment(), KodeinAware, CoroutineScope {
         }
 
     }
-
-    override fun onDestroy() {
-        job?.cancel()
-        super.onDestroy()
-    }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -41,15 +41,14 @@ import org.kodein.di.generic.singleton
 import java.util.concurrent.TimeUnit
 
 class SigaaApplication: Application(), KodeinAware {
+
     override val kodein = Kodein.lazy {
         import(androidXModule(this@SigaaApplication))
         bind() from singleton { StudentDatabase(instance()) }
         bind() from singleton { instance<StudentDatabase>().studentDao() }
         bind() from singleton { RemoteConfig(FirebaseRemoteConfig.getInstance())}
         bind() from singleton {
-            PremiumPreferences(sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication)
-            )
+            PremiumPreferences(sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication))
         }
         bind() from singleton { SigaaApi(this@SigaaApplication) }
         bind<ConnectivityInterceptor>() with singleton {
@@ -116,7 +115,6 @@ class SigaaApplication: Application(), KodeinAware {
             DocumentsViewModelFactory(sigaaRepository = instance())
         }
     }
-
 
     override fun onCreate() {
         super.onCreate()
