@@ -28,6 +28,12 @@ interface SigaaApi {
         @QueryMap params: HashMap<String, String>
     ): ResponseBody
 
+    @GET("verPortalDiscente.do")
+    suspend fun getCurrentClasses(
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/pag-inaInicial.do",
+        @Header("Host") host: String = "si3.ufc.br"
+    ): ResponseBody
+
 
     companion object {
         operator fun invoke(context: Context): SigaaApi {

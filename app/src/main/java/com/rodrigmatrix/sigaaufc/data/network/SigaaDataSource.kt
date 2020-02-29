@@ -5,11 +5,13 @@ import com.rodrigmatrix.sigaaufc.internal.Result
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody
+import okhttp3.Request
 import retrofit2.HttpException
 import java.lang.Exception
 
@@ -35,6 +37,19 @@ class SigaaDataSource(
                 LOGIN_SUCCESS -> Result.Success(loginResponse)
                 else -> Result.Error(LoginException(loginResponse.loginMessage))
             }
+        }
+        catch(e: HttpException){
+            Result.Error(e)
+        }
+        catch(e: Exception){
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getClasses(): Result<List<StudentClass>> = withContext(Dispatchers.IO){
+        return@withContext try {
+            val request = sigaaApi.getCurrentClasses()
+            Result.Success(serializer.parseClasses(request.string()))
         }
         catch(e: HttpException){
             Result.Error(e)

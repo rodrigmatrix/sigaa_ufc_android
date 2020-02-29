@@ -79,7 +79,10 @@ class SigaaActivity : AppCompatActivity(), KodeinAware {
 
     private fun loadAd(){
         val irAds = IRAds.newInstance(this)
-        if(premiumPreferences.isNotPremium() || !IRAds.isPremium(this)){
+        if(premiumPreferences.isPremium()){
+            return
+        }
+        if(!IRAds.isPremium(this)){
             irAds.forceShowExpensiveInterstitial(false)
         }
     }

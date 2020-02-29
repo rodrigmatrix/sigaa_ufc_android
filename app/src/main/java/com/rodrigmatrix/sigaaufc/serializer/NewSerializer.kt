@@ -24,7 +24,7 @@ class NewSerializer {
     }
 
     @SuppressLint("DefaultLocale")
-    fun parseClasses(response: String?): Pair<Student, MutableList<StudentClass>>{
+    fun parseClasses(response: String?): List<StudentClass>{
         val classes = mutableListOf<StudentClass>()
         val turmaId = mutableListOf<String>()
         val names = mutableListOf<String>()
@@ -95,7 +95,7 @@ class NewSerializer {
             }catch(e: IndexOutOfBoundsException){
                 println(e)
             }
-            return Pair(student, classes)
+            return classes.toList()
         }
     }
 

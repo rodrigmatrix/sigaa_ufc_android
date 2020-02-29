@@ -120,6 +120,12 @@ class SigaaApplication: Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+        setAdsInstance()
+        startRemoteConfig()
+        setNotificationWorkManager()
+    }
+
+    private fun setAdsInstance(){
         val adBuilder = IRAdsInit.Builder()
             .setAppId("ca-app-pub-7958407055458953~7361028198")
             .setInterstitialId(INTERSTITIAL)
@@ -127,16 +133,18 @@ class SigaaApplication: Application(), KodeinAware {
             .setAppPrefix("sigaa")
             .enablePurchace("premium")
         adBuilder.build(this)
+    }
+
+    private fun startRemoteConfig(){
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         setTheme(preferences.getString("THEME", "SYSTEM_DEFAULT"))
         val remoteConfig: RemoteConfig by instance()
         remoteConfig.initRemoteConfig()
-        setNotificationWorkManager()
-        //fcmId()
     }
 
     private fun setNotificationWorkManager(){
+        val workManager = WorkManager.getInstance(applicationContext)
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -149,13 +157,12 @@ class SigaaApplication: Application(), KodeinAware {
             TimeUnit.MINUTES)
             .setConstraints(constraints)
             .build()
-        val workManager = WorkManager.getInstance(applicationContext)
+        workManager.enqueue(oneTimeWorkRequest)
         workManager.enqueueUniquePeriodicWork(
             NOTIFICATIONS_WORK_ID,
             ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
         )
-        workManager.enqueue(oneTimeWorkRequest)
     }
 
     private fun setTheme(theme: String?){

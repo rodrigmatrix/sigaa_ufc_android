@@ -195,7 +195,10 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     }
 
     private fun loadAd(){
-        if(premiumPreferences.isNotPremium() || !IRAds.isPremium(this)){
+        if(premiumPreferences.isPremium()){
+            return
+        }
+        if(!IRAds.isPremium(this)){
             IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
         }
     }
