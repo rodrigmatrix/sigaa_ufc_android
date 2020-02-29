@@ -2,7 +2,7 @@ package com.rodrigmatrix.sigaaufc.data.repository
 
 import android.content.SharedPreferences
 
-class PremiumPreferences(
+class SigaaPreferences(
     private val sharedPreferences: SharedPreferences
 ) {
 
@@ -13,5 +13,11 @@ class PremiumPreferences(
     fun savePremium(isPremium: Boolean){
         sharedPreferences.edit().putBoolean("isPremium", isPremium).apply()
     }
+
+    fun saveLastVinculo(id: String){
+        sharedPreferences.edit().putString("lastVinculo", id).apply()
+    }
+
+    fun getLastVinculo() = sharedPreferences.getString("lastVinculo", "1")
 
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.igorronner.irinterstitial.init.IRAds
@@ -21,6 +23,7 @@ import com.igorronner.irinterstitial.services.ProductPurchasedListener
 import com.igorronner.irinterstitial.services.ProductsListListener
 import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
@@ -37,6 +40,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: LoginViewModelFactory by instance()
+    private val sigaaPreferences: SigaaPreferences by instance()
 
     private lateinit var viewModel: LoginViewModel
 
@@ -123,6 +127,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 println(array[i])
                 println(vinculos[i].id)
                 setVinculo(vinculos[i].id)
+                sigaaPreferences.saveLastVinculo(vinculos[i].id)
                 dialogInterface.dismiss()
             }
             .setCancelable(false)

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import org.jsoup.Jsoup
 import java.lang.IndexOutOfBoundsException
 import kotlin.random.Random
@@ -13,13 +14,13 @@ class NewSerializer {
 
     fun parseLogin(response: String?): LoginStatus{
         return when {
-            response!!.contains("value=\"Continuar") -> LoginStatus(LOGIN_SUCCESS, "")
-            response.contains("Menu Principal") -> LoginStatus(LOGIN_SUCCESS, "Menu Principal")
-            response.contains("Usuário e/ou senha inválidos") -> LoginStatus(LOGIN_ERROR, "Aluno e/ou senha não encontrado")
-            response.contains("Por favor, aguarde enquanto carregamos as suas") -> LoginStatus(LOGIN_SUCCESS, "Menu Principal")
-            response.contains("Tentativa de acesso por aplicativo externo. Operação negada") -> LoginStatus(LOGIN_ERROR, "Tentativa de acesso por aplicativo externo.")
-            response.contains("nculo ativo com a universidade") -> LoginStatus(LOGIN_SUCCESS, "Vinculo")
-            else -> LoginStatus(LOGIN_ERROR, "Erro ao efetuar login. Por favor me envie um email (tela sobre)")
+            response!!.contains("value=\"Continuar") -> LoginStatus(LOGIN_SUCCESS, "", response)
+            response.contains("Menu Principal") -> LoginStatus(LOGIN_SUCCESS, "Menu Principal", response)
+            response.contains("Usuário e/ou senha inválidos") -> LoginStatus(LOGIN_ERROR, "Aluno e/ou senha não encontrado", response)
+            response.contains("Por favor, aguarde enquanto carregamos as suas") -> LoginStatus(LOGIN_SUCCESS, "Menu Principal", response)
+            response.contains("Tentativa de acesso por aplicativo externo. Operação negada") -> LoginStatus(LOGIN_ERROR, "Tentativa de acesso por aplicativo externo.", response)
+            response.contains("nculo ativo com a universidade") -> LoginStatus(LOGIN_VINCULO, "Vinculo", response)
+            else -> LoginStatus(LOGIN_ERROR, "Erro ao efetuar login. Por favor me envie um email (tela sobre)", response)
         }
     }
 
@@ -99,7 +100,7 @@ class NewSerializer {
         }
     }
 
-    fun getVinculoId(res: String?): MutableList<Vinculo>{
+    fun getVinculos(res: String?): List<Vinculo>{
         return Jsoup.parse(res).run {
             val names = select("span[class=col-xs-2]")
             val active = select("span[class=col-xs-1 text-center]")
@@ -119,7 +120,7 @@ class NewSerializer {
                 ids[index].content = content[index+1].text()
             }
             println(ids)
-            return@run ids
+            return@run ids.toList()
         }
     }
 

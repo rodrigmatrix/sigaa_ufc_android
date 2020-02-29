@@ -1,18 +1,15 @@
 package com.rodrigmatrix.sigaaufc
 
 import android.app.Application
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import androidx.work.*
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.igorronner.irinterstitial.init.IRAdsInit
 import com.rodrigmatrix.sigaaufc.BuildConfig.*
 import com.rodrigmatrix.sigaaufc.data.SigaaOkHttp
 import com.rodrigmatrix.sigaaufc.data.network.*
-import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
@@ -48,11 +45,12 @@ class SigaaApplication: Application(), KodeinAware {
         import(androidXModule(this@SigaaApplication))
         bind() from singleton { StudentDatabase(instance()) }
         bind() from singleton { instance<StudentDatabase>().studentDao() }
+        bind() from singleton { SigaaApi(this@SigaaApplication) }
+        bind() from singleton { SigaaDataSource(sigaaApi = instance()) }
         bind() from singleton { RemoteConfig(FirebaseRemoteConfig.getInstance())}
         bind() from singleton {
-            PremiumPreferences(sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication))
+            SigaaPreferences(sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication))
         }
-        bind() from singleton { SigaaApi(this@SigaaApplication) }
         bind<ConnectivityInterceptor>() with singleton {
             ConnectivityInterceptorImpl(context = instance())
         }

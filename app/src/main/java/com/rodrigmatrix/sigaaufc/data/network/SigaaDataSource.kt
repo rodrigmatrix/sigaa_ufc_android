@@ -5,6 +5,7 @@ import com.rodrigmatrix.sigaaufc.internal.Result
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
@@ -35,6 +36,7 @@ class SigaaDataSource(
             val loginResponse = serializer.parseLogin(request.string())
             when(loginResponse.loginStatus){
                 LOGIN_SUCCESS -> Result.Success(loginResponse)
+                LOGIN_VINCULO -> Result.Success(loginResponse)
                 else -> Result.Error(LoginException(loginResponse.loginMessage))
             }
         }

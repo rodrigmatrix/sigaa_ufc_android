@@ -1,20 +1,16 @@
 package com.rodrigmatrix.sigaaufc.ui.fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.igorronner.irinterstitial.init.IRAds
 import com.igorronner.irinterstitial.services.PurchaseService
 
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import kotlinx.android.synthetic.main.fragment_info.*
-import kotlinx.android.synthetic.main.premium_dialog.*
 import kotlinx.android.synthetic.main.premium_dialog.view.*
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
@@ -24,7 +20,7 @@ class InfoFragment : Fragment(R.layout.fragment_info), KodeinAware {
 
     private var countPremium = 0
     override val kodein by closestKodein()
-    private val premiumPreferences: PremiumPreferences by instance()
+    private val sigaaPreferences: SigaaPreferences by instance()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -59,10 +55,10 @@ class InfoFragment : Fragment(R.layout.fragment_info), KodeinAware {
             .show()
         layout.validate_button?.setOnClickListener {
             if(layout.premium_input.text.toString().toInt() == 5){
-                premiumPreferences.savePremium(true)
+                sigaaPreferences.savePremium(true)
             }
             else{
-                premiumPreferences.savePremium(false)
+                sigaaPreferences.savePremium(false)
             }
             dialog.dismiss()
         }

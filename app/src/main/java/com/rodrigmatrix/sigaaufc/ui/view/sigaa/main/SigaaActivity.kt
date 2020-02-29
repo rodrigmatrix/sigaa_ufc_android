@@ -4,25 +4,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
-import com.igorronner.irinterstitial.dto.IRSkuDetails
 import com.igorronner.irinterstitial.init.IRAds
-import com.igorronner.irinterstitial.services.ProductPurchasedListener
-import com.igorronner.irinterstitial.services.ProductsListListener
-import com.igorronner.irinterstitial.services.PurchaseService
-import com.rodrigmatrix.sigaaufc.BuildConfig
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
-import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -31,7 +21,7 @@ class SigaaActivity : AppCompatActivity(), KodeinAware {
 
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
     override val kodein by closestKodein()
-    private val premiumPreferences: PremiumPreferences by instance()
+    private val sigaaPreferences: SigaaPreferences by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +69,7 @@ class SigaaActivity : AppCompatActivity(), KodeinAware {
 
     private fun loadAd(){
         val irAds = IRAds.newInstance(this)
-        if(premiumPreferences.isPremium()){
+        if(sigaaPreferences.isPremium()){
             return
         }
         if(!IRAds.isPremium(this)){

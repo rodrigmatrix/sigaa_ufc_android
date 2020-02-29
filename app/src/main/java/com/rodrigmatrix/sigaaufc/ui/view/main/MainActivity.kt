@@ -14,7 +14,6 @@ import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.material.snackbar.Snackbar
@@ -32,29 +31,24 @@ import com.igorronner.irinterstitial.services.ProductPurchasedListener
 import com.igorronner.irinterstitial.services.ProductsListListener
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
-import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.FormBody
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import retrofit2.HttpException
-import java.lang.Exception
 
 class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, ProductPurchasedListener {
 
     override val kodein by closestKodein()
     private val viewModelFactory: MainActivityViewModelFactory by instance()
     private val remoteConfig: RemoteConfig by instance()
-    private val premiumPreferences: PremiumPreferences by instance()
+    private val sigaaPreferences: SigaaPreferences by instance()
     private val sigaaApi: SigaaApi by instance()
 
     private lateinit var viewModel: MainActivityViewModel
@@ -195,7 +189,7 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     }
 
     private fun loadAd(){
-        if(premiumPreferences.isPremium()){
+        if(sigaaPreferences.isPremium()){
             return
         }
         if(!IRAds.isPremium(this)){
