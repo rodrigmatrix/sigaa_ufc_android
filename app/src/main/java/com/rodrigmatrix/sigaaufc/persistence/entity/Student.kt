@@ -57,7 +57,8 @@ data class StudentClass(
     var period: String,
     var days: String,
     var attendance: Int,
-    var missed: Int
+    var missed: Int,
+    var synced: Boolean = false
 )
 
 @Entity(tableName = "news")

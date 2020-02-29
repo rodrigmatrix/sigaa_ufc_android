@@ -15,6 +15,7 @@ import com.rodrigmatrix.sigaaufc.internal.notification.sendGradeNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNotification
 import com.rodrigmatrix.sigaaufc.internal.util.getClassNameWithoutCode
+import com.rodrigmatrix.sigaaufc.internal.util.getUncommonElements
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_REDIRECT
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
@@ -102,15 +103,23 @@ class NotificationsCoroutineWork(
     private fun checkForFiles(res: String, studentClass: StudentClass) = runBlocking{
         val files = serializer.parseFiles(res, studentClass.turmaId)
         val cashedFiles = studentDao.getFilesAsync(studentClass.turmaId)
-        if(cashedFiles.isNotEmpty()){
+        if(files.isNotEmpty()){
             if(cashedFiles.size < files.size){
-                files.takeLast(files.size - cashedFiles.size).forEach {
+                val newFiles = files.getUncommonElements(cashedFiles)
+                newFiles.forEach {
                     val className = studentClass.name.getClassNameWithoutCode()
                     context.sendDownloadNotification(
                         context.getString(R.string.file_notification_title, className),
                         context.getString(R.string.file_notification_body, it.name)
                     )
                 }
+//                files.takeLast(files.size - cashedFiles.size).forEach {
+//                    val className = studentClass.name.getClassNameWithoutCode()
+//                    context.sendDownloadNotification(
+//                        context.getString(R.string.file_notification_title, className),
+//                        context.getString(R.string.file_notification_body, it.name)
+//                    )
+//                }
             }
         }
         studentDao.upsertFiles(files)
