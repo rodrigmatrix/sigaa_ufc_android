@@ -135,7 +135,8 @@ class NotificationsCoroutineWork(
                         val className = studentClass.name.getClassNameWithoutCode()
                         context.sendNewsNotification(
                             context.getString(R.string.news_notification_title, className),
-                            context.getString(R.string.news_notification_body, it.title, it.content)
+                            context.getString(R.string.news_notification_body, it.title, it.content),
+                            it.newsId
                         )
                         studentDao.upsertNewsContent(it)
 
@@ -165,7 +166,8 @@ class NotificationsCoroutineWork(
                     val className = studentClass.name.getClassNameWithoutCode()
                     context.sendGradeNotification(
                         context.getString(R.string.grade_notification_title, className),
-                        context.getString(R.string.grade_notification_body, it.name)
+                        context.getString(R.string.grade_notification_body, it.name),
+                        it.id
                     )
                 }
             }

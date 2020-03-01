@@ -37,7 +37,9 @@ import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
@@ -47,7 +49,9 @@ import kotlinx.android.synthetic.main.app_bar_main2.*
 import kotlinx.android.synthetic.main.app_bar_main2.profile_pic
 import kotlinx.android.synthetic.main.app_bar_main2.profile_pic_card
 import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -59,7 +63,7 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     private val viewModelFactory: MainActivityViewModelFactory by instance()
     private val remoteConfig: RemoteConfig by instance()
     private val sigaaPreferences: SigaaPreferences by instance()
-    private val sigaaApi: SigaaApi by instance()
+    private val studentDao: StudentDao by instance()
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -84,22 +88,31 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
         window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         val bundle = intent.extras
         if(bundle != null){
             val link = bundle.getString("link")
-            if(link != null){
-                val newIntent = Intent(Intent.ACTION_VIEW)
-                newIntent.data = Uri.parse(link)
-                startActivity(newIntent)
-                setContentView(R.layout.activity_main)
-            }
-            else{
-                setContentView(R.layout.activity_main)
-                loadAd()
+            val news = bundle.getString("newsId")
+            val grade = bundle.getString("gradeId")
+            when {
+                link != null -> {
+                    val newIntent = Intent(Intent.ACTION_VIEW)
+                    newIntent.data = Uri.parse(link)
+                    startActivity(newIntent)
+                    finish()
+                }
+                news != null -> {
+                    showDialogNews(news)
+                }
+                grade != null -> {
+                    showDialogGrade(grade)
+                }
+                else -> {
+                    loadAd()
+                }
             }
         }
         else{
-            setContentView(R.layout.activity_main)
             loadAd()
         }
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -132,6 +145,32 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkForUpdates()
+    }
+
+    private fun showDialogNews(id: String) = launch {
+        val news = withContext(Dispatchers.IO) {
+            studentDao.getNewsWithIdAsync(id)
+        }
+        MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle(news.title)
+            .setMessage(news.content)
+            .setPositiveButton("Ok") { i, _ ->
+                i.dismiss()
+            }
+            .show()
+    }
+
+    private fun showDialogGrade(id: String) = launch {
+        val grade = withContext(Dispatchers.IO) {
+            studentDao.getGradeAsync(id)
+        }
+        MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle(grade.name)
+            .setMessage("Nota: ${grade.content}")
+            .setPositiveButton("Ok") { i, _ ->
+                i.dismiss()
+            }
+            .show()
     }
 
     private fun popupSnackbarForCompleteUpdate() {

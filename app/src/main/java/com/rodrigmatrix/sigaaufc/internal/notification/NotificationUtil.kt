@@ -10,6 +10,7 @@ import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity
@@ -62,6 +63,7 @@ fun Context.sendFileNotification(
 
     val intent = Intent(this, MainActivity::class.java)
     intent.putExtra("notificationAction", "downloadFile")
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
     val pendingIntent = PendingIntent.getActivity(this, Random.nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -85,7 +87,8 @@ fun Context.sendFileNotification(
 
 fun Context.sendNewsNotification(
     title: String,
-    message: String
+    message: String,
+    newsId: String
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val name = "Notificações de notícias"
@@ -94,6 +97,10 @@ fun Context.sendNewsNotification(
     }
 
     val intent = Intent(this, MainActivity::class.java)
+    intent.apply {
+        putExtra("newsId", newsId)
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
 
     val pendingIntent = PendingIntent.getActivity(this, Random.nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -115,7 +122,8 @@ fun Context.sendNewsNotification(
 
 fun Context.sendGradeNotification(
     title: String,
-    message: String
+    message: String,
+    gradeId: String
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         val name = "Notificações de notas"
@@ -124,6 +132,10 @@ fun Context.sendGradeNotification(
     }
 
     val intent = Intent(this, MainActivity::class.java)
+    intent.apply {
+        putExtra("gradeId", gradeId)
+        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
 
     val pendingIntent = PendingIntent.getActivity(this, Random.nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 

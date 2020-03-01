@@ -110,6 +110,9 @@ interface StudentDao {
     @Query("SELECT * FROM grades WHERE idTurma LIKE :idTurma")
     fun getGradesAsync(idTurma: String): List<Grade>
 
+    @Query("SELECT * FROM grades WHERE id LIKE :gradeId")
+    fun getGradeAsync(gradeId: String): Grade
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertGrade(grade: Grade)
 

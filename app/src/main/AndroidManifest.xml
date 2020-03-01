@@ -40,7 +40,6 @@
             </intent-filter>
         </service>
 
-
         <activity
                 android:name=".ui.view.sigaa.classes.selected.ClassActivity"
                 android:label="@string/title_activity_class"
