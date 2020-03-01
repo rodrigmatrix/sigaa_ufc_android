@@ -139,7 +139,6 @@ class NotificationsCoroutineWork(
                 newNews.forEach {
                     runBlocking {
                         val className = studentClass.name.getClassNameWithoutCode()
-
                         context.sendNewsNotification(
                             context.getString(R.string.news_notification_title, className),
                             context.getString(R.string.news_notification_body, it.title, it.content),
@@ -171,11 +170,13 @@ class NotificationsCoroutineWork(
             if(!sigaaPreferences.getNewsNotification()){
                 newGrades.forEach {
                     val className = studentClass.name.getClassNameWithoutCode()
-                    context.sendGradeNotification(
-                        context.getString(R.string.grade_notification_title, className),
-                        context.getString(R.string.grade_notification_body, it.name),
-                        it.id
-                    )
+                    if(it.content != ""){
+                        context.sendGradeNotification(
+                            context.getString(R.string.grade_notification_title, className),
+                            context.getString(R.string.grade_notification_body, it.name),
+                            it.id
+                        )
+                    }
                 }
             }
             grades.forEach {

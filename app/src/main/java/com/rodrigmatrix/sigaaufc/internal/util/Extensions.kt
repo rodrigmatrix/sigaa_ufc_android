@@ -32,8 +32,10 @@ fun List<Grade>.getUncommonGrades(other: List<Grade>): List<Grade> {
     val uncommon = mutableListOf<Grade>()
     forEachIndexed { index, grade ->
         try {
-            if(grade.content != other[index].content){
-                uncommon.add(grade)
+            if(grade.name != "Sit."){
+                if(grade.content != other[index].content){
+                    uncommon.add(grade)
+                }
             }
         }
         catch(e: Exception){
