@@ -109,7 +109,7 @@ class NotificationsCoroutineWork(
     }
 
     private fun checkForNews(res: String, studentClass: StudentClass) = runBlocking(Dispatchers.IO) {
-
+        val response = sigaaDataSource.getNews(res, studentClass)
     }
 
     private fun checkForGrades(res: String, studentClass: StudentClass) = runBlocking(Dispatchers.IO) {
@@ -124,12 +124,14 @@ class NotificationsCoroutineWork(
                 return@runBlocking
             }
             val newGrades = grades.getUncommonGrades(cashedGrades)
-            newGrades.forEach {
-                val className = studentClass.name.getClassNameWithoutCode()
-                context.sendGradeNotification(
-                    context.getString(R.string.grade_notification_title, className),
-                    context.getString(R.string.grade_notification_body, it.name)
-                )
+            if(!sigaaPreferences.getNewsNotification()){
+                newGrades.forEach {
+                    val className = studentClass.name.getClassNameWithoutCode()
+                    context.sendGradeNotification(
+                        context.getString(R.string.grade_notification_title, className),
+                        context.getString(R.string.grade_notification_body, it.name)
+                    )
+                }
             }
             grades.forEach {
                 studentDao.upsertGrade(it)
@@ -153,16 +155,21 @@ class NotificationsCoroutineWork(
         newFiles.forEach {
             if(it.name != "null"){
                 studentDao.upsertFile(it)
-                val className = studentClass.name.getClassNameWithoutCode()
-                context.sendDownloadNotification(
-                    context.getString(R.string.file_notification_title, className),
-                    context.getString(R.string.file_notification_body, it.name)
-                )
+                if(!sigaaPreferences.getFilesNotification()){
+                    val className = studentClass.name.getClassNameWithoutCode()
+                    context.sendDownloadNotification(
+                        context.getString(R.string.file_notification_title, className),
+                        context.getString(R.string.file_notification_body, it.name)
+                    )
+                }
             }
         }
     }
 
     override suspend fun doWork(): Result {
+        if(sigaaPreferences.getAllNotification()){
+            return Result.success()
+        }
         return login()
     }
 

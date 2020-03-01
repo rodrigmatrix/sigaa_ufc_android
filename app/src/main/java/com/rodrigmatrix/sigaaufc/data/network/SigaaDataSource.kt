@@ -3,13 +3,10 @@ package com.rodrigmatrix.sigaaufc.data.network
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.LoginException
 import com.rodrigmatrix.sigaaufc.internal.Result
-import com.rodrigmatrix.sigaaufc.persistence.entity.File
-import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
-import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus
+import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
-import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
@@ -116,6 +113,50 @@ class SigaaDataSource(
             sigaaRepository.saveViewState(response)
             val gradesList = serializer.parseGrades(response, studentClass.turmaId)
             Result.Success(gradesList)
+        }
+        catch(e: HttpException){
+            Result.Error(e)
+        }
+        catch(e: Exception){
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getNews(res: String, studentClass: StudentClass): Result<List<News>> = withContext(Dispatchers.IO){
+        return@withContext try {
+            val requestId = serializer.parseGradesRequestId(res)
+            val formBody = FormBody.Builder()
+                .add("formMenu", "formMenu")
+                .add(requestId, requestId)
+                .add("javax.faces.ViewState", sigaaRepository.getViewStateId())
+                .build()
+            val request = sigaaApi.getGrades(formBody)
+            val response = request.string()
+            sigaaRepository.saveViewState(response)
+            val gradesList = serializer.parseNews(response, studentClass.turmaId)
+            Result.Success(gradesList)
+        }
+        catch(e: HttpException){
+            Result.Error(e)
+        }
+        catch(e: Exception){
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getNewsContent(news: News): Result<News> = withContext(Dispatchers.IO){
+        return@withContext try {
+            val formBody = FormBody.Builder()
+                .add(news.requestId, news.requestId)
+                .add("javax.faces.ViewState", sigaaRepository.getViewStateId())
+                .add(news.requestId2, news.requestId2)
+                .add("id", news.newsId)
+                .build()
+            val request = sigaaApi.getGrades(formBody)
+            val response = request.string()
+            sigaaRepository.saveViewState(response)
+            news.content = serializer.parseNewsContent(response)
+            Result.Success(news)
         }
         catch(e: HttpException){
             Result.Error(e)

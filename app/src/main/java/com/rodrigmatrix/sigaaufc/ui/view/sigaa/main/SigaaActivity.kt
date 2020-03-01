@@ -105,8 +105,6 @@ class SigaaActivity : ScopedActivity() {
         }
     }
 
-
-
     override fun onBackPressed() {
         confirmClose()
     }

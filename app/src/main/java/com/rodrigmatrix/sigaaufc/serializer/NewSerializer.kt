@@ -259,7 +259,7 @@ class NewSerializer {
         return classes
     }
 
-    fun parseNews(idTurma: String, response: String?): MutableList<News>{
+    fun parseNews(response: String?, idTurma: String): MutableList<News>{
         val news = mutableListOf<News>()
         Jsoup.parse(response).run {
             val tbody = select("tbody")
