@@ -44,5 +44,6 @@
     <string name="notifications_text">Esse recurso é origem de muito trabalho mas, ele ainda se encontra em beta. Notificações disparadas mais de uma vez ou informações erradas podem acontecer e é para isso que preciso de feedback para encontrar os bugs e melhorar cada vez mais o recurso. Qualquer dúvida ou reporte de bugs, envie um email para rodrigmatrix@gmail.com</string>
     <string name="notifications_warning">Para esse recurso funcionar, <b><u>o usuário deve efetuar um primeiro login no app e salvar os dados de login.</u></b> Se o usuário possuir mais de um vínculo, <b><u>as notificações sempre irão ser acionadas para o último vínculo que o usuário efetuou login.</u></b> As notificações somente serão disparadas para disciplinas ativas.</string>
     <string name="notifications_title">Notificações (Beta)</string>
+    <string name="wrong_password_alert">O app não estã conseguindo fazer login no sigaa para verificar novas notificações. Se você tiver alterado a senha do seu sigaa, é necessário fazer login no app e atualizar os dados de login para que as notificações continuem funcionando</string>
 
 </resources>

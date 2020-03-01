@@ -39,11 +39,7 @@ class SigaaDataSource(
                 .build()
             val request = sigaaApi.login(formBody)
             val loginResponse = serializer.parseLogin(request.string())
-            when(loginResponse.loginStatus){
-                LOGIN_SUCCESS -> Success(loginResponse)
-                LOGIN_VINCULO -> Success(loginResponse)
-                else -> Result.Error(LoginException(loginResponse.loginMessage))
-            }
+            Success(loginResponse)
         }
         catch(e: HttpException){
             Result.Error(e)

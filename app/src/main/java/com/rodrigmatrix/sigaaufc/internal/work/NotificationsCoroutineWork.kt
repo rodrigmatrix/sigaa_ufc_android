@@ -12,10 +12,12 @@ import com.rodrigmatrix.sigaaufc.internal.Result.Success
 import com.rodrigmatrix.sigaaufc.internal.notification.sendFileNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendGradeNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
+import com.rodrigmatrix.sigaaufc.internal.notification.sendNotification
 import com.rodrigmatrix.sigaaufc.internal.util.getClassNameWithoutCode
 import com.rodrigmatrix.sigaaufc.internal.util.getUncommonElements
 import com.rodrigmatrix.sigaaufc.internal.util.getUncommonGrades
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
@@ -45,12 +47,21 @@ class NotificationsCoroutineWork(
         if(result is Success){
             return@runBlocking when(result.data.loginStatus){
                 LOGIN_VINCULO -> handleVinculo()
+                LOGIN_ERROR -> {
+                    when(result.data.loginMessage){
+                        "Aluno e/ou senha não encontrado" -> {
+                            context.sendNotification(
+                                "Erro ao efetuar login no app",
+                                context.getString(R.string.wrong_password_alert)
+                            )
+                        }
+                    }
+                    Result.failure()
+                }
                 else -> handleClasses()
             }
         }
         if(result is Error){
-            // TODO handle error
-            //context.sendNotification("erro login", "erro login")
             return@runBlocking Result.success()
         }
         return@runBlocking Result.success()

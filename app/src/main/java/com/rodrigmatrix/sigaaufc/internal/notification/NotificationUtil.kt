@@ -143,8 +143,8 @@ fun Context.sendGradeNotification(
 
 }
 
-const val GENERAL_CHANNEL_ID = "general"
-const val CLASSES_CHANNEL_ID = "classes_channel"
-const val NEWS_CHANNEL_ID = "news_channel"
+const val GENERAL_CHANNEL_ID = "general_channel_id"
+const val CLASSES_CHANNEL_ID = "classes_channel_id"
+const val NEWS_CHANNEL_ID = "news_channel_id"
 const val FILES_CHANNEL_ID = "files_channel_id"
 const val GRADE_CHANNEL_ID = "grades_channel_id"
