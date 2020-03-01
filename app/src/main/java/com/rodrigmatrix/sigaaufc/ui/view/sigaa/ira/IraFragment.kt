@@ -17,19 +17,12 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class IraFragment : ScopedFragment(), KodeinAware {
+class IraFragment : ScopedFragment(R.layout.fragment_ira), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: IraViewModelFactory by instance()
 
     private lateinit var viewModel: IraViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_ira, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

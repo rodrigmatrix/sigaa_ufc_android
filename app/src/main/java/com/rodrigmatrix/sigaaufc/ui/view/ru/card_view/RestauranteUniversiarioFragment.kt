@@ -24,7 +24,7 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
+class RestauranteUniversiarioFragment : ScopedFragment(R.layout.fragment_restaurante_universiario), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: RuViewModelFactory by instance()
@@ -95,9 +95,4 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_restaurante_universiario, container, false)
-    }
 }

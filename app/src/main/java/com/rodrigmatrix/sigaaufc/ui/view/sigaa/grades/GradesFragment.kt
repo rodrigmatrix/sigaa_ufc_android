@@ -24,7 +24,7 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 import kotlin.coroutines.CoroutineContext
 
-class GradesFragment: ScopedFragment(), KodeinAware {
+class GradesFragment: ScopedFragment(R.layout.fragment_grades), KodeinAware {
 
 
     private lateinit var idTurma: String
@@ -58,11 +58,4 @@ class GradesFragment: ScopedFragment(), KodeinAware {
 
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_grades, container, false)
-    }
 }

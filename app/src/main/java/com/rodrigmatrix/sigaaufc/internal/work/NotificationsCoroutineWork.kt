@@ -98,6 +98,7 @@ class NotificationsCoroutineWork(
         if(result is Success){
             checkForFiles(result.data, studentClass)
             checkForGrades(result.data, studentClass)
+            checkForNews(result.data, studentClass)
             return@runBlocking Result.success()
         }
         if(result is Error){
@@ -105,6 +106,10 @@ class NotificationsCoroutineWork(
             return@runBlocking Result.failure()
         }
         return@runBlocking Result.success()
+    }
+
+    private fun checkForNews(res: String, studentClass: StudentClass) = runBlocking(Dispatchers.IO) {
+
     }
 
     private fun checkForGrades(res: String, studentClass: StudentClass) = runBlocking(Dispatchers.IO) {

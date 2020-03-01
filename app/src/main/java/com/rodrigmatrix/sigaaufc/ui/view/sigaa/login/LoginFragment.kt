@@ -36,19 +36,13 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class LoginFragment : ScopedFragment(), KodeinAware {
+class LoginFragment : ScopedFragment(R.layout.fragment_login), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: LoginViewModelFactory by instance()
     private val sigaaPreferences: SigaaPreferences by instance()
 
     private lateinit var viewModel: LoginViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

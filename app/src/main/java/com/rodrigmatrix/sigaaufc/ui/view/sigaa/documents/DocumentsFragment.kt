@@ -34,19 +34,12 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 @Suppress("DEPRECATION")
-class DocumentsFragment : ScopedFragment(), KodeinAware {
+class DocumentsFragment : ScopedFragment(R.layout.documents_fragment), KodeinAware {
 
     private lateinit var viewModel: DocumentsViewModel
 
     override val kodein by closestKodein()
     private val viewModelFactory: DocumentsViewModelFactory by instance()
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.documents_fragment, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

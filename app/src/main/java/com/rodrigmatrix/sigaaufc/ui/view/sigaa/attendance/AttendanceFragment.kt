@@ -17,7 +17,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class AttendanceFragment : ScopedFragment(), KodeinAware {
+class AttendanceFragment : ScopedFragment(R.layout.fragment_attendance), KodeinAware {
 
 
     override val kodein by closestKodein()
@@ -26,13 +26,6 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
     private var isPrevious = false
 
     private lateinit var viewModel: AttendanceViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_attendance, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

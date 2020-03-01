@@ -20,7 +20,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class NewsFragment : ScopedFragment(), KodeinAware {
+class NewsFragment : ScopedFragment(R.layout.fragment_news), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: NewsViewModelFactory by instance()
@@ -28,13 +28,6 @@ class NewsFragment : ScopedFragment(), KodeinAware {
     private lateinit var viewModel: NewsViewModel
 
     private lateinit var idTurma: String
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_news, container, false)
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

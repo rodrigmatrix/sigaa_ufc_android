@@ -22,22 +22,13 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class ClassesFragment : ScopedFragment(), KodeinAware {
+class ClassesFragment : ScopedFragment(R.layout.fragment_classes), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: ClassesViewModelFactory by instance()
 
     private lateinit var viewModel: ClassesViewModel
     private var fetched = false
-
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_classes, container, false)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
