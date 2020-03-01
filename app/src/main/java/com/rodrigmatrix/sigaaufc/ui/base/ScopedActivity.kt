@@ -6,10 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
 import kotlin.coroutines.CoroutineContext
 
-abstract class ScopedActivity: AppCompatActivity(), CoroutineScope {
+abstract class ScopedActivity: AppCompatActivity(), CoroutineScope, KodeinAware {
 
+
+    override val kodein by closestKodein()
 
     private val job = SupervisorJob()
 

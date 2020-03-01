@@ -40,5 +40,7 @@
 
     <string name="news_notification_title">Nova notícia em <b>%s</b></string>
     <string name="news_notification_body">Titulo: <b>%s</b> \nConteudo: <b>%s</b></string>
+    <string name="notifications_text">Esse recurso é origem de muito trabalho mas, ele ainda se encontra em beta. Notificações disparadas mais de uma vez ou informações erradas podem acontecer e é para isso que preciso de feedback para encontrar os bugs e melhorar cada vez mais o recurso. Qualquer dúvida ou reporte de bugs, envie um email para rodrigmatrix@gmail.com</string>
+    <string name="notifications_warning">Para esse recurso funcionar, <b><u>o usuário deve salvar os dados de login e efetuar um primeiro login no app.</u></b> Se o usuário possuir mais de um vínculo, <b><u>as notificações sempre irão ser acionadas para o último vínculo que o usuário efetuou login.</u></b> As notificações somente serão disparadas para disciplinas ativas.</string>
 
 </resources>

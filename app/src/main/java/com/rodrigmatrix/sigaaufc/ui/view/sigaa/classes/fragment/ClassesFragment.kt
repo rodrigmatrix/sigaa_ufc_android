@@ -22,9 +22,8 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class ClassesFragment : ScopedFragment(R.layout.fragment_classes), KodeinAware {
+class ClassesFragment : ScopedFragment(R.layout.fragment_classes) {
 
-    override val kodein by closestKodein()
     private val viewModelFactory: ClassesViewModelFactory by instance()
 
     private lateinit var viewModel: ClassesViewModel

@@ -8,17 +8,19 @@
     <fragment
             android:id="@+id/nav_login"
             android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.login.LoginFragment"
-            android:label="Login">
+            android:label="Login"
+            tools:layout="@layout/fragment_login">
         <deepLink
                 android:id="@+id/deepLink"
-                app:uri="https://si3.ufc.br/sigaa/verTelaLogin.do" />
+                app:uri="https://si3.ufc.br/sigaa/" />
     </fragment>
 
     <fragment
-            android:id="@+id/nav_classes"
-            android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment"
-            android:label="@string/title_activity_class"
-            tools:layout="@layout/fragment_classes"/>
+            android:id="@+id/nav_notifications"
+            android:name="com.rodrigmatrix.sigaaufc.ui.fragments.NotificationsFragment"
+            android:label="Notificações (Beta)"
+            tools:layout="@layout/fragment_notifications"/>
+
 
     <fragment
             android:id="@+id/nav_ru"
@@ -29,7 +31,7 @@
     <fragment
             android:id="@+id/nav_settings"
             android:label="@string/settings_string"
-            android:name="com.rodrigmatrix.sigaaufc.ui.settings.SettingsFragment"/>
+            android:name="com.rodrigmatrix.sigaaufc.ui.settings.SettingsFragment" />
 
 
     <fragment
@@ -43,11 +45,6 @@
             android:name="com.rodrigmatrix.sigaaufc.ui.fragments.InfoFragment"
             android:label="@string/info_string"
             tools:layout="@layout/fragment_info" />
-    <fragment
-            android:id="@+id/nav_sigaa"
-            android:name="com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.SigaaFragment"
-            android:label="SIGAA"
-            tools:layout="@layout/fragment_sigaa" />
     <fragment
             android:id="@+id/nav_ru_menu"
             android:name="com.rodrigmatrix.sigaaufc.ui.fragments.RuMenuFragment"

@@ -37,6 +37,7 @@ import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.app_bar_main2.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
@@ -100,6 +101,7 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_login,
+                R.id.nav_notifications,
                 R.id.nav_ru,
                 R.id.nav_library,
                 R.id.nav_settings,
@@ -201,11 +203,15 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     @SuppressLint("SetTextI18n")
     private fun bindUi(profilePic: String, name: String, matricula: String){
         if(profilePic != "/sigaa/img/no_picture.png"){
-            GlideApp.with(this@MainActivity)
+            GlideApp.with(this)
                 .load("https://si3.ufc.br/$profilePic")
                 .into(nav_view.getHeaderView(0).profile_pic_image)
+            GlideApp.with(this)
+                .load("https://si3.ufc.br/$profilePic")
+                .into(profile_pic)
         }
         else{
+            profile_pic.setImageResource(R.drawable.avatar_circle_blue)
             nav_view.getHeaderView(0).profile_pic_image.setImageResource(R.drawable.avatar_circle_blue)
         }
         if(name != ""){

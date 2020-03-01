@@ -19,8 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:text="Visualize todas as suas disciplinas na opção acima"
-            android:textAlignment="center"
+            android:text="Visualize as suas disciplinas anteriores na opção acima"
+            android:gravity="center"
             android:layout_marginBottom="3dp"
             android:textColor="@color/colorTextSecondary"
             android:textSize="13sp" />
