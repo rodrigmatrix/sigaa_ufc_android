@@ -113,12 +113,16 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
                     showDialogGrade(grade)
                 }
                 else -> {
-                    loadAd()
+                    if(!sigaaPreferences.showOnboarding()){
+                        loadAd()
+                    }
                 }
             }
         }
         else{
-            loadAd()
+            if(!sigaaPreferences.showOnboarding()){
+                loadAd()
+            }
         }
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -147,7 +151,6 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         getShortcut()
-
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkForUpdates()
         if(sigaaPreferences.showOnboarding()){
@@ -219,16 +222,22 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     }
 
     private fun checkUpdateType(availableVersionCode: Int, versions: List<Version>): Int{
-        var updateType = 0
-        versions.forEach {
-            if(availableVersionCode == it.versionCode){
-                updateType = it.updateType
+        try {
+            var updateType = 0
+            versions.forEach {
+                if(availableVersionCode == it.versionCode){
+                    updateType = it.updateType
+                }
             }
+            if(updateType !in 0..1){
+                return 0
+            }
+            return updateType
         }
-        if(updateType !in 0..1){
-            return 0
+        catch(e: Exception){
+            e.printStackTrace()
         }
-        return updateType
+        return 0
     }
 
     override fun onResume() {

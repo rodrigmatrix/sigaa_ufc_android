@@ -52,7 +52,7 @@ abstract class StudentDatabase : RoomDatabase() {
                 StudentDatabase::class.java,
                 "sigaa.db")
                 .addMigrations(MIGRATION_6_7)
-                .fallbackToDestructiveMigration()
+                //.fallbackToDestructiveMigration()
                 .build()
     }
 }

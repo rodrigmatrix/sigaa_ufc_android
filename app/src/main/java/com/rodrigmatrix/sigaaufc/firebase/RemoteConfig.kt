@@ -25,7 +25,7 @@ class RemoteConfig(private val remoteConfig: FirebaseRemoteConfig){
     }
 
     fun getVersions(): List<Version> {
-        val versions = remoteConfig.getString("sigaa_updates")
+        val versions = remoteConfig.getString("sigaa_updates") ?: return listOf()
         return try {
             Gson().fromJson(versions, Versions::class.java).versions
         }
@@ -35,7 +35,7 @@ class RemoteConfig(private val remoteConfig: FirebaseRemoteConfig){
     }
 
     fun isNotificationsEnabled(): Boolean {
-        return remoteConfig.getBoolean("notifications_enabled")
+        return remoteConfig.getBoolean("notifications_enabled") ?: return false
     }
 
 

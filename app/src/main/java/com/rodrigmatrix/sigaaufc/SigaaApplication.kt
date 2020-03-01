@@ -164,9 +164,9 @@ class SigaaApplication: Application(), KodeinAware {
             ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
         )
-        if(DEBUG){
-            workManager.enqueue(oneTimeWorkRequest)
-        }
+//        if(DEBUG){
+//            workManager.enqueue(oneTimeWorkRequest)
+//        }
     }
 
     private fun setTheme(theme: String?){
