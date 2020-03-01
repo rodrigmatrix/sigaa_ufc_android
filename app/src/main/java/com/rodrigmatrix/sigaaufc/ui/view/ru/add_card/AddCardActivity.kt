@@ -3,9 +3,7 @@ package com.rodrigmatrix.sigaaufc.ui.view.ru.add_card
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.HapticFeedbackConstants
-import android.view.View
-import android.view.Window
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -88,6 +86,35 @@ class AddCardActivity : ScopedActivity() {
         }
         catch(e: Exception){
             e.printStackTrace()
+        }
+        profile_pic_card.setOnClickListener {
+            val builder = MaterialAlertDialogBuilder(this@AddCardActivity)
+            val inflater = LayoutInflater.from(builder.context)
+            val view = inflater.inflate(R.layout.dialog_header_profile, null)
+//            val textAno = view.findViewById<TextView>(R.id.ano)
+//            val anoAnterior = view.findViewById<View>(R.id.imageView1)
+//            val anoSeguinte = view.findViewById<View>(R.id.imageView2)
+//            val gridView = view.findViewById<GridView>(R.id.gridView)
+            builder.apply {
+                setView(view)
+                setPositiveButton("Ok") { d, _ ->
+                    d.dismiss()
+                }
+            }
+            val dialog = builder.create()
+            dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+            val window = dialog.window
+            if (window != null) {
+                val layoutParamss = window.attributes
+                layoutParamss.windowAnimations = R.style.AlertDialogAnimationDown
+                layoutParamss.gravity = Gravity.TOP
+                layoutParamss.y = (profile_pic_card.y + 150).toInt()
+            }
+            try {
+                dialog.show()
+            } catch(e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

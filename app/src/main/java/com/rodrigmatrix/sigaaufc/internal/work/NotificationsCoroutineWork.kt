@@ -4,30 +4,25 @@ import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.network.SigaaDataSource
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.Result.Error
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
-import com.rodrigmatrix.sigaaufc.internal.notification.sendDownloadNotification
+import com.rodrigmatrix.sigaaufc.internal.notification.sendFileNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendGradeNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
-import com.rodrigmatrix.sigaaufc.internal.notification.sendNotification
 import com.rodrigmatrix.sigaaufc.internal.util.getClassNameWithoutCode
 import com.rodrigmatrix.sigaaufc.internal.util.getUncommonElements
 import com.rodrigmatrix.sigaaufc.internal.util.getUncommonGrades
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
-import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_REDIRECT
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
-import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 class NotificationsCoroutineWork(
@@ -109,7 +104,37 @@ class NotificationsCoroutineWork(
     }
 
     private fun checkForNews(res: String, studentClass: StudentClass) = runBlocking(Dispatchers.IO) {
+        val cashedNews = studentDao.getNewsWithClassIdAsync(studentClass.turmaId)
         val response = sigaaDataSource.getNews(res, studentClass)
+        if(response is Success){
+            val news = response.data
+            if(!studentClass.synced){
+                news.forEach {
+                    runBlocking {
+                        sigaaDataSource.getNewsContent(it)
+                        studentDao.insertNews(it)
+                    }
+                }
+                return@runBlocking
+            }
+            val newNews = news.getUncommonElements(cashedNews).filter { it.requestId != "fake" }
+            if(!sigaaPreferences.getNewsNotification()){
+                newNews.forEach {
+                    runBlocking {
+                        val className = studentClass.name.getClassNameWithoutCode()
+                        context.sendNewsNotification(
+                            context.getString(R.string.news_notification_title, className),
+                            context.getString(R.string.news_notification_body, it.title, it.content)
+                        )
+                        studentDao.upsertNewsContent(it)
+
+                    }
+                }
+            }
+        }
+        if(response is Error){
+            response.exception.printStackTrace()
+        }
     }
 
     private fun checkForGrades(res: String, studentClass: StudentClass) = runBlocking(Dispatchers.IO) {
@@ -147,17 +172,19 @@ class NotificationsCoroutineWork(
         val cashedFiles = studentDao.getFilesAsync(studentClass.turmaId)
         if(!studentClass.synced){
             files.forEach {
-                studentDao.upsertFile(it)
+                runBlocking {
+                    studentDao.upsertFile(it)
+                }
             }
             return@runBlocking
         }
-        val newFiles = files.getUncommonElements(cashedFiles)
+        val newFiles = files.getUncommonElements(cashedFiles).filter { it.name != "null" }
         newFiles.forEach {
-            if(it.name != "null"){
+            runBlocking {
                 studentDao.upsertFile(it)
                 if(!sigaaPreferences.getFilesNotification()){
                     val className = studentClass.name.getClassNameWithoutCode()
-                    context.sendDownloadNotification(
+                    context.sendFileNotification(
                         context.getString(R.string.file_notification_title, className),
                         context.getString(R.string.file_notification_body, it.name)
                     )

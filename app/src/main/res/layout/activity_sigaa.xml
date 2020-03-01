@@ -50,10 +50,14 @@
                             android:gravity="end|center">
 
                         <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/profile_pic_card"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 app:cardCornerRadius="45dp"
                                 android:layout_margin="6dp"
+                                app:rippleColor="@color/colorPrimary"
+                                android:clickable="true"
+                                android:focusable="true"
                                 app:cardElevation="2dp">
 
                             <ImageView

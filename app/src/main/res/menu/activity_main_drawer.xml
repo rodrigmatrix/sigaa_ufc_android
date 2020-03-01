@@ -11,7 +11,7 @@
         <item
                 android:id="@+id/nav_notifications"
                 android:icon="@drawable/ic_notifications"
-                android:title="Notificações (Beta)" />
+                android:title="@string/notifications_title" />
         <item
                 android:id="@+id/nav_ru"
                 android:icon="@drawable/ic_credit_card"

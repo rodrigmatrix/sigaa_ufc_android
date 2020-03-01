@@ -25,20 +25,18 @@ private fun Context.createNotificationChannel(channelId: String, name: String, d
     notificationManager.createNotificationChannel(mChannel)
 }
 
-
 fun Context.sendNotification(
     title: String,
-    message: String,
-    channelId: String = CLASSES_CHANNEL_ID
+    message: String
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "Notificações de disciplinas"
-        val description = "Notificações de notas, notícias e arquivos das disciplinas"
-        createNotificationChannel(CLASSES_CHANNEL_ID, name, description)
+        val name = "Notificações gerais"
+        val description = "Notificações gerais do app"
+        createNotificationChannel(GENERAL_CHANNEL_ID, name, description)
     }
 
     val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-    val builder = NotificationCompat.Builder(this, channelId)
+    val builder = NotificationCompat.Builder(this, GENERAL_CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_stat_sigaa)
         .setContentTitle(title)
         .setContentText(message)
@@ -52,15 +50,14 @@ fun Context.sendNotification(
 
 }
 
-fun Context.sendDownloadNotification(
+fun Context.sendFileNotification(
     title: String,
-    message: String,
-    channelId: String = CLASSES_CHANNEL_ID
+    message: String
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "Notificações de disciplinas"
-        val description = "Notificações de notas, notícias e arquivos das disciplinas"
-        createNotificationChannel(CLASSES_CHANNEL_ID, name, description)
+        val name = "Notificações de arquivos"
+        val description = "Notificações de novos arquivos das disciplinas"
+        createNotificationChannel(FILES_CHANNEL_ID, name, description)
     }
 
     val intent = Intent(this, MainActivity::class.java)
@@ -70,7 +67,7 @@ fun Context.sendDownloadNotification(
 
 
     val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-    val builder = NotificationCompat.Builder(this, channelId)
+    val builder = NotificationCompat.Builder(this, FILES_CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_stat_sigaa)
         .setContentTitle(title)
         .setContentText(message)
@@ -88,13 +85,12 @@ fun Context.sendDownloadNotification(
 
 fun Context.sendNewsNotification(
     title: String,
-    message: String,
-    channelId: String = CLASSES_CHANNEL_ID
+    message: String
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "Notificações de disciplinas"
-        val description = "Notificações de notas, notícias e arquivos das disciplinas"
-        createNotificationChannel(CLASSES_CHANNEL_ID, name, description)
+        val name = "Notificações de notícias"
+        val description = "Notificações de novas notícias das disciplinas"
+        createNotificationChannel(NEWS_CHANNEL_ID, name, description)
     }
 
     val intent = Intent(this, MainActivity::class.java)
@@ -102,7 +98,7 @@ fun Context.sendNewsNotification(
     val pendingIntent = PendingIntent.getActivity(this, Random.nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-    val builder = NotificationCompat.Builder(this, channelId)
+    val builder = NotificationCompat.Builder(this, NEWS_CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_stat_sigaa)
         .setContentTitle(title)
         .setContentText(message)
@@ -119,13 +115,12 @@ fun Context.sendNewsNotification(
 
 fun Context.sendGradeNotification(
     title: String,
-    message: String,
-    channelId: String = CLASSES_CHANNEL_ID
+    message: String
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "Notificações de disciplinas"
-        val description = "Notificações de notas, notícias e arquivos das disciplinas"
-        createNotificationChannel(CLASSES_CHANNEL_ID, name, description)
+        val name = "Notificações de notas"
+        val description = "Notificações de novas notas das disciplinas"
+        createNotificationChannel(GRADE_CHANNEL_ID, name, description)
     }
 
     val intent = Intent(this, MainActivity::class.java)
@@ -133,7 +128,7 @@ fun Context.sendGradeNotification(
     val pendingIntent = PendingIntent.getActivity(this, Random.nextInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-    val builder = NotificationCompat.Builder(this, channelId)
+    val builder = NotificationCompat.Builder(this, GRADE_CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_stat_sigaa)
         .setContentTitle(title)
         .setContentText(message)
@@ -148,6 +143,8 @@ fun Context.sendGradeNotification(
 
 }
 
-
-
+const val GENERAL_CHANNEL_ID = "general"
 const val CLASSES_CHANNEL_ID = "classes_channel"
+const val NEWS_CHANNEL_ID = "news_channel"
+const val FILES_CHANNEL_ID = "files_channel_id"
+const val GRADE_CHANNEL_ID = "grades_channel_id"

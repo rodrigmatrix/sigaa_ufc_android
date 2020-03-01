@@ -83,7 +83,6 @@ class NewSerializer {
                         0
                     )
                 )
-                println(classes[id-1])
                 id++
             }
             try {

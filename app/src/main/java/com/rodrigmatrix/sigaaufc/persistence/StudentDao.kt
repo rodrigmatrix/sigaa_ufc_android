@@ -90,6 +90,9 @@ interface StudentDao {
     @Query("SELECT * FROM news WHERE newsId LIKE :newsId")
     fun getNewsWithIdAsync(newsId: String): News
 
+    @Query("SELECT * FROM news WHERE idTurma LIKE :idTurma")
+    fun getNewsWithClassIdAsync(idTurma: String): List<News>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNews(news: News)
 

@@ -3,6 +3,8 @@ package com.rodrigmatrix.sigaaufc.data.network
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.LoginException
 import com.rodrigmatrix.sigaaufc.internal.Result
+import com.rodrigmatrix.sigaaufc.internal.Result.Success
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
@@ -10,6 +12,7 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody
 import okhttp3.Request
@@ -18,7 +21,8 @@ import java.lang.Exception
 
 class SigaaDataSource(
     private val sigaaApi: SigaaApi,
-    private val sigaaRepository: SigaaRepository
+    private val sigaaRepository: SigaaRepository,
+    private val studentDao: StudentDao
 ) {
 
     private val serializer = NewSerializer()
@@ -36,8 +40,8 @@ class SigaaDataSource(
             val request = sigaaApi.login(formBody)
             val loginResponse = serializer.parseLogin(request.string())
             when(loginResponse.loginStatus){
-                LOGIN_SUCCESS -> Result.Success(loginResponse)
-                LOGIN_VINCULO -> Result.Success(loginResponse)
+                LOGIN_SUCCESS -> Success(loginResponse)
+                LOGIN_VINCULO -> Success(loginResponse)
                 else -> Result.Error(LoginException(loginResponse.loginMessage))
             }
         }
@@ -54,7 +58,7 @@ class SigaaDataSource(
             val request = sigaaApi.getCurrentClasses()
             val result = request.string()
             sigaaRepository.saveViewState(result)
-            Result.Success(serializer.parseClasses(result))
+            Success(serializer.parseClasses(result))
         }
         catch(e: HttpException){
             Result.Error(e)
@@ -67,7 +71,7 @@ class SigaaDataSource(
     suspend fun redirectHome(): Result<String> = withContext(Dispatchers.IO) {
         return@withContext try {
             val request = sigaaApi.openHomePage()
-            Result.Success(request.string())
+            Success(request.string())
         }
         catch(e: HttpException){
             Result.Error(e)
@@ -90,7 +94,7 @@ class SigaaDataSource(
             val request = sigaaApi.setCurrentClass(formBody)
             val response = request.string()
             sigaaRepository.saveViewState(response)
-            Result.Success(response)
+            Success(response)
         }
         catch(e: HttpException){
             Result.Error(e)
@@ -112,7 +116,7 @@ class SigaaDataSource(
             val response = request.string()
             sigaaRepository.saveViewState(response)
             val gradesList = serializer.parseGrades(response, studentClass.turmaId)
-            Result.Success(gradesList)
+            Success(gradesList)
         }
         catch(e: HttpException){
             Result.Error(e)
@@ -124,7 +128,7 @@ class SigaaDataSource(
 
     suspend fun getNews(res: String, studentClass: StudentClass): Result<List<News>> = withContext(Dispatchers.IO){
         return@withContext try {
-            val requestId = serializer.parseGradesRequestId(res)
+            val requestId = serializer.parseNewsRequestId(res)
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
                 .add(requestId, requestId)
@@ -133,8 +137,16 @@ class SigaaDataSource(
             val request = sigaaApi.getGrades(formBody)
             val response = request.string()
             sigaaRepository.saveViewState(response)
-            val gradesList = serializer.parseNews(response, studentClass.turmaId)
-            Result.Success(gradesList)
+            val newsList = serializer.parseNews(response, studentClass.turmaId)
+            newsList.forEach {
+                runBlocking(Dispatchers.IO){
+                    val newsContent = getNewsContent(it)
+                    if(newsContent is Success){
+                        it.content = newsContent.data.content
+                    }
+                }
+            }
+            Success(newsList)
         }
         catch(e: HttpException){
             Result.Error(e)
@@ -152,11 +164,12 @@ class SigaaDataSource(
                 .add(news.requestId2, news.requestId2)
                 .add("id", news.newsId)
                 .build()
-            val request = sigaaApi.getGrades(formBody)
+            val request = sigaaApi.loadNewsContent(formBody)
             val response = request.string()
             sigaaRepository.saveViewState(response)
             news.content = serializer.parseNewsContent(response)
-            Result.Success(news)
+            studentDao.upsertNewsContent(news)
+            Success(news)
         }
         catch(e: HttpException){
             Result.Error(e)
@@ -175,7 +188,7 @@ class SigaaDataSource(
             map["vinculo"] = vinculo
             val request = sigaaApi.setVinculo(map)
             sigaaRepository.saveViewState(request.string())
-            Result.Success(request.string())
+            Success(request.string())
         }
         catch(e: HttpException){
             Result.Error(e)
