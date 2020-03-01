@@ -43,8 +43,7 @@ interface StudentDao {
     @Query("DELETE FROM ru_card")
     fun deleteRuCard()
 
-
-    @Query("SELECT * FROM classes WHERE isPrevious = 0")
+    @Query("SELECT * FROM classes WHERE isPrevious = 0 ORDER BY id ASC")
     fun getClasses(): MutableList<StudentClass>
 
     @Query("SELECT * FROM classes WHERE (isPrevious = 0) AND (turmaId = :idTurma)")
@@ -104,6 +103,9 @@ interface StudentDao {
 
     @Query("SELECT * FROM grades WHERE idTurma LIKE :idTurma")
     fun getGrades(idTurma: String): LiveData<MutableList<Grade>>
+
+    @Query("SELECT * FROM grades WHERE idTurma LIKE :idTurma")
+    fun getGradesAsync(idTurma: String): List<Grade>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertGrade(grade: Grade)

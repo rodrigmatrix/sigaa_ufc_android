@@ -86,5 +86,19 @@ class ExtensionsTest {
         assert(uncommon.size == list2.size)
     }
 
+    @Test
+    fun `given equal grades return empty list`(){
+        val list = listOf(
+            Grade("1", "1", "Nota 1", ""),
+            Grade("2", "1", "Nota 2", "")
+        )
+        val list2 = listOf(
+            Grade("1", "1", "Nota 1", ""),
+            Grade("2", "1", "Nota 2", "")
+        )
+        val uncommon = list.getUncommonGrades(list2)
+        assert(uncommon.isEmpty())
+    }
+
 
 }

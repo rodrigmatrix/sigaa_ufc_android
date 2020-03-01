@@ -366,7 +366,7 @@ class Serializer {
                 if(index >= 2){
                     if(td[2].text() == "Imprimir") {
                         grades.add(Grade(
-                            Random.nextDouble().toString(),
+                            "$index$idTurma",
                             idTurma,
                             it.text(),
                             ""))
@@ -378,7 +378,7 @@ class Serializer {
                             "Erro ao visualizar nota"
                         }
                         grades.add(Grade(
-                            Random.nextDouble().toString(),
+                            "$index$idTurma",
                             idTurma,
                             it.text(),
                             grade))

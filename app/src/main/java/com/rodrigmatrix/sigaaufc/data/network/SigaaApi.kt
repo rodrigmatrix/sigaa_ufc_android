@@ -43,6 +43,12 @@ interface SigaaApi {
         @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/portais/discente/discente.jsf"
     ): ResponseBody
 
+    @POST("ava/index.jsf")
+    suspend fun getGrades(
+        @Body formBody: FormBody,
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/ava/index.jsf"
+    ): ResponseBody
+
 
     companion object {
         operator fun invoke(context: Context): SigaaApi {
@@ -59,6 +65,7 @@ interface SigaaApi {
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .cookieJar(cookieJar)
+                .retryOnConnectionFailure(false)
                 .addInterceptor(requestInterceptor)
                 .build()
 

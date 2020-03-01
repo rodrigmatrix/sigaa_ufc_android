@@ -4,6 +4,7 @@ import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.internal.LoginException
 import com.rodrigmatrix.sigaaufc.internal.Result
 import com.rodrigmatrix.sigaaufc.persistence.entity.File
+import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
@@ -101,6 +102,30 @@ class SigaaDataSource(
             Result.Error(e)
         }
     }
+
+    suspend fun getGrades(res: String, studentClass: StudentClass): Result<List<Grade>> = withContext(Dispatchers.IO){
+        return@withContext try {
+            val requestId = serializer.parseGradesRequestId(res)
+            val formBody = FormBody.Builder()
+                .add("formMenu", "formMenu")
+                .add(requestId, requestId)
+                .add("javax.faces.ViewState", sigaaRepository.getViewStateId())
+                .build()
+            val request = sigaaApi.getGrades(formBody)
+            val response = request.string()
+            sigaaRepository.saveViewState(response)
+            val gradesList = serializer.parseGrades(response, studentClass.turmaId)
+            Result.Success(gradesList)
+        }
+        catch(e: HttpException){
+            Result.Error(e)
+        }
+        catch(e: Exception){
+            Result.Error(e)
+        }
+    }
+
+
 
     suspend fun setVinculo(vinculo: String): Result<String> = withContext(Dispatchers.IO) {
         return@withContext try {

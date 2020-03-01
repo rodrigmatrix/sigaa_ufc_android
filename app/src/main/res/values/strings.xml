@@ -35,13 +35,10 @@
     <string name="file_notification_title">Novo arquivo em <b>%s</b></string>
     <string name="file_notification_body">Nome do arquivo:\n<b>%s</b></string>
 
+    <string name="grade_notification_title">Nova nota em <b>%s</b></string>
+    <string name="grade_notification_body">Nota <b>%s</b> disponível</string>
 
     <string name="news_notification_title">Nova notícia em <b>%s</b></string>
-    <string name="news_notification_body">Nota da <b>%s</b> disponível</string>
-
-
-    <string name="grade_notification_title">Nova nota em <b>%s</b></string>
-    <string name="grade_notification_body">Titulo: <b>%s</b> \nConteudo: <b>%s</b></string>
-
+    <string name="news_notification_body">Titulo: <b>%s</b> \nConteudo: <b>%s</b></string>
 
 </resources>

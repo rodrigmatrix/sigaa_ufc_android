@@ -562,7 +562,7 @@ class SigaaOkHttp(
                 .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
-                .url("https://si3.ufc.br//sigaa/ava/index.jsf")
+                .url("https://si3.ufc.br/sigaa/ava/index.jsf")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/ava/index.jsf")

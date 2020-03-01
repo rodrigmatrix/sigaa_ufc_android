@@ -90,7 +90,11 @@ data class Grade(
     var idTurma: String,
     var name: String,
     var content: String
-)
+) {
+
+
+
+}
 
 @Entity(tableName = "ira")
 data class Ira(

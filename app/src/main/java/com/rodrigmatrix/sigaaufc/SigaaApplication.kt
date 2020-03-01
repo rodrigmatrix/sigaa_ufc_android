@@ -156,11 +156,11 @@ class SigaaApplication: Application(), KodeinAware {
             .setConstraints(constraints)
             .build()
         workManager.enqueue(oneTimeWorkRequest)
-        workManager.enqueueUniquePeriodicWork(
-            NOTIFICATIONS_WORK_ID,
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicWorkRequest
-        )
+//        workManager.enqueueUniquePeriodicWork(
+//            NOTIFICATIONS_WORK_ID,
+//            ExistingPeriodicWorkPolicy.KEEP,
+//            periodicWorkRequest
+//        )
     }
 
     private fun setTheme(theme: String?){

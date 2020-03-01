@@ -354,20 +354,18 @@ class NewSerializer {
         }
     }
 
-    fun parseGrades(idTurma: String, response: String?): MutableList<Grade> {
+    fun parseGrades(response: String?, idTurma: String): MutableList<Grade> {
         val grades = mutableListOf<Grade>()
         Jsoup.parse(response).run {
             val th = select("th")
             val td = select("td")
             var index = 0
             th.forEach {
-                //                println("nome: ${it.text()}")
-//                println("nota: ${tbody[index].text()}")
                 if(index >= 2){
                     if(td[2].text() == "Imprimir") {
                         grades.add(
                             Grade(
-                                Random.nextDouble().toString(),
+                                "$index$idTurma",
                                 idTurma,
                                 it.text(),
                                 "")
@@ -381,7 +379,7 @@ class NewSerializer {
                         }
                         grades.add(
                             Grade(
-                                Random.nextDouble().toString(),
+                                "$index$idTurma",
                                 idTurma,
                                 it.text(),
                                 grade)
