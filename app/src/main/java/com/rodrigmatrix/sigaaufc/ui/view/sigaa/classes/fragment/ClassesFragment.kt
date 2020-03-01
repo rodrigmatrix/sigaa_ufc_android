@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_classes.*
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -20,30 +22,19 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class ClassesFragment : ScopedFragment(), KodeinAware {
+class ClassesFragment : ScopedFragment(R.layout.fragment_classes) {
 
-    override val kodein by closestKodein()
     private val viewModelFactory: ClassesViewModelFactory by instance()
 
     private lateinit var viewModel: ClassesViewModel
     private var fetched = false
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_classes, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(ClassesViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ClassesViewModel::class.java]
         launch(handler) {
             val classes = viewModel.getCurrentClasses()
-            viewModel.getPreviousClasses().observe(this@ClassesFragment, Observer {
+            viewModel.getPreviousClasses().observe(viewLifecycleOwner, Observer {
                 if(it == null) return@Observer
                 if(switch_classes.isChecked){
                     if(it.size == 0){
@@ -103,15 +94,6 @@ class ClassesFragment : ScopedFragment(), KodeinAware {
         val filtered = filterIndexed { i, t -> i < fromIndex || i > toIndex }
         clear()
         addAll(filtered)
-    }
-
-    private fun deleteRange(list: MutableList<StudentClass>, ini: Int, len: Int) {
-        for((index, value) in list.withIndex()){
-            if(index in ini..len){
-                list.removeAt(index)
-            }
-
-        }
     }
 
     private fun onSwitchChange(classes: MutableList<StudentClass>){

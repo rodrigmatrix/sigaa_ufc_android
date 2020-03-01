@@ -164,12 +164,11 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:progress="20"
-                />
+<!--        <ProgressBar-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:progress="20" />-->
 
 
     </LinearLayout>

@@ -1,14 +1,10 @@
 package com.rodrigmatrix.sigaaufc.data
 
-import android.app.DownloadManager
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.os.StrictMode
 import android.util.Log
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
@@ -121,7 +117,7 @@ class SigaaOkHttp(
                     .execute()
                 if(response.isSuccessful){
                     val res = response.body?.string()
-                    val parser = sigaaSerializer.loginParse(res)
+                    val parser = sigaaSerializer.parseLogin(res)
                     status = when(parser){
                         "Continuar" -> {
                             redirectMenu(cookie)
@@ -259,6 +255,9 @@ class SigaaOkHttp(
                     student.matricula = pairStudent.matricula
                     student.name = pairStudent.name
                     student.profilePic = pairStudent.profilePic
+                    student.nivel = pairStudent.nivel
+                    student.entrada = pairStudent.entrada
+                    student.email = pairStudent.email
                     student.lastUpdate = sigaaSerializer.parseIraRequestId(res).first
                     studentDatabase.studentDao().upsertStudent(student)
                 }
@@ -566,7 +565,7 @@ class SigaaOkHttp(
                 .add("javax.faces.ViewState", viewState)
                 .build()
             val request = Request.Builder()
-                .url("https://si3.ufc.br//sigaa/ava/index.jsf")
+                .url("https://si3.ufc.br/sigaa/ava/index.jsf")
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header("Cookie", "JSESSIONID=$cookie")
                 .header("Referer", "https://si3.ufc.br/sigaa/ava/index.jsf")

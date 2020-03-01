@@ -9,6 +9,10 @@
                 android:icon="@drawable/ic_school"
                 android:title="SIGAA" />
         <item
+                android:id="@+id/nav_notifications"
+                android:icon="@drawable/ic_notifications"
+                android:title="@string/notifications_title" />
+        <item
                 android:id="@+id/nav_ru"
                 android:icon="@drawable/ic_credit_card"
                 android:title="@string/ru_shortcut" />

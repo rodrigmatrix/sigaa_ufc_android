@@ -2,11 +2,11 @@
     <string name="app_name">Sigaa</string>
     <string name="title_activity_main">Sigaa</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_add_card">Adicionar cartão RU</string>
     <string name="title_activity_class">Disciplinas</string>
 
     <string name="sigaa_shortcut">Sigaa</string>
+    <string name="notifications_shortcut">Notificações</string>
     <string name="ru_shortcut">Créditos RU</string>
     <string name="ru_long_shortcut">RU</string>
     <string name="library_shortcut">Biblioteca</string>
@@ -32,5 +32,18 @@
     <string name="card_string">Cartão</string>
     <string name="ver_mais">Ver Mais</string>
     <string name="ru_menu">Cardápio</string>
+
+    <string name="file_notification_title">Novo arquivo em <b>%s</b></string>
+    <string name="file_notification_body">Nome do arquivo:\n<b>%s</b></string>
+
+    <string name="grade_notification_title">Nova nota em <b>%s</b></string>
+    <string name="grade_notification_body">Nota <b>%s</b> disponível</string>
+
+    <string name="news_notification_title">Nova notícia em <b>%s</b></string>
+    <string name="news_notification_body">Titulo: <b>%s</b> \nConteudo: <b>%s</b></string>
+    <string name="notifications_text">Esse recurso é origem de muito trabalho mas, ele ainda se encontra em beta. Notificações disparadas mais de uma vez ou informações erradas podem acontecer e é para isso que preciso de feedback para encontrar os bugs e melhorar cada vez mais o recurso. Qualquer dúvida ou reporte de bugs, envie um email para rodrigmatrix@gmail.com</string>
+    <string name="notifications_warning">Para esse recurso funcionar, <b><u>o usuário deve efetuar um primeiro login no app e salvar os dados de login.</u></b> Se o usuário possuir mais de um vínculo, <b><u>as notificações sempre irão ser acionadas para o último vínculo que o usuário efetuou login.</u></b> As notificações somente serão disparadas para disciplinas ativas.</string>
+    <string name="notifications_title">Notificações (Beta)</string>
+    <string name="wrong_password_alert">O app não estã conseguindo fazer login no sigaa para verificar novas notificações. Se você tiver alterado a senha do seu sigaa, é necessário fazer login no app e atualizar os dados de login para que as notificações continuem funcionando</string>
 
 </resources>

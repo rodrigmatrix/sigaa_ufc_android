@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.igorronner.irinterstitial.init.IRAds
@@ -20,8 +23,10 @@ import com.igorronner.irinterstitial.services.ProductPurchasedListener
 import com.igorronner.irinterstitial.services.ProductsListListener
 import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.main.SigaaActivity
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.*
@@ -31,30 +36,24 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class LoginFragment : ScopedFragment(), KodeinAware {
+class LoginFragment : ScopedFragment(R.layout.fragment_login), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: LoginViewModelFactory by instance()
+    private val sigaaPreferences: SigaaPreferences by instance()
 
     private lateinit var viewModel: LoginViewModel
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(LoginViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[LoginViewModel::class.java]
     }
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadCookie()
         launch(handler) {
-            viewModel.getStudent().observe(this@LoginFragment, Observer { student ->
+            viewModel.getStudent().observe(viewLifecycleOwner, Observer { student ->
                 if (student == null) {
                     return@Observer
                 }
@@ -122,6 +121,7 @@ class LoginFragment : ScopedFragment(), KodeinAware {
                 println(array[i])
                 println(vinculos[i].id)
                 setVinculo(vinculos[i].id)
+                sigaaPreferences.saveLastVinculo(vinculos[i].id)
                 dialogInterface.dismiss()
             }
             .setCancelable(false)

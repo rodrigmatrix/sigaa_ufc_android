@@ -30,13 +30,51 @@
                     android:layout_marginBottom="3dp"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
-                <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/toolbar"
-                        android:background="?attr/backgroundColor"
-                        tools:title="@string/sigaa_shortcut"
+
+                <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="51dp"
-                        app:titleTextColor="@color/colorPrimary" />
+                        android:layout_height="wrap_content">
+
+                    <com.google.android.material.appbar.MaterialToolbar
+                            android:id="@+id/toolbar"
+                            android:background="?attr/backgroundColor"
+                            tools:title="@string/sigaa_shortcut"
+                            app:titleTextAppearance="@style/TextAppearance.AppTheme.Headline6"
+                            android:layout_width="match_parent"
+                            android:layout_height="51dp"
+                            app:titleTextColor="@color/colorPrimary" />
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="6dp"
+                            android:gravity="end|center">
+
+                        <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/profile_pic_card"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                app:cardCornerRadius="45dp"
+                                android:layout_margin="6dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                app:rippleColor="@color/colorPrimary"
+                                app:cardElevation="2dp">
+
+                            <ImageView
+                                    android:id="@+id/profile_pic"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/avatar_circle_blue"/>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </RelativeLayout>
+
+                </FrameLayout>
+
+
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabs"

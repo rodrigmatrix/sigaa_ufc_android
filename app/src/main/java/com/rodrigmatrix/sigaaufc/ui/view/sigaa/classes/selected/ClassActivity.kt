@@ -3,27 +3,36 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
-import androidx.lifecycle.ViewModelProviders
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsFragment
-import kotlinx.android.synthetic.main.activity_sigaa.*
+import kotlinx.android.synthetic.main.activity_add_card.*
+import kotlinx.android.synthetic.main.activity_class_selected.*
+import kotlinx.android.synthetic.main.activity_class_selected.profile_pic
+import kotlinx.android.synthetic.main.activity_class_selected.profile_pic_card
+import kotlinx.android.synthetic.main.activity_class_selected.toolbar
+import kotlinx.android.synthetic.main.app_bar_main2.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
+import kotlinx.coroutines.withContext
 import org.kodein.di.generic.instance
+import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
 
-class ClassActivity : ScopedActivity(), KodeinAware {
+class ClassActivity : ScopedActivity() {
 
-    override val kodein by closestKodein()
     private lateinit var viewModel: ClassViewModel
     private val viewModelFactory: ClassViewModelFactory by instance()
+    private val studentDao: StudentDao by instance()
 
     private lateinit var sectionsPagerAdapter: ClassPagerAdapter
     lateinit var idTurma: String
@@ -33,6 +42,7 @@ class ClassActivity : ScopedActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_class_selected)
+        loadProfilePic()
         sectionsPagerAdapter = ClassPagerAdapter(this, supportFragmentManager)
         idTurma = intent.getStringExtra("idTurma")!!
         id = intent.getStringExtra("id")!!
@@ -59,11 +69,33 @@ class ClassActivity : ScopedActivity(), KodeinAware {
         val tabs: TabLayout = findViewById(R.id.tabs)
         title = "Disciplina"
         tabs.setupWithViewPager(viewPager)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(ClassViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[ClassViewModel::class.java]
         setTabs()
 
         setClass()
+    }
+
+    private fun loadProfilePic() = launch{
+        try {
+            val student = withContext(Dispatchers.IO) {
+                studentDao.getStudentAsync()
+            }
+            val profilePic = student.profilePic
+            if(profilePic != "/sigaa/img/no_picture.png"){
+                GlideApp.with(this@ClassActivity)
+                    .load("https://si3.ufc.br/$profilePic")
+                    .into(profile_pic)
+            }
+            else{
+                profile_pic.setImageResource(R.drawable.avatar_circle_blue)
+            }
+            profile_pic_card.setOnClickListener {
+                showProfileDialog(profile_pic_card, student)
+            }
+        }
+        catch(e: Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun observeClass(){

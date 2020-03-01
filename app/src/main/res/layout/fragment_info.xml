@@ -27,7 +27,6 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:text="@string/hello_blank_fragment"
                 android:src="@drawable/profile_pic"/>
 
         <com.google.android.material.textview.MaterialTextView
@@ -132,7 +131,6 @@
                 android:layout_width="100dp"
                 android:layout_height="90dp"
                 android:layout_gravity="center"
-                android:text="@string/hello_blank_fragment"
                 android:src="@drawable/sippa_icon"/>
         <TextView
                 android:layout_width="match_parent"

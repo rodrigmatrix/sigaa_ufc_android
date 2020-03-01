@@ -28,7 +28,35 @@ interface SigaaApi {
         @QueryMap params: HashMap<String, String>
     ): ResponseBody
 
+    @GET("paginaInicial.do")
+    suspend fun openHomePage(): ResponseBody
 
+    @GET("verPortalDiscente.do")
+    suspend fun getCurrentClasses(
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/pag-inaInicial.do",
+        @Header("Host") host: String = "si3.ufc.br"
+    ): ResponseBody
+
+    @POST("portais/discente/discente.jsf#")
+    suspend fun setCurrentClass(
+        @Body formBody: FormBody,
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/portais/discente/discente.jsf"
+    ): ResponseBody
+
+    @POST("ava/index.jsf")
+    suspend fun getGrades(
+        @Body formBody: FormBody,
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/ava/index.jsf"
+    ): ResponseBody
+
+    @POST("ava/index.jsf")
+    suspend fun getNews(
+        @Body formBody: FormBody,
+        @Header("Referer") referer: String = "https://si3.ufc.br/sigaa/portais/discente/discente.jsf"
+    ): ResponseBody
+
+    @POST("ava/NoticiaTurma/listar.jsf")
+    suspend fun loadNewsContent(@Body formBody: FormBody): ResponseBody
 
     companion object {
         operator fun invoke(context: Context): SigaaApi {
@@ -45,6 +73,7 @@ interface SigaaApi {
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .cookieJar(cookieJar)
+                .retryOnConnectionFailure(false)
                 .addInterceptor(requestInterceptor)
                 .build()
 

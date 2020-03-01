@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/root">
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/student_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Headline6"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Um nome muito grande para poder testar o nome grande" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/login_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toBottomOf="@+id/student_name"
+            tools:text="Login: 123" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/matricula_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toBottomOf="@+id/login_text"
+            tools:text="Matrícula: 123" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/course_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toBottomOf="@+id/matricula_text"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Curso: Curso" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/nivel_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toBottomOf="@+id/course_text"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Nível: Graduação" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/email_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toBottomOf="@+id/nivel_text"
+            app:layout_constraintVertical_bias="0.0"
+            tools:text="Email: email@email.com" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/entrada_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:textAppearance="@style/TextAppearance.AppTheme.Subtitle2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/profile_pic_card"
+            app:layout_constraintTop_toBottomOf="@+id/email_text"
+            tools:text="Entrada: 2018.1" />
+
+    <com.google.android.material.card.MaterialCardView
+            android:id="@+id/profile_pic_card"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:cardCornerRadius="45dp"
+            app:cardElevation="2dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/colorPrimary">
+
+        <ImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/avatar_circle_blue" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

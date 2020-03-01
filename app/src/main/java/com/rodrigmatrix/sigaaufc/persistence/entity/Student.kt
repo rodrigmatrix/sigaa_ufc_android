@@ -10,15 +10,18 @@ data class Attendance(val attended: Int, val missed: Int)
 
 @Entity(tableName = "students")
 data class Student(
-    var jsession: String,
-    var login: String,
-    var password: String,
-    var name: String,
-    var course: String,
-    var matricula: String,
-    var hasSavedData: Boolean,
-    var lastUpdate: String,
-    var profilePic: String
+    var jsession: String = "",
+    var login: String = "",
+    var password: String = "",
+    var name: String = "",
+    var course: String = "",
+    var matricula: String = "",
+    var hasSavedData: Boolean = false,
+    var lastUpdate: String = "",
+    var profilePic: String = "",
+    var nivel: String = "",
+    var email: String = "",
+    var entrada: String = ""
 ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = STUDENT_ID
@@ -57,7 +60,8 @@ data class StudentClass(
     var period: String,
     var days: String,
     var attendance: Int,
-    var missed: Int
+    var missed: Int,
+    var synced: Boolean = false
 )
 
 @Entity(tableName = "news")
@@ -89,7 +93,11 @@ data class Grade(
     var idTurma: String,
     var name: String,
     var content: String
-)
+) {
+
+
+
+}
 
 @Entity(tableName = "ira")
 data class Ira(

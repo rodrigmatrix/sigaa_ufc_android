@@ -43,8 +43,7 @@ interface StudentDao {
     @Query("DELETE FROM ru_card")
     fun deleteRuCard()
 
-
-    @Query("SELECT * FROM classes WHERE isPrevious = 0")
+    @Query("SELECT * FROM classes WHERE isPrevious = 0 ORDER BY id ASC")
     fun getClasses(): MutableList<StudentClass>
 
     @Query("SELECT * FROM classes WHERE (isPrevious = 0) AND (turmaId = :idTurma)")
@@ -91,6 +90,9 @@ interface StudentDao {
     @Query("SELECT * FROM news WHERE newsId LIKE :newsId")
     fun getNewsWithIdAsync(newsId: String): News
 
+    @Query("SELECT * FROM news WHERE idTurma LIKE :idTurma")
+    fun getNewsWithClassIdAsync(idTurma: String): List<News>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertNews(news: News)
 
@@ -104,6 +106,12 @@ interface StudentDao {
 
     @Query("SELECT * FROM grades WHERE idTurma LIKE :idTurma")
     fun getGrades(idTurma: String): LiveData<MutableList<Grade>>
+
+    @Query("SELECT * FROM grades WHERE idTurma LIKE :idTurma")
+    fun getGradesAsync(idTurma: String): List<Grade>
+
+    @Query("SELECT * FROM grades WHERE id LIKE :gradeId")
+    fun getGradeAsync(gradeId: String): Grade
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertGrade(grade: Grade)
@@ -125,6 +133,9 @@ interface StudentDao {
 
     @Query("SELECT * FROM files WHERE idTurma LIKE :idTurma")
     fun getFiles(idTurma: String): LiveData<MutableList<File>>
+
+    @Query("SELECT * FROM files WHERE idTurma LIKE :idTurma")
+    fun getFilesAsync(idTurma: String): List<File>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertFile(file: File)
