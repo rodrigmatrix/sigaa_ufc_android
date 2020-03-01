@@ -8,13 +8,19 @@ import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsFragment
+import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.activity_class_selected.*
+import kotlinx.android.synthetic.main.activity_class_selected.profile_pic
+import kotlinx.android.synthetic.main.activity_class_selected.profile_pic_card
+import kotlinx.android.synthetic.main.activity_class_selected.toolbar
+import kotlinx.android.synthetic.main.app_bar_main2.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,9 +77,10 @@ class ClassActivity : ScopedActivity() {
 
     private fun loadProfilePic() = launch{
         try {
-            val profilePic = withContext(Dispatchers.IO) {
-                studentDao.getStudentAsync().profilePic
+            val student = withContext(Dispatchers.IO) {
+                studentDao.getStudentAsync()
             }
+            val profilePic = student.profilePic
             if(profilePic != "/sigaa/img/no_picture.png"){
                 GlideApp.with(this@ClassActivity)
                     .load("https://si3.ufc.br/$profilePic")
@@ -81,6 +88,9 @@ class ClassActivity : ScopedActivity() {
             }
             else{
                 profile_pic.setImageResource(R.drawable.avatar_circle_blue)
+            }
+            profile_pic_card.setOnClickListener {
+                showProfileDialog(profile_pic_card, student)
             }
         }
         catch(e: Exception){

@@ -10,15 +10,18 @@ data class Attendance(val attended: Int, val missed: Int)
 
 @Entity(tableName = "students")
 data class Student(
-    var jsession: String,
-    var login: String,
-    var password: String,
-    var name: String,
-    var course: String,
-    var matricula: String,
-    var hasSavedData: Boolean,
-    var lastUpdate: String,
-    var profilePic: String
+    var jsession: String = "",
+    var login: String = "",
+    var password: String = "",
+    var name: String = "",
+    var course: String = "",
+    var matricula: String = "",
+    var hasSavedData: Boolean = false,
+    var lastUpdate: String = "",
+    var profilePic: String = "",
+    var nivel: String = "",
+    var email: String = "",
+    var entrada: String = ""
 ){
     @PrimaryKey(autoGenerate = false)
     var id: Int = STUDENT_ID

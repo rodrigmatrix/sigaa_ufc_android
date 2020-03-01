@@ -255,6 +255,9 @@ class SigaaOkHttp(
                     student.matricula = pairStudent.matricula
                     student.name = pairStudent.name
                     student.profilePic = pairStudent.profilePic
+                    student.nivel = pairStudent.nivel
+                    student.entrada = pairStudent.entrada
+                    student.email = pairStudent.email
                     student.lastUpdate = sigaaSerializer.parseIraRequestId(res).first
                     studentDatabase.studentDao().upsertStudent(student)
                 }

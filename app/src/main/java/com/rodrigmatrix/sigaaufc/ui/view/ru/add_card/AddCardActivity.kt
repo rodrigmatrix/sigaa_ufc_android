@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
@@ -72,9 +73,10 @@ class AddCardActivity : ScopedActivity() {
 
     private fun loadProfilePic() = launch{
         try {
-            val profilePic = withContext(Dispatchers.IO) {
-                studentDao.getStudentAsync().profilePic
+            val student = withContext(Dispatchers.IO) {
+                studentDao.getStudentAsync()
             }
+            val profilePic = student.profilePic
             if(profilePic != "/sigaa/img/no_picture.png"){
                 GlideApp.with(this@AddCardActivity)
                     .load("https://si3.ufc.br/$profilePic")
@@ -83,38 +85,12 @@ class AddCardActivity : ScopedActivity() {
             else{
                 profile_pic.setImageResource(R.drawable.avatar_circle_blue)
             }
+            profile_pic_card.setOnClickListener {
+                showProfileDialog(profile_pic_card, student)
+            }
         }
         catch(e: Exception){
             e.printStackTrace()
-        }
-        profile_pic_card.setOnClickListener {
-            val builder = MaterialAlertDialogBuilder(this@AddCardActivity)
-            val inflater = LayoutInflater.from(builder.context)
-            val view = inflater.inflate(R.layout.dialog_header_profile, null)
-//            val textAno = view.findViewById<TextView>(R.id.ano)
-//            val anoAnterior = view.findViewById<View>(R.id.imageView1)
-//            val anoSeguinte = view.findViewById<View>(R.id.imageView2)
-//            val gridView = view.findViewById<GridView>(R.id.gridView)
-            builder.apply {
-                setView(view)
-                setPositiveButton("Ok") { d, _ ->
-                    d.dismiss()
-                }
-            }
-            val dialog = builder.create()
-            dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-            val window = dialog.window
-            if (window != null) {
-                val layoutParamss = window.attributes
-                layoutParamss.windowAnimations = R.style.AlertDialogAnimationDown
-                layoutParamss.gravity = Gravity.TOP
-                layoutParamss.y = (profile_pic_card.y + 150).toInt()
-            }
-            try {
-                dialog.show()
-            } catch(e: Exception) {
-                e.printStackTrace()
-            }
         }
     }
 

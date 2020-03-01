@@ -1,7 +1,7 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
-import android.util.Log
+import com.rodrigmatrix.sigaaufc.internal.util.capitalizeWords
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
@@ -88,13 +88,27 @@ class NewSerializer {
             try {
                 val studentName = select("div[class=nome_usuario]")
                 student.name = studentName.text().toLowerCase().capitalizeWords()
-                var matricula = response?.split("<td> Matr&#237;cula: </td>\n" + "\t\t\t\t\t\t<td> ")
                 val linkProfilePic = select("img[src]")[0].attr("src")
                 student.profilePic = linkProfilePic
-                matricula = matricula!![1].split(" </td>")
-                student.matricula = matricula[0]
+                Jsoup.parse(response).run {
+                    val table = select("table")[0].select("tbody")[0]
+                    try {
+                        val matricula = table.select("tr")[0].select("td")[1]
+                        val course = table.select("tr")[1].select("td")[1]
+                        val nivel = table.select("tr")[2].select("td")[1]
+                        val email = table.select("tr")[4].select("td")[1]
+                        val entrada = table.select("tr")[5].select("td")[1]
+                        student.course = course.text().toLowerCase().capitalizeWords()
+                        student.matricula = matricula.text()
+                        student.nivel = nivel.text().toLowerCase().capitalizeWords()
+                        student.email = email.text()
+                        student.entrada = entrada.text()
+                    }
+                    catch(e: Exception){
+                        e.printStackTrace()
+                    }
+                }
             }catch(e: IndexOutOfBoundsException){
-                Log.d("ERRO_STUDENT_DATA", e.message.toString())
                 e.printStackTrace()
             }
             return classes.toList()
@@ -399,17 +413,6 @@ class NewSerializer {
             Triple(newsId, requestId1, requestId2)
         }catch(e: IndexOutOfBoundsException){
             Triple("", "", "")
-        }
-    }
-
-
-
-    @SuppressLint("DefaultLocale")
-    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
-        when {
-            it.length <= 3 && it.contains("i") -> return@joinToString it.toUpperCase()
-            it.length >= 3 -> return@joinToString it.capitalize()
-            else -> return@joinToString it
         }
     }
 

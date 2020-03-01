@@ -10,12 +10,16 @@ import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
+import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.activity_sigaa.*
+import kotlinx.android.synthetic.main.activity_sigaa.profile_pic
+import kotlinx.android.synthetic.main.activity_sigaa.profile_pic_card
 import kotlinx.android.synthetic.main.activity_sigaa.toolbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,9 +66,10 @@ class SigaaActivity : ScopedActivity() {
 
     private fun loadProfilePic() = launch{
         try {
-            val profilePic = withContext(Dispatchers.IO) {
-                studentDao.getStudentAsync().profilePic
+            val student = withContext(Dispatchers.IO) {
+                studentDao.getStudentAsync()
             }
+            val profilePic = student.profilePic
             if(profilePic != "/sigaa/img/no_picture.png"){
                 GlideApp.with(this@SigaaActivity)
                     .load("https://si3.ufc.br/$profilePic")
@@ -72,6 +77,9 @@ class SigaaActivity : ScopedActivity() {
             }
             else{
                 profile_pic.setImageResource(R.drawable.avatar_circle_blue)
+            }
+            profile_pic_card.setOnClickListener {
+                showProfileDialog(profile_pic_card, student)
             }
         }
         catch(e: Exception){

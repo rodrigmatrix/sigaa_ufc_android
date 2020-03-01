@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.Window
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
@@ -16,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -34,15 +37,21 @@ import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
+import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
+import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main2.*
+import kotlinx.android.synthetic.main.app_bar_main2.profile_pic
+import kotlinx.android.synthetic.main.app_bar_main2.profile_pic_card
 import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.lang.Exception
 
 class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, ProductPurchasedListener {
 
@@ -95,8 +104,16 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         }
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
+        launch(handler) {
+            viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
+                if(student == null) return@Observer
+                bindUi(student)
+            })
+        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
+
         navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -112,15 +129,7 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         getShortcut()
-        viewModel = ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
-        launch(handler) {
-            viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
-                if(student == null) return@Observer
-                if(student.profilePic != ""){
-                    bindUi(student.profilePic, student.name, student.matricula)
-                }
-            })
-        }
+
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkForUpdates()
     }
@@ -201,22 +210,18 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
 
 
     @SuppressLint("SetTextI18n")
-    private fun bindUi(profilePic: String, name: String, matricula: String){
-        if(profilePic != "/sigaa/img/no_picture.png"){
-            GlideApp.with(this)
-                .load("https://si3.ufc.br/$profilePic")
-                .into(nav_view.getHeaderView(0).profile_pic_image)
+    private fun bindUi(student: Student){
+        val profilePic = student.profilePic
+        if(profilePic != "/sigaa/img/no_picture.png" && profilePic != ""){
             GlideApp.with(this)
                 .load("https://si3.ufc.br/$profilePic")
                 .into(profile_pic)
         }
         else{
             profile_pic.setImageResource(R.drawable.avatar_circle_blue)
-            nav_view.getHeaderView(0).profile_pic_image.setImageResource(R.drawable.avatar_circle_blue)
         }
-        if(name != ""){
-            nav_view.getHeaderView(0).student_name_menu_text.text = "Olá ${name.split(" ")[0]} ${name.split(" ").last()}"
-            nav_view.getHeaderView(0).matricula_menu_text.text = "Matrícula: $matricula"
+        profile_pic_card.setOnClickListener {
+           showProfileDialog(profile_pic_card, student)
         }
     }
 

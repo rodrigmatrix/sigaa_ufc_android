@@ -1,11 +1,10 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import org.jsoup.Jsoup
 import java.lang.IndexOutOfBoundsException
-import java.text.Normalizer
+import com.rodrigmatrix.sigaaufc.internal.util.capitalizeWords
 import kotlin.random.Random
 
 class Serializer {
@@ -29,8 +28,7 @@ class Serializer {
         val names = mutableListOf<String>()
         val periodsList = mutableListOf<String>()
         val locationsList = mutableListOf<String>()
-        val student = Student("", "", "",
-            "", "", "", false, "", "")
+        val student = Student()
         Jsoup.parse(response).run {
             select("input[value]").forEach {name ->
                 if(name.attr("name").contains("idTurma")){
@@ -86,13 +84,28 @@ class Serializer {
             try {
                 val studentName = select("div[class=nome_usuario]")
                 student.name = studentName.text().toLowerCase().capitalizeWords()
-                var matricula = response?.split("<td> Matr&#237;cula: </td>\n" + "\t\t\t\t\t\t<td> ")
                 val linkProfilePic = select("img[src]")[0].attr("src")
                 student.profilePic = linkProfilePic
-                matricula = matricula!![1].split(" </td>")
-                student.matricula = matricula[0]
+                Jsoup.parse(response).run {
+                    val table = select("table")[0].select("tbody")[0]
+                    try {
+                        val matricula = table.select("tr")[0].select("td")[1]
+                        val course = table.select("tr")[1].select("td")[1]
+                        val nivel = table.select("tr")[2].select("td")[1]
+                        val email = table.select("tr")[4].select("td")[1]
+                        val entrada = table.select("tr")[5].select("td")[1]
+                        student.course = course.text().toLowerCase().capitalizeWords()
+                        student.matricula = matricula.text()
+                        student.nivel = nivel.text().toLowerCase().capitalizeWords()
+                        student.email = email.text()
+                        student.entrada = entrada.text()
+                    }
+                    catch(e: Exception){
+                        e.printStackTrace()
+                    }
+                }
             }catch(e: IndexOutOfBoundsException){
-                println(e)
+                e.printStackTrace()
             }
             return Pair(student, classes)
         }
@@ -398,17 +411,6 @@ class Serializer {
             Triple(newsId, requestId1, requestId2)
         }catch(e: IndexOutOfBoundsException){
             Triple("", "", "")
-        }
-    }
-
-
-
-    @SuppressLint("DefaultLocale")
-    private fun String.capitalizeWords(): String = split(" ").joinToString(" ") {
-        when {
-            it.length <= 3 && it.contains("i") -> return@joinToString it.toUpperCase()
-            it.length >= 3 -> return@joinToString it.capitalize()
-            else -> return@joinToString it
         }
     }
 
