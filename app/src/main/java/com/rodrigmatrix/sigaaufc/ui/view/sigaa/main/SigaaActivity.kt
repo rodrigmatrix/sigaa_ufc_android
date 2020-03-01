@@ -9,23 +9,32 @@ import com.google.android.material.tabs.TabLayout
 import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
 import kotlinx.android.synthetic.main.activity_sigaa.*
+import kotlinx.android.synthetic.main.activity_sigaa.toolbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.lang.Exception
 
-class SigaaActivity : AppCompatActivity(), KodeinAware {
+class SigaaActivity : ScopedActivity() {
 
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
-    override val kodein by closestKodein()
     private val sigaaPreferences: SigaaPreferences by instance()
+    private val studentDao: StudentDao by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sigaa)
+        loadProfilePic()
         loadAd()
         sectionsPagerAdapter = SectionsPagerAdapter(
             this,
@@ -49,6 +58,25 @@ class SigaaActivity : AppCompatActivity(), KodeinAware {
             confirmClose()
         }
         progress_sigaa.isVisible = false
+    }
+
+    private fun loadProfilePic() = launch{
+        try {
+            val profilePic = withContext(Dispatchers.IO) {
+                studentDao.getStudentAsync().profilePic
+            }
+            if(profilePic != "/sigaa/img/no_picture.png"){
+                GlideApp.with(this@SigaaActivity)
+                    .load("https://si3.ufc.br/$profilePic")
+                    .into(profile_pic)
+            }
+            else{
+                profile_pic.setImageResource(R.drawable.avatar_circle_blue)
+            }
+        }
+        catch(e: Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun confirmClose(){

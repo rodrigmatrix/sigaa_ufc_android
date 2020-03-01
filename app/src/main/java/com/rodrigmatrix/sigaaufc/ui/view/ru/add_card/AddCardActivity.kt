@@ -10,27 +10,24 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceViewModel
 import kotlinx.android.synthetic.main.activity_add_card.*
-import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
+import kotlinx.android.synthetic.main.activity_add_card.toolbar
 import kotlinx.coroutines.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import java.lang.Exception
 
-class AddCardActivity : ScopedActivity(), KodeinAware {
+class AddCardActivity : ScopedActivity() {
 
-    override val kodein by closestKodein()
     private val viewModelFactory: AddCardViewModelFactory by instance()
-
+    private val studentDao: StudentDao by instance()
     private lateinit var viewModel: AddCardViewModel
 
 
@@ -48,6 +45,7 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
         window.sharedElementEnterTransition = MaterialContainerTransform(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_card)
+        loadProfilePic()
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
         toolbar.setNavigationOnClickListener {
             this.finish()
@@ -73,6 +71,26 @@ class AddCardActivity : ScopedActivity(), KodeinAware {
         }
 
     }
+
+    private fun loadProfilePic() = launch{
+        try {
+            val profilePic = withContext(Dispatchers.IO) {
+                studentDao.getStudentAsync().profilePic
+            }
+            if(profilePic != "/sigaa/img/no_picture.png"){
+                GlideApp.with(this@AddCardActivity)
+                    .load("https://si3.ufc.br/$profilePic")
+                    .into(profile_pic)
+            }
+            else{
+                profile_pic.setImageResource(R.drawable.avatar_circle_blue)
+            }
+        }
+        catch(e: Exception){
+            e.printStackTrace()
+        }
+    }
+
     private suspend fun addCard(numeroCartao: String, matricula: String){
         val res = viewModel.fetchRu(numeroCartao, matricula)
         if(res == "Success"){

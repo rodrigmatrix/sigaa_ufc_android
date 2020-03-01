@@ -96,15 +96,6 @@ class ClassesFragment : ScopedFragment(R.layout.fragment_classes) {
         addAll(filtered)
     }
 
-    private fun deleteRange(list: MutableList<StudentClass>, ini: Int, len: Int) {
-        for((index, value) in list.withIndex()){
-            if(index in ini..len){
-                list.removeAt(index)
-            }
-
-        }
-    }
-
     private fun onSwitchChange(classes: MutableList<StudentClass>){
         switch_classes.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
         when(switch_classes.isChecked){

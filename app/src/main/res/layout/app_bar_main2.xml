@@ -32,11 +32,13 @@
                         tools:title="@string/sigaa_shortcut"
                         android:layout_width="match_parent"
                         android:layout_height="51dp"
+                        app:titleTextAppearance="@style/TextAppearance.AppTheme.Headline6"
                         app:titleTextColor="@color/colorPrimary"/>
 
                 <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginEnd="6dp"
                         android:gravity="end|center">
 
                     <com.google.android.material.card.MaterialCardView
