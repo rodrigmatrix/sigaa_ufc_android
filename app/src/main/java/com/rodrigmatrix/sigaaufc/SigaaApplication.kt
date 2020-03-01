@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import androidx.work.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.igorronner.irinterstitial.init.IRAdsInit
 import com.rodrigmatrix.sigaaufc.BuildConfig.*
@@ -12,6 +13,7 @@ import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
+import com.rodrigmatrix.sigaaufc.firebase.FirebaseEvents
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.work.NotificationsCoroutineWork
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
@@ -48,6 +50,8 @@ class SigaaApplication: Application(), KodeinAware {
         bind() from singleton { SigaaApi(this@SigaaApplication) }
         bind() from singleton { SigaaDataSource(sigaaApi = instance(), sigaaRepository = instance(), studentDao = instance()) }
         bind() from singleton { RemoteConfig(FirebaseRemoteConfig.getInstance())}
+        bind() from singleton { FirebaseAnalytics.getInstance(this@SigaaApplication) }
+        bind() from singleton { FirebaseEvents(firebaseAnalytics = instance()) }
         bind() from singleton {
             SigaaPreferences(sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication))
         }

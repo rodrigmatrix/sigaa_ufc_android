@@ -9,6 +9,9 @@ import com.igorronner.irinterstitial.services.PurchaseService
 
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.firebase.COMPRAR_APP
+import com.rodrigmatrix.sigaaufc.firebase.DESATIVAR_ANUNCIOS
+import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_info.*
 import kotlinx.android.synthetic.main.premium_dialog.view.*
 import org.kodein.di.KodeinAware
@@ -16,15 +19,14 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class InfoFragment : Fragment(R.layout.fragment_info), KodeinAware {
+class InfoFragment : ScopedFragment(R.layout.fragment_info) {
 
     private var countPremium = 0
-    override val kodein by closestKodein()
-    private val sigaaPreferences: SigaaPreferences by instance()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         premium_button?.setOnClickListener {
+            events.addEvent(DESATIVAR_ANUNCIOS)
             countPremium++
             if(countPremium == 10){
                 countPremium = 0
@@ -32,6 +34,7 @@ class InfoFragment : Fragment(R.layout.fragment_info), KodeinAware {
             }
         }
         buy_premium_button?.setOnClickListener {
+            events.addEvent(COMPRAR_APP)
             PurchaseService(requireActivity()).purchase()
         }
     }

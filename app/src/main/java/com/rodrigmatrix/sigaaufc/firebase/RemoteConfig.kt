@@ -3,6 +3,7 @@ package com.rodrigmatrix.sigaaufc.firebase
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
+import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.persistence.entity.Versions
 
@@ -16,6 +17,7 @@ class RemoteConfig(private val remoteConfig: FirebaseRemoteConfig){
             .setMinimumFetchIntervalInSeconds(3600)
             .build()
         remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_defaults)
         remoteConfig.fetch()
             .addOnSuccessListener {
                 remoteConfig.activate()
@@ -30,6 +32,10 @@ class RemoteConfig(private val remoteConfig: FirebaseRemoteConfig){
         catch(e: Exception){
             listOf()
         }
+    }
+
+    fun isNotificationsEnabled(): Boolean {
+        return remoteConfig.getBoolean("notifications_enabled")
     }
 
 

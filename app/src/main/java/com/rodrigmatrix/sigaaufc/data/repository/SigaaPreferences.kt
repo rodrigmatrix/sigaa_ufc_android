@@ -45,4 +45,11 @@ class SigaaPreferences(
 
     fun getGradesNotification() = sharedPreferences.getBoolean("grades_notifications", false)
 
+
+    fun showOnboarding(showOnboarding: Boolean){
+        sharedPreferences.edit().putBoolean("show_onboarding", showOnboarding).apply()
+    }
+
+    fun showOnboarding() = sharedPreferences.getBoolean("show_onboarding", true)
+
 }

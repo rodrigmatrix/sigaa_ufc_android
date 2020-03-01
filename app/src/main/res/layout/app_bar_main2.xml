@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -41,25 +42,35 @@
                         android:layout_marginEnd="6dp"
                         android:gravity="end|center">
 
-                    <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/profile_pic_card"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            app:cardCornerRadius="45dp"
-                            android:layout_margin="6dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:rippleColor="@color/colorPrimary"
-                            app:cardElevation="2dp">
+                    <FrameLayout
+                            android:id="@+id/onboarding_profile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
-                    <ImageView
-                            android:id="@+id/profile_pic"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/avatar_circle_blue"/>
+                        <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/profile_pic_card"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                app:cardCornerRadius="45dp"
+                                android:layout_margin="6dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                app:rippleColor="@color/colorPrimary"
+                                app:cardElevation="2dp">
 
-                    </com.google.android.material.card.MaterialCardView>
+                            <ImageView
+                                    android:id="@+id/profile_pic"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/avatar_circle_blue"/>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                    </FrameLayout>
+
+
 
                 </RelativeLayout>
 
@@ -71,6 +82,12 @@
 
     <include
             layout="@layout/content_main"/>
+
+    <View
+            android:layout_gravity="bottom"
+            android:id="@+id/start_onboarding"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

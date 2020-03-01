@@ -2,10 +2,10 @@ package com.rodrigmatrix.sigaaufc.ui.view.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.Window
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
@@ -15,9 +15,11 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
@@ -33,36 +35,37 @@ import com.igorronner.irinterstitial.init.IRAds
 import com.igorronner.irinterstitial.services.ProductPurchasedListener
 import com.igorronner.irinterstitial.services.ProductsListListener
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.network.SigaaApi
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
-import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
+import com.rodrigmatrix.sigaaufc.firebase.ERRO_ONBOARDING
+import com.rodrigmatrix.sigaaufc.firebase.FINALIZOU_ONBOARDING
+import com.rodrigmatrix.sigaaufc.firebase.VISUALIZOU_ONBOARDING
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
-import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
-import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main2.*
 import kotlinx.android.synthetic.main.app_bar_main2.profile_pic
 import kotlinx.android.synthetic.main.app_bar_main2.profile_pic_card
-import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.android.synthetic.main.fake_nav_view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import java.lang.Exception
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.FullscreenPromptBackground
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal
 
 class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, ProductPurchasedListener {
 
     override val kodein by closestKodein()
     private val viewModelFactory: MainActivityViewModelFactory by instance()
-    private val remoteConfig: RemoteConfig by instance()
-    private val sigaaPreferences: SigaaPreferences by instance()
+
     private val studentDao: StudentDao by instance()
 
     private lateinit var viewModel: MainActivityViewModel
@@ -70,6 +73,8 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var navController: NavController
     val UPDATE_REQUEST_CODE = 400
+
+
     private val appUpdatedListener: InstallStateUpdatedListener by lazy {
         object : InstallStateUpdatedListener {
             @SuppressLint("SwitchIntDef")
@@ -145,6 +150,15 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
 
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkForUpdates()
+        if(sigaaPreferences.showOnboarding()){
+            try {
+                showOnboarding()
+            }
+            catch(e: Exception){
+                e.printStackTrace()
+                events.addEvent(ERRO_ONBOARDING)
+            }
+        }
     }
 
     private fun showDialogNews(id: String) = launch {
@@ -272,10 +286,135 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
 //
     }
 
-
-
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+
+    private fun showOnboarding() {
+        val backgroundColor = ColorUtils.setAlphaComponent(ContextCompat.getColor(this@MainActivity, R.color.colorOnboarding), 0xE1)
+        val promptFocalColor = Color.TRANSPARENT
+        val tb = findViewById<MaterialToolbar>(R.id.toolbar)
+        val promptFocal = CirclePromptFocal()
+        events.addEvent(VISUALIZOU_ONBOARDING)
+        MaterialTapTargetSequence()
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(R.id.start_onboarding)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(RectanglePromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setFocalRadius(20f)
+                    .setPrimaryText(getString(R.string.welcome_title))
+                    .setSecondaryText(getString(R.string.welcome_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(R.id.onboarding_profile)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptFocal(promptFocal)
+                    .setPrimaryText(getString(R.string.profile_header_title))
+                    .setSecondaryText(getString(R.string.profile_header_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(tb.getChildAt(1))
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(false)
+                    .setAutoDismiss(false)
+                    .setAutoFinish(false)
+                    .setPromptStateChangeListener { prompt, state ->
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED) {
+                            tb.getChildAt(1).performClick()
+                            prompt.dismiss()
+                        }
+                    }
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptFocal(promptFocal)
+                    .setPrimaryText(getString(R.string.nav_view_title))
+                    .setSecondaryText(getString(R.string.nav_view_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_notifications)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_notifications_title))
+                    .setSecondaryText(getString(R.string.onboarding_notifications_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_ru)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_ru_title))
+                    .setSecondaryText(getString(R.string.onboarding_ru_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_about)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_about_title))
+                    .setSecondaryText(getString(R.string.onboarding_about_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_settings)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_settings_title))
+                    .setSecondaryText(getString(R.string.onboarding_settings_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(R.id.start_onboarding)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(RectanglePromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setFocalRadius(20f)
+                    .setPrimaryText("Por hoje é isso :)")
+                    .setSecondaryText("Você pode visualizar esse tutorial sempre que quiser acessando as configurações. Por favor avalie o app na Google Play :)")
+            )
+            .setSequenceCompleteListener {
+                drawer_layout.closeDrawers()
+                sigaaPreferences.showOnboarding(false)
+                events.addEvent(FINALIZOU_ONBOARDING)
+            }
+            .show()
     }
 }

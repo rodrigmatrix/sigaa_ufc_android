@@ -32,7 +32,6 @@ import java.lang.Exception
 class SigaaActivity : ScopedActivity() {
 
     private lateinit var sectionsPagerAdapter: SectionsPagerAdapter
-    private val sigaaPreferences: SigaaPreferences by instance()
     private val studentDao: StudentDao by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
