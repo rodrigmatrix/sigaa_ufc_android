@@ -54,10 +54,11 @@
                                 android:id="@+id/profile_pic_card"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
-                                app:cardCornerRadius="45dp"
+                                app:cardCornerRadius="20dp"
                                 android:layout_margin="6dp"
                                 android:clickable="true"
                                 android:focusable="true"
+                                app:cardPreventCornerOverlap="false"
                                 app:rippleColor="@color/colorPrimary"
                                 app:cardElevation="2dp">
 

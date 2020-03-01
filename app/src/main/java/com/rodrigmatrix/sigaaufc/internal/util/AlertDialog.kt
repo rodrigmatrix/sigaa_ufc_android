@@ -12,11 +12,13 @@ import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import kotlinx.android.synthetic.main.app_bar_main2.*
 import kotlinx.android.synthetic.main.dialog_header_profile.view.*
+import org.jetbrains.anko.toast
 import java.lang.Exception
 
 @SuppressLint("SetTextI18n")
 fun Context.showProfileDialog(layout: View, student: Student){
     if(student.name == ""){
+        toast("Você ainda não efetuou login para visualizar seu perfil")
         return
     }
     val builder = MaterialAlertDialogBuilder(this)

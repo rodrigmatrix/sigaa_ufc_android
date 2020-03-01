@@ -38,7 +38,7 @@ abstract class StudentDatabase : RoomDatabase() {
             }
         }
 
-        val MIGRATION_6_7 = object : Migration(6, 7) {
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE classes ADD COLUMN synced INTEGER NOT NULL default 0")
                 database.execSQL("ALTER TABLE students ADD COLUMN nivel TEXT NOT NULL default ''")

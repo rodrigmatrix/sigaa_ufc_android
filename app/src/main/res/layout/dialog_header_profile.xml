@@ -100,15 +100,16 @@
             app:layout_constraintTop_toBottomOf="@+id/email_text"
             tools:text="Entrada: 2018.1" />
 
+
     <com.google.android.material.card.MaterialCardView
             android:id="@+id/profile_pic_card"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
+            app:cardCornerRadius="20dp"
+            android:layout_margin="6dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardCornerRadius="45dp"
+            app:cardPreventCornerOverlap="false"
             app:cardElevation="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

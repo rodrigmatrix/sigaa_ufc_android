@@ -24,6 +24,7 @@ import com.igorronner.irinterstitial.services.ProductsListListener
 import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.firebase.LOGIN_BUTTON
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
@@ -65,6 +66,7 @@ class LoginFragment : ScopedFragment(R.layout.fragment_login), KodeinAware {
         }
 
         login_btn?.setOnClickListener {
+            events.addEvent(LOGIN_BUTTON)
             fragment_login.hideKeyboard()
             if (isValid()) {
                 progress_login?.isVisible = true
