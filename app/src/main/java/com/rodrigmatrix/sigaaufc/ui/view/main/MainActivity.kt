@@ -190,12 +190,9 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
 
     private fun getShortcut(){
         when(intent.extras?.getString("shortcut")){
-            "ru" -> {
-                navController.navigate(R.id.nav_ru)
-            }
-            "library" -> {
-                navController.navigate(R.id.nav_library)
-            }
+            "ru" ->  navController.navigate(R.id.nav_ru)
+            "library" -> navController.navigate(R.id.nav_library)
+            "notifications" -> navController.navigate(R.id.nav_notifications)
         }
     }
 
@@ -207,7 +204,6 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
             IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
         }
     }
-
 
     @SuppressLint("SetTextI18n")
     private fun bindUi(student: Student){
