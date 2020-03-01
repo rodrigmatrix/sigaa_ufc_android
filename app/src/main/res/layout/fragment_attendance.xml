@@ -38,57 +38,53 @@
 
                 <TextView
                         android:id="@+id/missed_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="90dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="85dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="24dp"
                         android:text="Total de faltas permitido"
-                        android:textAlignment="center"
                         android:textColor="@color/colorPrimary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/image_ru"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                         android:id="@+id/total_class_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="112dp"
-                        android:layout_marginBottom="28dp"
-                        tools:text="Aulas: 4"
+                        android:layout_marginStart="8dp"
                         android:textColor="@color/colorTextSecondary"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.19"
-                        app:layout_constraintStart_toEndOf="@+id/image_ru" />
+                        app:layout_constraintStart_toEndOf="@+id/image_ru"
+                        app:layout_constraintTop_toBottomOf="@+id/total_hour_text"
+                        tools:text="Aulas: 4" />
 
                 <TextView
                         android:id="@+id/total_hour_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="128dp"
-                        tools:text="Horas: 8"
+                        android:layout_marginStart="8dp"
                         android:textColor="@color/colorTextSecondary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.24"
                         app:layout_constraintStart_toEndOf="@+id/image_ru"
-                        app:layout_constraintTop_toBottomOf="@+id/missed_text" />
+                        app:layout_constraintTop_toBottomOf="@+id/missed_text"
+                        tools:text="Horas: 8" />
 
                 <ImageView
                         android:id="@+id/image_ru"
                         android:layout_width="50dp"
                         android:layout_height="48dp"
-                        android:tint="@color/colorPrimary"
-                        android:layout_marginStart="36dp"
+                        android:layout_marginStart="32dp"
                         android:layout_marginTop="26dp"
                         android:layout_marginBottom="26dp"
+                        android:tint="@color/colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0"
                         app:srcCompat="@drawable/ic_check" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -115,38 +111,35 @@
 
                 <TextView
                         android:id="@+id/textView"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="90dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="85dp"
-                        android:textAlignment="center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Total de faltas"
                         android:textColor="@color/colorPrimary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:text="Total de faltas" />
+                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                         android:id="@+id/missed_class_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="112dp"
-                        android:layout_marginBottom="28dp"
-                        tools:text="Aulas: 4"
+                        android:layout_marginStart="8dp"
                         android:textColor="@color/colorTextSecondary"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.15"
-                        app:layout_constraintStart_toEndOf="@+id/imageView" />
+                        app:layout_constraintStart_toEndOf="@+id/imageView"
+                        app:layout_constraintTop_toBottomOf="@+id/missed_hour_text"
+                        tools:text="Aulas: 4" />
 
                 <TextView
                         android:id="@+id/missed_hour_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="128dp"
+                        android:layout_marginStart="8dp"
                         android:textColor="@color/colorTextSecondary"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.2"
@@ -158,19 +151,26 @@
                         android:id="@+id/imageView"
                         android:layout_width="50dp"
                         android:layout_height="48dp"
-                        android:layout_marginStart="36dp"
+                        android:layout_marginStart="32dp"
                         android:layout_marginTop="26dp"
                         android:layout_marginBottom="26dp"
                         android:tint="@color/colorPrimary"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="1.0"
                         app:srcCompat="@drawable/ic_close" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+<!--        <ProgressBar-->
+<!--                style="@style/Widget.AppCompat.ProgressBar.Horizontal"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:progress="20" />-->
+
+
     </LinearLayout>
 
 

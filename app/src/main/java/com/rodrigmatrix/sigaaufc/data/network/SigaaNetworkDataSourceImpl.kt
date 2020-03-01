@@ -1,10 +1,10 @@
 package com.rodrigmatrix.sigaaufc.data.network
 
-import com.rodrigmatrix.sigaaufc.data.SigaaApi
+import com.rodrigmatrix.sigaaufc.data.SigaaOkHttp
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 
 class SigaaNetworkDataSourceImpl(
-    private val sigaaApi: SigaaApi
+    private val sigaaApi: SigaaOkHttp
 ) : SigaaNetworkDataSource {
 
     override suspend fun fetchLogin(

@@ -2,29 +2,46 @@ package com.rodrigmatrix.sigaaufc.ui.base
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.firebase.FirebaseEvents
+import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
+import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 import kotlin.coroutines.CoroutineContext
 
-abstract class ScopedFragment: Fragment(), CoroutineScope {
-    private lateinit var job: Job
+abstract class ScopedFragment(private val layout: Int): Fragment(), CoroutineScope, KodeinAware {
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+    override val kodein by closestKodein()
+    val remoteConfig: RemoteConfig by instance()
+    val sigaaPreferences: SigaaPreferences by instance()
+    val events: FirebaseEvents by instance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        job = Job()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(layout, container, false)
     }
+
+    private val job = SupervisorJob()
+
+    override val coroutineContext = Dispatchers.Main + job
 
     override fun onDestroy() {
         super.onDestroy()
-        job?.cancel()
+        job.cancelChildren()
     }
 
     val handler = CoroutineExceptionHandler { _, throwable ->

@@ -2,11 +2,11 @@
     <string name="app_name">Sigaa</string>
     <string name="title_activity_main">Sigaa</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_add_card">Adicionar cartão RU</string>
     <string name="title_activity_class">Disciplinas</string>
 
     <string name="sigaa_shortcut">Sigaa</string>
+    <string name="notifications_shortcut">Notificações</string>
     <string name="ru_shortcut">Créditos RU</string>
     <string name="ru_long_shortcut">RU</string>
     <string name="library_shortcut">Biblioteca</string>
@@ -33,12 +33,36 @@
     <string name="ver_mais">Ver Mais</string>
     <string name="ru_menu">Cardápio</string>
 
-    <string name="ad_unit_banner" translatable="false">ca-app-pub-7958407055458953/3094480126</string>
-    <string name="ad_unit_interstitial" translatable="false">ca-app-pub-7958407055458953/1091133316</string>
+    <string name="file_notification_title">Novo arquivo em <b>%s</b></string>
+    <string name="file_notification_body">Nome do arquivo:\n<b>%s</b></string>
+
+    <string name="grade_notification_title">Nova nota em <b>%s</b></string>
+    <string name="grade_notification_body">Nota <b>%s</b> disponível</string>
+
+    <string name="news_notification_title">Nova notícia em <b>%s</b></string>
+    <string name="news_notification_body">Titulo: <b>%s</b> \nConteudo: <b>%s</b></string>
+    <string name="notifications_text">Esse recurso é origem de muito trabalho mas, ele ainda se encontra em beta. Notificações disparadas mais de uma vez ou informações erradas podem acontecer e é para isso que preciso de feedback para encontrar os bugs e melhorar cada vez mais o recurso. Qualquer dúvida ou reporte de bugs, envie um email para rodrigmatrix@gmail.com</string>
+    <string name="notifications_warning">Para esse recurso funcionar, <b><u>o usuário deve efetuar um primeiro login no app e salvar os dados de login.</u></b> Se o usuário possuir mais de um vínculo, <b><u>as notificações sempre irão ser acionadas para o último vínculo que o usuário efetuou login.</u></b> As notificações somente serão disparadas para disciplinas ativas.</string>
+
+    <string name="notifications_title">Notificações (Beta)</string>
+    <string name="wrong_password_alert">O app não estã conseguindo fazer login no sigaa para verificar novas notificações. Se você tiver alterado a senha do seu sigaa, é necessário fazer login no app e atualizar os dados de login para que as notificações continuem funcionando</string>
 
 
-    <!--    Test Ads-->
-<!--        <string name="ad_unit_banner" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
-<!--        <string name="ad_unit_interstitial" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
+    <string name="welcome_title">Bem vindo ao novo app do SIGAA</string>
+    <string name="welcome_body">Com novos recursos e melhorias, vamos conhecer o novo app. Toque em qualquer lugar para iniciar. \n \n</string>
+
+    <string name="profile_header_title">Novo layout com mais informações</string>
+    <string name="profile_header_body">Quando efetuar seu primeiro login, você pode tocar na foto de perfil para visualizar mais informações sobre sua conta como curso, matrícula, email cadastrado.. Você pode acessar esses dados em qualquer tela do app. Basta tocar na foto.</string>
+
+    <string name="nav_view_title">Menu de navegação</string>
+    <string name="nav_view_body">O menu agora está mais limpo para aceitar os novos recursos. Para visualizar sua foto de perfil ou matrícula, basta tocar na foto de perfil na direita que está disponível em todas as telas do app. Toque no botão para conhecer o novo menu.</string>
+    <string name="onboarding_notifications_title">Notificações agora são uma realidade</string>
+    <string name="onboarding_notifications_body">Agora é possível receber notificações de arquivos, notícias e notas. Nessa tela, você poderá entender como o recurso funciona e desativar as notificações.</string>
+    <string name="onboarding_ru_title">Créditos e histório do RU</string>
+    <string name="onboarding_ru_body">Aqui é possível verificar os créditos e todo o histórico de uso do seu cartão do RU.</string>
+    <string name="onboarding_about_title">Informações sobre o app</string>
+    <string name="onboarding_about_body">Agora é possível comprar o app e remover anúncios.</string>
+    <string name="onboarding_settings_title">Configurações do app</string>
+    <string name="onboarding_settings_body">Aqui você pode alterar o tema do app e ativar novamente esse tutorial quando quiser.</string>
 
 </resources>

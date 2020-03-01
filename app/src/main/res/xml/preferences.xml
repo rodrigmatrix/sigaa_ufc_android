@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
             android:title="@string/appearance_string">
@@ -11,6 +12,13 @@
                 android:entries="@array/themeEntries"
                 android:entryValues="@array/themeValues">
         </ListPreference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="Ativar tutorial">
+        <SwitchPreference
+                app:title="Visualizar notificações na próxima vez que o app abrir"
+                android:key="show_onboarding"/>
     </PreferenceCategory>
 
 <!--    <PreferenceCategory-->

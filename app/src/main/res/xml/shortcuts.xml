@@ -37,6 +37,23 @@
     </shortcut>
 
     <shortcut
+            android:shortcutId="notifications"
+            android:enabled="true"
+            android:icon="@drawable/ic_notifications"
+            android:shortcutShortLabel="@string/notifications_shortcut"
+            android:shortcutLongLabel="@string/notifications_shortcut"
+            tools:targetApi="n_mr1">
+
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.rodrigmatrix.sigaaufc"
+                android:targetClass="com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity">
+            <extra android:name="shortcut" android:value="notifications" />
+        </intent>
+
+    </shortcut>
+
+    <shortcut
             android:shortcutId="sigaa"
             android:enabled="true"
             android:icon="@drawable/ic_school"

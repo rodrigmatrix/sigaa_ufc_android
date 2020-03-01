@@ -2,43 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/nav_header_height"
+        android:layout_height="wrap_content"
         android:background="?attr/colorSurface"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark">
+        android:paddingTop="38dp"
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
-    <com.google.android.material.card.MaterialCardView
-            android:layout_width="86dp"
-            android:layout_height="86dp"
-            app:cardCornerRadius="45dp">
-        <ImageView
-                android:id="@+id/profile_pic_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/avatar_circle_blue" />
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:id="@+id/student_name_menu_text"
-            android:textColor="@color/colorText"
-            android:text="@string/blank_student"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-    <TextView
-            android:id="@+id/matricula_menu_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorText"
-            android:text="" />
+    <ImageView
+            android:layout_width="126dp"
+            android:layout_height="31dp"
+            android:src="@drawable/sigaa_logo_name" />
 
 </LinearLayout>

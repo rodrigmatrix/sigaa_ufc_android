@@ -19,8 +19,7 @@ import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivity
 
 class FirebaseCloudMessaging: FirebaseMessagingService() {
 
-
-    private val channelId = "GENERAL"
+    private val channelId = "alerts_channel_id"
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         handleOnlyDataPayload(remoteMessage.data, remoteMessage.notification?.title, remoteMessage.notification?.body)
@@ -38,8 +37,8 @@ class FirebaseCloudMessaging: FirebaseMessagingService() {
 
     @TargetApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
-        val name = "Geral"
-        val descriptionText = "Notificações gerais do app"
+        val name = "Avisos e atualizações do app"
+        val descriptionText = "Notificações sobre informações de desenvolvimento e atualizações do app"
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val mChannel = NotificationChannel(channelId, name, importance)
         mChannel.description = descriptionText

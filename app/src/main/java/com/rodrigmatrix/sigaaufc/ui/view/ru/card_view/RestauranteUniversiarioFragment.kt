@@ -1,6 +1,7 @@
 package com.rodrigmatrix.sigaaufc.ui.view.ru.card_view
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,11 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardActivity
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
+import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_restaurante_universiario.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
@@ -21,7 +24,7 @@ import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 
-class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
+class RestauranteUniversiarioFragment : ScopedFragment(R.layout.fragment_restaurante_universiario), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: RuViewModelFactory by instance()
@@ -30,11 +33,15 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RuViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[RuViewModel::class.java]
         add_card.setOnClickListener {
+            val options =  ActivityOptions.makeSceneTransitionAnimation(
+                requireActivity(),
+                add_card,
+                "shared_element_container"
+            )
             val intent = Intent(context, AddCardActivity::class.java)
-            this.startActivity(intent)
+            this.startActivity(intent, options.toBundle())
         }
     }
 
@@ -88,9 +95,4 @@ class RestauranteUniversiarioFragment : ScopedFragment(), KodeinAware {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_restaurante_universiario, container, false)
-    }
 }

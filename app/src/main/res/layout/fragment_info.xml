@@ -3,6 +3,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         tools:context=".ui.fragments.InfoFragment">
 
@@ -17,7 +18,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:gravity="center"
-                android:text="Desenvolvido por Rodrigo Gomes"
+                android:text="Desenvolvido por Rodrigo G. Resende"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/colorPrimary"
                 android:textSize="18sp" />
@@ -26,8 +27,26 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:text="@string/hello_blank_fragment"
                 android:src="@drawable/profile_pic"/>
+
+        <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/premium_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:text="Suporte o desenvolvimento e remova anúncios"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/buy_premium_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:cornerRadius="8dp"
+                android:text="Comprar premium"/>
+
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,7 +131,6 @@
                 android:layout_width="100dp"
                 android:layout_height="90dp"
                 android:layout_gravity="center"
-                android:text="@string/hello_blank_fragment"
                 android:src="@drawable/sippa_icon"/>
         <TextView
                 android:layout_width="match_parent"

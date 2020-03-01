@@ -41,7 +41,6 @@ interface SigaaRepository {
 
     suspend fun getClass(idTurma: String): LiveData<out StudentClass>
 
-
     suspend fun setPreviousClass(id: String, idTurma: String)
 
     suspend fun getPreviousClass(idTurma: String): LiveData<out StudentClass>

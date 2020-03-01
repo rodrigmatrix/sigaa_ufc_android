@@ -1,21 +1,21 @@
 package com.rodrigmatrix.sigaaufc
 
 import android.app.Application
-import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
+import androidx.work.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.igorronner.irinterstitial.init.IRAdsInit
 import com.rodrigmatrix.sigaaufc.BuildConfig.*
-import com.rodrigmatrix.sigaaufc.data.SigaaApi
+import com.rodrigmatrix.sigaaufc.data.SigaaOkHttp
 import com.rodrigmatrix.sigaaufc.data.network.*
-import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepositoryImpl
+import com.rodrigmatrix.sigaaufc.firebase.FirebaseEvents
 import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
+import com.rodrigmatrix.sigaaufc.internal.work.NotificationsCoroutineWork
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
@@ -42,15 +42,18 @@ import org.kodein.di.generic.singleton
 import java.util.concurrent.TimeUnit
 
 class SigaaApplication: Application(), KodeinAware {
+
     override val kodein = Kodein.lazy {
         import(androidXModule(this@SigaaApplication))
         bind() from singleton { StudentDatabase(instance()) }
         bind() from singleton { instance<StudentDatabase>().studentDao() }
+        bind() from singleton { SigaaApi(this@SigaaApplication) }
+        bind() from singleton { SigaaDataSource(sigaaApi = instance(), sigaaRepository = instance(), studentDao = instance()) }
         bind() from singleton { RemoteConfig(FirebaseRemoteConfig.getInstance())}
+        bind() from singleton { FirebaseAnalytics.getInstance(this@SigaaApplication) }
+        bind() from singleton { FirebaseEvents(firebaseAnalytics = instance()) }
         bind() from singleton {
-            PremiumPreferences(sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication)
-            )
+            SigaaPreferences(sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@SigaaApplication))
         }
         bind<ConnectivityInterceptor>() with singleton {
             ConnectivityInterceptorImpl(context = instance())
@@ -62,7 +65,7 @@ class SigaaApplication: Application(), KodeinAware {
                 .connectTimeout(25, TimeUnit.SECONDS)
         }
         bind() from singleton {
-            SigaaApi(httpClient = instance(),
+            SigaaOkHttp(httpClient = instance(),
                 sigaaSerializer = instance(),
                 studentDatabase = instance(),
                 connectivityInterceptor = instance())
@@ -117,37 +120,53 @@ class SigaaApplication: Application(), KodeinAware {
         }
     }
 
-
     override fun onCreate() {
         super.onCreate()
+        setAdsInstance()
+        startRemoteConfig()
+        setNotificationWorkManager()
+    }
+
+    private fun setAdsInstance(){
         val adBuilder = IRAdsInit.Builder()
             .setAppId("ca-app-pub-7958407055458953~7361028198")
             .setInterstitialId(INTERSTITIAL)
-            .setExpensiveInterstitialId(EXPENSIVE_INTERSTITIAL)
+            .setExpensiveInterstitialId(INTERSTITIAL)
             .setAppPrefix("sigaa")
             .enablePurchace("premium")
         adBuilder.build(this)
+    }
+
+    private fun startRemoteConfig(){
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
         val preferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         setTheme(preferences.getString("THEME", "SYSTEM_DEFAULT"))
         val remoteConfig: RemoteConfig by instance()
         remoteConfig.initRemoteConfig()
-        //fcmId()
     }
 
-    private fun fcmId(){
-        val TAG = "fcm"
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "getInstanceId failed", task.exception)
-                    return@OnCompleteListener
-                }
-                // Get new Instance ID token
-                val token = task.result?.token
-
-                Log.d(TAG, token)
-            })
+    private fun setNotificationWorkManager(){
+        val workManager = WorkManager.getInstance(applicationContext)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<NotificationsCoroutineWork>().build()
+        val periodicWorkRequest = PeriodicWorkRequest.Builder(
+            NotificationsCoroutineWork::class.java,
+            1,
+            TimeUnit.HOURS,
+            30,
+            TimeUnit.MINUTES)
+            .setConstraints(constraints)
+            .build()
+        workManager.enqueueUniquePeriodicWork(
+            NOTIFICATIONS_WORK_ID,
+            ExistingPeriodicWorkPolicy.KEEP,
+            periodicWorkRequest
+        )
+//        if(DEBUG){
+//            workManager.enqueue(oneTimeWorkRequest)
+//        }
     }
 
     private fun setTheme(theme: String?){
@@ -157,6 +176,10 @@ class SigaaApplication: Application(), KodeinAware {
             "BATTERY_SAVER" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
             "SYSTEM_DEFAULT" -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
+    }
+
+    companion object {
+        const val NOTIFICATIONS_WORK_ID = "work_notifications"
     }
 
 

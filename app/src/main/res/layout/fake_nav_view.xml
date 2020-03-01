@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clickable="false">
+
+    <View
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+            android:layout_marginTop="80dp"
+            android:clickable="false"/>
+
+    <View
+            android:id="@+id/drawer_notifications"
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:clickable="false"/>
+
+    <View
+            android:id="@+id/drawer_ru"
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:clickable="false"/>
+
+    <View
+            android:id="@+id/drawer_library"
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:clickable="false"/>
+
+    <View
+            android:id="@+id/drawer_settings"
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:clickable="false"/>
+
+    <View
+            android:id="@+id/drawer_about"
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="15dp"
+            android:clickable="false"/>
+
+
+
+</LinearLayout>

@@ -2,71 +2,79 @@ package com.rodrigmatrix.sigaaufc.ui.view.main
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
-import android.widget.Toast
+import android.view.Gravity
+import android.view.Window
 import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
-import androidx.appcompat.app.AppCompatDelegate.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.core.graphics.ColorUtils
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.preference.PreferenceManager
-import com.crashlytics.android.Crashlytics
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.formats.UnifiedNativeAdView
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.MaterialContainerTransformSharedElementCallback
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
 import com.google.android.play.core.install.model.InstallStatus
-import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.igorronner.irinterstitial.dto.IRSkuDetails
 import com.igorronner.irinterstitial.init.IRAds
-import com.igorronner.irinterstitial.services.PurchaseService
-import com.rodrigmatrix.sigaaufc.BuildConfig
+import com.igorronner.irinterstitial.services.ProductPurchasedListener
+import com.igorronner.irinterstitial.services.ProductsListListener
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.repository.PremiumPreferences
-import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
+import com.rodrigmatrix.sigaaufc.firebase.ERRO_ONBOARDING
+import com.rodrigmatrix.sigaaufc.firebase.FINALIZOU_ONBOARDING
+import com.rodrigmatrix.sigaaufc.firebase.VISUALIZOU_ONBOARDING
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
+import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
+import com.rodrigmatrix.sigaaufc.persistence.StudentDao
+import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.Version
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
+import kotlinx.android.synthetic.main.app_bar_main2.profile_pic
+import kotlinx.android.synthetic.main.app_bar_main2.profile_pic_card
+import kotlinx.android.synthetic.main.fake_nav_view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetSequence
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.FullscreenPromptBackground
+import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectanglePromptBackground
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal
 
-class MainActivity : ScopedActivity(), KodeinAware {
+class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, ProductPurchasedListener {
 
     override val kodein by closestKodein()
     private val viewModelFactory: MainActivityViewModelFactory by instance()
-    private val remoteConfig: RemoteConfig by instance()
-    private val premiumPreferences: PremiumPreferences by instance()
+
+    private val studentDao: StudentDao by instance()
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var appUpdateManager: AppUpdateManager
     private lateinit var navController: NavController
     val UPDATE_REQUEST_CODE = 400
+
+
     private val appUpdatedListener: InstallStateUpdatedListener by lazy {
         object : InstallStateUpdatedListener {
             @SuppressLint("SwitchIntDef")
@@ -79,36 +87,60 @@ class MainActivity : ScopedActivity(), KodeinAware {
         }
     }
 
-    @SuppressLint("SetTextI18n", "SourceLockedOrientationActivity")
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+        setExitSharedElementCallback(MaterialContainerTransformSharedElementCallback())
+        window.sharedElementsUseOverlay = false
         super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        setContentView(R.layout.activity_main)
         val bundle = intent.extras
         if(bundle != null){
             val link = bundle.getString("link")
-            if(link != null){
-                val newIntent = Intent(Intent.ACTION_VIEW)
-                newIntent.data = Uri.parse(link)
-                startActivity(newIntent)
-                setContentView(R.layout.activity_main)
-            }
-            else{
-                setContentView(R.layout.activity_main)
-                loadAd()
+            val news = bundle.getString("newsId")
+            val grade = bundle.getString("gradeId")
+            when {
+                link != null -> {
+                    val newIntent = Intent(Intent.ACTION_VIEW)
+                    newIntent.data = Uri.parse(link)
+                    startActivity(newIntent)
+                    finish()
+                }
+                news != null -> {
+                    showDialogNews(news)
+                }
+                grade != null -> {
+                    showDialogGrade(grade)
+                }
+                else -> {
+                    if(!sigaaPreferences.showOnboarding()){
+                        loadAd()
+                    }
+                }
             }
         }
         else{
-            setContentView(R.layout.activity_main)
-            loadAd()
+            if(!sigaaPreferences.showOnboarding()){
+                loadAd()
+            }
         }
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainActivityViewModel::class.java]
+        launch(handler) {
+            viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
+                if(student == null) return@Observer
+                bindUi(student)
+            })
+        }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
+
         navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_login,
+                R.id.nav_notifications,
                 R.id.nav_ru,
                 R.id.nav_library,
                 R.id.nav_settings,
@@ -119,18 +151,43 @@ class MainActivity : ScopedActivity(), KodeinAware {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         getShortcut()
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(MainActivityViewModel::class.java)
-        launch(handler) {
-            viewModel.getStudent().observe(this@MainActivity, androidx.lifecycle.Observer {student ->
-                if(student == null) return@Observer
-                if(student.profilePic != ""){
-                    bindUi(student.profilePic, student.name, student.matricula)
-                }
-            })
-        }
         appUpdateManager = AppUpdateManagerFactory.create(this)
         checkForUpdates()
+        if(sigaaPreferences.showOnboarding()){
+            try {
+                showOnboarding()
+            }
+            catch(e: Exception){
+                e.printStackTrace()
+                events.addEvent(ERRO_ONBOARDING)
+            }
+        }
+    }
+
+    private fun showDialogNews(id: String) = launch {
+        val news = withContext(Dispatchers.IO) {
+            studentDao.getNewsWithIdAsync(id)
+        }
+        MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle(news.title)
+            .setMessage(news.content)
+            .setPositiveButton("Ok") { i, _ ->
+                i.dismiss()
+            }
+            .show()
+    }
+
+    private fun showDialogGrade(id: String) = launch {
+        val grade = withContext(Dispatchers.IO) {
+            studentDao.getGradeAsync(id)
+        }
+        MaterialAlertDialogBuilder(this@MainActivity)
+            .setTitle(grade.name)
+            .setMessage("Nota: ${grade.content}")
+            .setPositiveButton("Ok") { i, _ ->
+                i.dismiss()
+            }
+            .show()
     }
 
     private fun popupSnackbarForCompleteUpdate() {
@@ -165,77 +222,208 @@ class MainActivity : ScopedActivity(), KodeinAware {
     }
 
     private fun checkUpdateType(availableVersionCode: Int, versions: List<Version>): Int{
-        var updateType = 0
-        versions.forEach {
-            if(availableVersionCode == it.versionCode){
-                updateType = it.updateType
+        try {
+            var updateType = 0
+            versions.forEach {
+                if(availableVersionCode == it.versionCode){
+                    updateType = it.updateType
+                }
             }
+            if(updateType !in 0..1){
+                return 0
+            }
+            return updateType
         }
-        if(updateType !in 0..1){
-            return 0
+        catch(e: Exception){
+            e.printStackTrace()
         }
-        return updateType
+        return 0
     }
 
     override fun onResume() {
-        super.onResume()
-        appUpdateManager
-            .appUpdateInfo
+        appUpdateManager.appUpdateInfo
             .addOnSuccessListener { appUpdateInfo ->
                 if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                     popupSnackbarForCompleteUpdate()
                 }
-                if (appUpdateInfo.updateAvailability()
-                    == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
-                ) {
-                    appUpdateManager.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        IMMEDIATE,
-                        this,
-                        UPDATE_REQUEST_CODE
-                    )
-                }
             }
+        super.onResume()
     }
 
     private fun getShortcut(){
         when(intent.extras?.getString("shortcut")){
-            "ru" -> {
-                navController.navigate(R.id.nav_ru)
-            }
-            "library" -> {
-                navController.navigate(R.id.nav_library)
-            }
+            "ru" ->  navController.navigate(R.id.nav_ru)
+            "library" -> navController.navigate(R.id.nav_library)
+            "notifications" -> navController.navigate(R.id.nav_notifications)
         }
     }
 
     private fun loadAd(){
-        if(premiumPreferences.isNotPremium()){
+        if(sigaaPreferences.isPremium()){
+            return
+        }
+        if(!IRAds.isPremium(this)){
             IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
         }
     }
 
-
     @SuppressLint("SetTextI18n")
-    private fun bindUi(profilePic: String, name: String, matricula: String){
-        if(profilePic != "/sigaa/img/no_picture.png"){
-            GlideApp.with(this@MainActivity)
+    private fun bindUi(student: Student){
+        val profilePic = student.profilePic
+        if(profilePic != "/sigaa/img/no_picture.png" && profilePic != ""){
+            GlideApp.with(this)
                 .load("https://si3.ufc.br/$profilePic")
-                .into(nav_view.getHeaderView(0).profile_pic_image)
+                .into(profile_pic)
         }
         else{
-            nav_view.getHeaderView(0).profile_pic_image.setImageResource(R.drawable.avatar_circle_blue)
+            profile_pic.setImageResource(R.drawable.avatar_circle_blue)
         }
-        if(name != ""){
-            nav_view.getHeaderView(0).student_name_menu_text.text = "Olá ${name.split(" ")[0]} ${name.split(" ").last()}"
-            nav_view.getHeaderView(0).matricula_menu_text.text = "Matrícula: $matricula"
+        profile_pic_card.setOnClickListener {
+           showProfileDialog(profile_pic_card, student)
         }
     }
 
+    override fun onProductList(list: List<IRSkuDetails>) {
+        list.forEach { sku ->
+            if (sku.sku == "premium") {
+                //weeksPremiumPrice.text = sku.price
+            }
+        }
+    }
 
+    override fun onProductsPurchased() {
+//
+    }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+
+    private fun showOnboarding() {
+        val backgroundColor = ColorUtils.setAlphaComponent(ContextCompat.getColor(this@MainActivity, R.color.colorOnboarding), 0xE1)
+        val promptFocalColor = Color.TRANSPARENT
+        val tb = findViewById<MaterialToolbar>(R.id.toolbar)
+        val promptFocal = CirclePromptFocal()
+        events.addEvent(VISUALIZOU_ONBOARDING)
+        MaterialTapTargetSequence()
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(R.id.start_onboarding)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(RectanglePromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setFocalRadius(20f)
+                    .setPrimaryText(getString(R.string.welcome_title))
+                    .setSecondaryText(getString(R.string.welcome_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(R.id.onboarding_profile)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptFocal(promptFocal)
+                    .setPrimaryText(getString(R.string.profile_header_title))
+                    .setSecondaryText(getString(R.string.profile_header_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(tb.getChildAt(1))
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(false)
+                    .setAutoDismiss(false)
+                    .setAutoFinish(false)
+                    .setPromptStateChangeListener { prompt, state ->
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED) {
+                            tb.getChildAt(1).performClick()
+                            prompt.dismiss()
+                        }
+                    }
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptFocal(promptFocal)
+                    .setPrimaryText(getString(R.string.nav_view_title))
+                    .setSecondaryText(getString(R.string.nav_view_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_notifications)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_notifications_title))
+                    .setSecondaryText(getString(R.string.onboarding_notifications_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_ru)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_ru_title))
+                    .setSecondaryText(getString(R.string.onboarding_ru_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_about)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_about_title))
+                    .setSecondaryText(getString(R.string.onboarding_about_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(drawer_settings)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(FullscreenPromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setPrimaryText(getString(R.string.onboarding_settings_title))
+                    .setSecondaryText(getString(R.string.onboarding_settings_body))
+            )
+            .addPrompt(
+                MaterialTapTargetPrompt.Builder(this@MainActivity)
+                    .setTarget(R.id.start_onboarding)
+                    .setCaptureTouchEventOnFocal(true)
+                    .setCaptureTouchEventOutsidePrompt(true)
+                    .setBackgroundColour(backgroundColor)
+                    .setFocalColour(promptFocalColor)
+                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+                    .setPromptBackground(RectanglePromptBackground())
+                    .setPromptFocal(RectanglePromptFocal())
+                    .setFocalRadius(20f)
+                    .setPrimaryText("Por hoje é isso :)")
+                    .setSecondaryText("Você pode visualizar esse tutorial sempre que quiser acessando as configurações. Por favor avalie o app na Google Play :)")
+            )
+            .setSequenceCompleteListener {
+                drawer_layout.closeDrawers()
+                sigaaPreferences.showOnboarding(false)
+                events.addEvent(FINALIZOU_ONBOARDING)
+            }
+            .show()
     }
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
@@ -16,7 +17,7 @@ import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
-class AttendanceFragment : ScopedFragment(), KodeinAware {
+class AttendanceFragment : ScopedFragment(R.layout.fragment_attendance), KodeinAware {
 
 
     override val kodein by closestKodein()
@@ -26,17 +27,9 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
 
     private lateinit var viewModel: AttendanceViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_attendance, container, false)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(AttendanceViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[AttendanceViewModel::class.java]
         idTurma = arguments?.getString("idTurma")!!
         isPrevious = arguments?.getBoolean("isPrevious", false)!!
         observeAttendance()
@@ -46,7 +39,7 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
     private fun observeAttendance(){
         if(isPrevious){
             launch {
-                viewModel.getPreviousAttendance(idTurma).observe(this@AttendanceFragment, Observer {
+                viewModel.getPreviousAttendance(idTurma).observe(viewLifecycleOwner, Observer {
                     if(it == null) return@Observer
                     if(it.attendance != 0){
                         attendance_view.isVisible = true
@@ -61,7 +54,7 @@ class AttendanceFragment : ScopedFragment(), KodeinAware {
         }
         else{
             launch {
-                viewModel.getAttendance(idTurma).observe(this@AttendanceFragment, Observer {
+                viewModel.getAttendance(idTurma).observe(viewLifecycleOwner, Observer {
                     if(it == null) return@Observer
                     if(it.attendance != 0){
                         attendance_view.isVisible = true

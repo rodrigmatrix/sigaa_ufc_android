@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.work.impl.WorkDatabaseMigrations.MIGRATION_6_7
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 
 @Database(
@@ -17,7 +20,7 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
         Ira::class,
         File::class,
         Vinculo::class],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 
@@ -35,10 +38,20 @@ abstract class StudentDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE classes ADD COLUMN synced INTEGER NOT NULL default 0")
+                database.execSQL("ALTER TABLE students ADD COLUMN nivel TEXT NOT NULL default ''")
+                database.execSQL("ALTER TABLE students ADD COLUMN email TEXT NOT NULL default ''")
+                database.execSQL("ALTER TABLE students ADD COLUMN entrada TEXT NOT NULL default ''")
+            }
+        }
+
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(context.applicationContext,
                 StudentDatabase::class.java,
                 "sigaa.db")
+                .addMigrations(MIGRATION_6_7)
                 .fallbackToDestructiveMigration()
                 .build()
     }
