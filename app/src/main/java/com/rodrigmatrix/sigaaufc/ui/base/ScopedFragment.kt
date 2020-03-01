@@ -9,16 +9,23 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.firebase.FirebaseEvents
+import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
+import org.kodein.di.generic.instance
 import kotlin.coroutines.CoroutineContext
 
 abstract class ScopedFragment(private val layout: Int): Fragment(), CoroutineScope, KodeinAware {
 
     override val kodein by closestKodein()
+    val remoteConfig: RemoteConfig by instance()
+    val sigaaPreferences: SigaaPreferences by instance()
+    val events: FirebaseEvents by instance()
 
     override fun onCreateView(
         inflater: LayoutInflater,

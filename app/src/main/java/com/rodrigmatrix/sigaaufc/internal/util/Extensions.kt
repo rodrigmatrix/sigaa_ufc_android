@@ -1,6 +1,8 @@
 package com.rodrigmatrix.sigaaufc.internal.util
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
+import android.util.TypedValue
 import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
 import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
@@ -11,6 +13,10 @@ fun <T> List<T>.getUncommonElements(other: List<T>): List<T>{
     return sum.groupBy { it }
         .filter { it.value.size == 1 }
         .flatMap { it.value }
+}
+
+fun Resources.convertToPx(dp: Float): Float {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, displayMetrics)
 }
 
 @SuppressLint("DefaultLocale")
@@ -26,8 +32,10 @@ fun List<Grade>.getUncommonGrades(other: List<Grade>): List<Grade> {
     val uncommon = mutableListOf<Grade>()
     forEachIndexed { index, grade ->
         try {
-            if(grade.content != other[index].content){
-                uncommon.add(grade)
+            if(grade.name != "Sit."){
+                if(grade.content != other[index].content){
+                    uncommon.add(grade)
+                }
             }
         }
         catch(e: Exception){

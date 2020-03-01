@@ -9,8 +9,6 @@ import org.kodein.di.generic.instance
 
 class NotificationsFragment: ScopedFragment(R.layout.fragment_notifications) {
 
-    private val sigaaPreferences: SigaaPreferences by instance()
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setSwitch()

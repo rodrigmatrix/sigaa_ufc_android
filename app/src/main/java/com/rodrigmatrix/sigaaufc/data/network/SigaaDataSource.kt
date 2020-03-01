@@ -103,10 +103,11 @@ class SigaaDataSource(
     suspend fun getGrades(res: String, studentClass: StudentClass): Result<List<Grade>> = withContext(Dispatchers.IO){
         return@withContext try {
             val requestId = serializer.parseGradesRequestId(res)
+            val viewState = sigaaRepository.getViewStateId()
             val formBody = FormBody.Builder()
                 .add("formMenu", "formMenu")
                 .add(requestId, requestId)
-                .add("javax.faces.ViewState", sigaaRepository.getViewStateId())
+                .add("javax.faces.ViewState", viewState)
                 .build()
             val request = sigaaApi.getGrades(formBody)
             val response = request.string()

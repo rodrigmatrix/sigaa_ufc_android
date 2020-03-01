@@ -40,7 +40,6 @@ class LoginFragment : ScopedFragment(R.layout.fragment_login), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: LoginViewModelFactory by instance()
-    private val sigaaPreferences: SigaaPreferences by instance()
 
     private lateinit var viewModel: LoginViewModel
 

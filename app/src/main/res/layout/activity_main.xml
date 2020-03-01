@@ -9,18 +9,24 @@
         android:layout_height="match_parent"
         tools:openDrawer="start">
 
-    <include
-            layout="@layout/app_bar_main2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        <include
+                layout="@layout/app_bar_main2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-    <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:fitsSystemWindows="true"
-            app:headerLayout="@layout/nav_header_main"
-            app:menu="@menu/activity_main_drawer" />
+        <include
+                android:id="@+id/fake_nav"
+                layout="@layout/fake_nav_view"/>
+
+        <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:fitsSystemWindows="true"
+                app:headerLayout="@layout/nav_header_main"
+                app:menu="@menu/activity_main_drawer" />
+
+
 
 </androidx.drawerlayout.widget.DrawerLayout>

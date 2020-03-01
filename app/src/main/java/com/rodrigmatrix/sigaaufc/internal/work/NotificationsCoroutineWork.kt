@@ -7,6 +7,7 @@ import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.network.SigaaDataSource
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
+import com.rodrigmatrix.sigaaufc.firebase.*
 import com.rodrigmatrix.sigaaufc.internal.Result.Error
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
 import com.rodrigmatrix.sigaaufc.internal.notification.sendFileNotification
@@ -39,6 +40,8 @@ class NotificationsCoroutineWork(
     private val sigaaPreferences: SigaaPreferences by instance()
     private val studentDao: StudentDao by instance()
     private val serializer = NewSerializer()
+    val remoteConfig: RemoteConfig by instance()
+    private val events: FirebaseEvents by instance()
 
     private fun login(): Result = runBlocking(Dispatchers.IO) {
         val student = sigaaRepository.getStudentAsync() ?: return@runBlocking Result.success()
@@ -129,6 +132,9 @@ class NotificationsCoroutineWork(
                 return@runBlocking
             }
             val newNews = news.getUncommonElements(cashedNews).filter { it.requestId != "fake" }
+            if(newNews.isNotEmpty()){
+                events.addEvent(NOTIFICACAO_NOTICIA)
+            }
             if(!sigaaPreferences.getNewsNotification()){
                 newNews.forEach {
                     runBlocking {
@@ -164,11 +170,13 @@ class NotificationsCoroutineWork(
             if(!sigaaPreferences.getNewsNotification()){
                 newGrades.forEach {
                     val className = studentClass.name.getClassNameWithoutCode()
-                    context.sendGradeNotification(
-                        context.getString(R.string.grade_notification_title, className),
-                        context.getString(R.string.grade_notification_body, it.name),
-                        it.id
-                    )
+                    if(it.content != ""){
+                        context.sendGradeNotification(
+                            context.getString(R.string.grade_notification_title, className),
+                            context.getString(R.string.grade_notification_body, it.name),
+                            it.id
+                        )
+                    }
                 }
             }
             grades.forEach {
@@ -191,7 +199,13 @@ class NotificationsCoroutineWork(
             }
             return@runBlocking
         }
+        if(files.size == cashedFiles.size){
+            return@runBlocking
+        }
         val newFiles = files.getUncommonElements(cashedFiles).filter { it.name != "null" }
+        if(newFiles.isNotEmpty()){
+            events.addEvent(NOTIFICACAO_NOTA)
+        }
         newFiles.forEach {
             runBlocking {
                 studentDao.upsertFile(it)
@@ -207,7 +221,7 @@ class NotificationsCoroutineWork(
     }
 
     override suspend fun doWork(): Result {
-        if(sigaaPreferences.getAllNotification()){
+        if(sigaaPreferences.getAllNotification() || !remoteConfig.isNotificationsEnabled()){
             return Result.success()
         }
         return login()
