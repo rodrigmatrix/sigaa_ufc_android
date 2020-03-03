@@ -244,8 +244,18 @@ class SigaaOkHttp(
                 val res = response.body?.string()
                 saveViewState(res)
                 val pair = sigaaSerializer.parseClasses(res)
+                var newClasses = mutableListOf<StudentClass>()
+                try {
+                    pair.second.forEach {
+                        it.synced = studentDatabase.studentDao().getClassWithIdTurmaAsync(it.turmaId).isPrevious
+                        newClasses.add(it)
+                    }
+                }
+                catch(e: Exception){
+                    newClasses = pair.second
+                }
                 studentDatabase.studentDao().deleteClasses()
-                pair.second.forEach {
+                newClasses.forEach {
                     studentDatabase.studentDao().upsertClass(it)
                 }
                 val student = studentDatabase.studentDao().getStudentAsync()

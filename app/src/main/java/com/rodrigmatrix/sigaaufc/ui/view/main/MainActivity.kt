@@ -34,9 +34,11 @@ import com.igorronner.irinterstitial.dto.IRSkuDetails
 import com.igorronner.irinterstitial.init.IRAds
 import com.igorronner.irinterstitial.services.ProductPurchasedListener
 import com.igorronner.irinterstitial.services.ProductsListListener
+import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.firebase.ERRO_ONBOARDING
 import com.rodrigmatrix.sigaaufc.firebase.FINALIZOU_ONBOARDING
+import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.firebase.VISUALIZOU_ONBOARDING
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
@@ -61,7 +63,7 @@ import uk.co.samuelwall.materialtaptargetprompt.extras.backgrounds.RectangleProm
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.CirclePromptFocal
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal
 
-class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, ProductPurchasedListener {
+class MainActivity : ScopedActivity(), KodeinAware {
 
     override val kodein by closestKodein()
     private val viewModelFactory: MainActivityViewModelFactory by instance()
@@ -135,7 +137,6 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-
         navController = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -168,6 +169,16 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
         val news = withContext(Dispatchers.IO) {
             studentDao.getNewsWithIdAsync(id)
         }
+        if(id == "test"){
+            MaterialAlertDialogBuilder(this@MainActivity)
+                .setTitle("Título: Teste")
+                .setMessage("Conteúdo: Teste")
+                .setPositiveButton("Ok") { i, _ ->
+                    i.dismiss()
+                }
+                .show()
+            return@launch
+        }
         MaterialAlertDialogBuilder(this@MainActivity)
             .setTitle(news.title)
             .setMessage(news.content)
@@ -180,6 +191,16 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
     private fun showDialogGrade(id: String) = launch {
         val grade = withContext(Dispatchers.IO) {
             studentDao.getGradeAsync(id)
+        }
+        if(id == "test"){
+            MaterialAlertDialogBuilder(this@MainActivity)
+                .setTitle("Nota de Teste")
+                .setMessage("Nota: Teste")
+                .setPositiveButton("Ok") { i, _ ->
+                    i.dismiss()
+                }
+                .show()
+            return@launch
         }
         MaterialAlertDialogBuilder(this@MainActivity)
             .setTitle(grade.name)
@@ -279,20 +300,9 @@ class MainActivity : ScopedActivity(), KodeinAware, ProductsListListener, Produc
             profile_pic.setImageResource(R.drawable.avatar_circle_blue)
         }
         profile_pic_card.setOnClickListener {
+            events.addEvent(PROFILE_BUTTON)
            showProfileDialog(profile_pic_card, student)
         }
-    }
-
-    override fun onProductList(list: List<IRSkuDetails>) {
-        list.forEach { sku ->
-            if (sku.sku == "premium") {
-                //weeksPremiumPrice.text = sku.price
-            }
-        }
-    }
-
-    override fun onProductsPurchased() {
-//
     }
 
     override fun onSupportNavigateUp(): Boolean {

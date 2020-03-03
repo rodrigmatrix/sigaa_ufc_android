@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
@@ -90,6 +91,7 @@ class ClassActivity : ScopedActivity() {
                 profile_pic.setImageResource(R.drawable.avatar_circle_blue)
             }
             profile_pic_card.setOnClickListener {
+                events.addEvent(PROFILE_BUTTON)
                 showProfileDialog(profile_pic_card, student)
             }
         }

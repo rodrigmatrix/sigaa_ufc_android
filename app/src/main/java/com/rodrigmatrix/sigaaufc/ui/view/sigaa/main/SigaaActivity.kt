@@ -9,6 +9,7 @@ import com.google.android.material.tabs.TabLayout
 import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
@@ -78,6 +79,7 @@ class SigaaActivity : ScopedActivity() {
                 profile_pic.setImageResource(R.drawable.avatar_circle_blue)
             }
             profile_pic_card.setOnClickListener {
+                events.addEvent(PROFILE_BUTTON)
                 showProfileDialog(profile_pic_card, student)
             }
         }
