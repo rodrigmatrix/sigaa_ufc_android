@@ -3,9 +3,14 @@ package com.rodrigmatrix.sigaaufc.ui.fragments
 import android.os.Bundle
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
+import com.rodrigmatrix.sigaaufc.firebase.NOTIFICAR_TESTE
+import com.rodrigmatrix.sigaaufc.internal.notification.sendFileNotification
+import com.rodrigmatrix.sigaaufc.internal.notification.sendGradeNotification
+import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_notifications.*
 import org.kodein.di.generic.instance
+import kotlin.random.Random
 
 class NotificationsFragment: ScopedFragment(R.layout.fragment_notifications) {
 
@@ -37,6 +42,31 @@ class NotificationsFragment: ScopedFragment(R.layout.fragment_notifications) {
                     switch_news.isEnabled = true
                     switch_grades.isEnabled = true
                     switch_files.isEnabled = true
+                }
+            }
+        }
+        test_button.setOnClickListener {
+            events.addEvent(NOTIFICAR_TESTE)
+            when(Random.nextInt(0, 3)){
+                0 -> {
+                    requireContext().sendNewsNotification(
+                        getString(R.string.news_notification_title, "Teste"),
+                        getString(R.string.news_notification_body, "Teste", "Teste"),
+                        "test"
+                    )
+                }
+                1 -> {
+                    requireContext().sendGradeNotification(
+                        getString(R.string.grade_notification_title, "Teste"),
+                        getString(R.string.grade_notification_body, "Teste"),
+                        "test"
+                    )
+                }
+                2 -> {
+                    requireContext().sendFileNotification(
+                        getString(R.string.file_notification_title, "Teste"),
+                        getString(R.string.file_notification_body, "Teste")
+                    )
                 }
             }
         }

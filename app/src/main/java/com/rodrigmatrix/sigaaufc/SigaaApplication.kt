@@ -132,7 +132,7 @@ class SigaaApplication: Application(), KodeinAware {
             .setAppId("ca-app-pub-7958407055458953~7361028198")
             .setInterstitialId(INTERSTITIAL)
             .setExpensiveInterstitialId(INTERSTITIAL)
-            .setAppPrefix("sigaa")
+            .setAppPrefix("sigaa_  ")
             .enablePurchace("premium")
         adBuilder.build(this)
     }
@@ -154,9 +154,7 @@ class SigaaApplication: Application(), KodeinAware {
         val periodicWorkRequest = PeriodicWorkRequest.Builder(
             NotificationsCoroutineWork::class.java,
             1,
-            TimeUnit.HOURS,
-            30,
-            TimeUnit.MINUTES)
+            TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
         workManager.enqueueUniquePeriodicWork(

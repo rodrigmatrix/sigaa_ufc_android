@@ -35,6 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
+                android:visibility="gone"
                 android:layout_gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:text="Suporte o desenvolvimento e remova anúncios"/>
@@ -45,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:cornerRadius="8dp"
+                android:visibility="gone"
                 android:text="Comprar premium"/>
 
         <TextView

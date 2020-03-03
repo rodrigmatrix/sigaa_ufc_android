@@ -17,7 +17,7 @@
     <PreferenceCategory
             android:title="Ativar tutorial">
         <SwitchPreference
-                app:title="Visualizar notificações na próxima vez que o app abrir"
+                app:title="Visualizar o tutorial na próxima vez que o app abrir"
                 android:key="show_onboarding"/>
     </PreferenceCategory>
 
