@@ -12,6 +12,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialContainerTransform
 import com.rodrigmatrix.sigaaufc.R
+import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
@@ -86,6 +87,7 @@ class AddCardActivity : ScopedActivity() {
                 profile_pic.setImageResource(R.drawable.avatar_circle_blue)
             }
             profile_pic_card.setOnClickListener {
+                events.addEvent(PROFILE_BUTTON + "_RU")
                 showProfileDialog(profile_pic_card, student)
             }
         }

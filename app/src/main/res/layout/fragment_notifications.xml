@@ -50,6 +50,15 @@
                 android:focusable="true"
                 android:text="Desativar notificações de notas"/>
 
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/test_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Enviar notificação de teste"/>
+
         <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
