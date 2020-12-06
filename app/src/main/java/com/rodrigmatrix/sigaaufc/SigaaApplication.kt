@@ -7,7 +7,7 @@ import androidx.work.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.igorronner.irinterstitial.init.IRAdsInit
-import com.rodrigmatrix.sigaaufc.BuildConfig.*
+import com.rodrigmatrix.sigaaufc.BuildConfig.INTERSTITIAL
 import com.rodrigmatrix.sigaaufc.data.SigaaOkHttp
 import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
@@ -22,8 +22,8 @@ import com.rodrigmatrix.sigaaufc.ui.view.main.MainActivityViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.ru.card_view.RuViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceViewModelFactory
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesViewModelFactory
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesViewModelFactory
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesViewModelFactory

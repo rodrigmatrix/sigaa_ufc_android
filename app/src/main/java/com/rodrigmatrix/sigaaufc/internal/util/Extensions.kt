@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.util.TypedValue
 import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
-import java.lang.Exception
-import java.lang.IndexOutOfBoundsException
 
 
 fun <T> List<T>.getUncommonElements(other: List<T>): List<T>{

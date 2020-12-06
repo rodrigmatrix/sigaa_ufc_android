@@ -2,23 +2,17 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment
 
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
-import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_classes.*
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
 
 

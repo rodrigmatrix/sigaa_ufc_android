@@ -7,7 +7,6 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
 import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
 import org.jsoup.Jsoup
-import java.lang.IndexOutOfBoundsException
 import kotlin.random.Random
 
 class NewSerializer {

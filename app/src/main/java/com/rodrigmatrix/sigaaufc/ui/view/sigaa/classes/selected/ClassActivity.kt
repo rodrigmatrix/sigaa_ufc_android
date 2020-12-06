@@ -4,30 +4,23 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.attendance.AttendanceFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.files.FilesFragment
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.grades.GradesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.news.fragment.NewsFragment
-import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.activity_class_selected.*
-import kotlinx.android.synthetic.main.activity_class_selected.profile_pic
-import kotlinx.android.synthetic.main.activity_class_selected.profile_pic_card
-import kotlinx.android.synthetic.main.activity_class_selected.toolbar
-import kotlinx.android.synthetic.main.app_bar_main2.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kodein.di.generic.instance
-import java.lang.Exception
-import java.lang.IndexOutOfBoundsException
 
 class ClassActivity : ScopedActivity() {
 

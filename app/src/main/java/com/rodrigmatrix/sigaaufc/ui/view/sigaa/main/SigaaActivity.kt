@@ -1,14 +1,12 @@
 package com.rodrigmatrix.sigaaufc.ui.view.sigaa.main
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
 import com.rodrigmatrix.sigaaufc.internal.util.showProfileDialog
@@ -17,18 +15,11 @@ import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.fragment.ClassesFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.documents.DocumentsFragment
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.ira.IraFragment
-import kotlinx.android.synthetic.main.activity_add_card.*
 import kotlinx.android.synthetic.main.activity_sigaa.*
-import kotlinx.android.synthetic.main.activity_sigaa.profile_pic
-import kotlinx.android.synthetic.main.activity_sigaa.profile_pic_card
-import kotlinx.android.synthetic.main.activity_sigaa.toolbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
-import java.lang.Exception
 
 class SigaaActivity : ScopedActivity() {
 

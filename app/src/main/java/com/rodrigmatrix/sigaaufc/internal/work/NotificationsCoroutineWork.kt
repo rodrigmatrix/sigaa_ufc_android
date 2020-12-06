@@ -7,7 +7,10 @@ import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.data.network.SigaaDataSource
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
-import com.rodrigmatrix.sigaaufc.firebase.*
+import com.rodrigmatrix.sigaaufc.firebase.FirebaseEvents
+import com.rodrigmatrix.sigaaufc.firebase.NOTIFICACAO_NOTA
+import com.rodrigmatrix.sigaaufc.firebase.NOTIFICACAO_NOTICIA
+import com.rodrigmatrix.sigaaufc.firebase.RemoteConfig
 import com.rodrigmatrix.sigaaufc.internal.Result.Error
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
 import com.rodrigmatrix.sigaaufc.internal.notification.sendFileNotification

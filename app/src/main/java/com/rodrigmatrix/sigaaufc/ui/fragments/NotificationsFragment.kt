@@ -2,14 +2,12 @@ package com.rodrigmatrix.sigaaufc.ui.fragments
 
 import android.os.Bundle
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.firebase.NOTIFICAR_TESTE
 import com.rodrigmatrix.sigaaufc.internal.notification.sendFileNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendGradeNotification
 import com.rodrigmatrix.sigaaufc.internal.notification.sendNewsNotification
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
 import kotlinx.android.synthetic.main.fragment_notifications.*
-import org.kodein.di.generic.instance
 import kotlin.random.Random
 
 class NotificationsFragment: ScopedFragment(R.layout.fragment_notifications) {

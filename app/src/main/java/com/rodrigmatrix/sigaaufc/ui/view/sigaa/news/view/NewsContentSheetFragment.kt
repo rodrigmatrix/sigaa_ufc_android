@@ -8,18 +8,14 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import kotlinx.android.synthetic.main.fragment_news_content.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
 import org.kodein.di.generic.instance
-import kotlin.coroutines.CoroutineContext
 
 class NewsContentSheetFragment : BottomSheetDialogFragment(), KodeinAware, CoroutineScope {
 

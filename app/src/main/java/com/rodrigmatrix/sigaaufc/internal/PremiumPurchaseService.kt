@@ -3,7 +3,6 @@ package com.rodrigmatrix.sigaaufc.internal
 import android.app.Activity
 import com.android.billingclient.api.*
 import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
 class PremiumPurchaseService(
     private val activity: Activity

@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassActivity
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
+import com.rodrigmatrix.sigaaufc.ui.view.sigaa.classes.selected.ClassActivity
 import kotlinx.android.synthetic.main.current_class_row.view.*
 
 class CurrentClassesAdapter(private val classesList: MutableList<StudentClass>): RecyclerView.Adapter<ClassesViewHolder>() {

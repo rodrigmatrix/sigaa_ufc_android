@@ -3,8 +3,6 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
-import com.rodrigmatrix.sigaaufc.internal.lazyDeferred
-import com.rodrigmatrix.sigaaufc.persistence.entity.RuCard
 import com.rodrigmatrix.sigaaufc.persistence.entity.Student
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import kotlinx.coroutines.Dispatchers

@@ -1,10 +1,9 @@
 package com.rodrigmatrix.sigaaufc.serializer
 
 import android.annotation.SuppressLint
+import com.rodrigmatrix.sigaaufc.internal.util.capitalizeWords
 import com.rodrigmatrix.sigaaufc.persistence.entity.*
 import org.jsoup.Jsoup
-import java.lang.IndexOutOfBoundsException
-import com.rodrigmatrix.sigaaufc.internal.util.capitalizeWords
 import kotlin.random.Random
 
 class Serializer {

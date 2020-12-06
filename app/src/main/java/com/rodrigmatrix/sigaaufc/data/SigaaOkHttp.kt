@@ -9,7 +9,10 @@ import com.rodrigmatrix.sigaaufc.data.network.ConnectivityInterceptor
 import com.rodrigmatrix.sigaaufc.internal.NoConnectivityException
 import com.rodrigmatrix.sigaaufc.internal.TimeoutException
 import com.rodrigmatrix.sigaaufc.persistence.StudentDatabase
-import com.rodrigmatrix.sigaaufc.persistence.entity.*
+import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
+import com.rodrigmatrix.sigaaufc.persistence.entity.JavaxFaces
+import com.rodrigmatrix.sigaaufc.persistence.entity.Student
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

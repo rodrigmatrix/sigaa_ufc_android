@@ -1,23 +1,19 @@
 package com.rodrigmatrix.sigaaufc.data.network
 
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaRepository
-import com.rodrigmatrix.sigaaufc.internal.LoginException
 import com.rodrigmatrix.sigaaufc.internal.Result
 import com.rodrigmatrix.sigaaufc.internal.Result.Success
 import com.rodrigmatrix.sigaaufc.persistence.StudentDao
-import com.rodrigmatrix.sigaaufc.persistence.entity.*
-import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_ERROR
-import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_SUCCESS
-import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus.Companion.LOGIN_VINCULO
+import com.rodrigmatrix.sigaaufc.persistence.entity.Grade
+import com.rodrigmatrix.sigaaufc.persistence.entity.LoginStatus
+import com.rodrigmatrix.sigaaufc.persistence.entity.News
+import com.rodrigmatrix.sigaaufc.persistence.entity.StudentClass
 import com.rodrigmatrix.sigaaufc.serializer.NewSerializer
-import com.rodrigmatrix.sigaaufc.serializer.Serializer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody
-import okhttp3.Request
 import retrofit2.HttpException
-import java.lang.Exception
 
 class SigaaDataSource(
     private val sigaaApi: SigaaApi,

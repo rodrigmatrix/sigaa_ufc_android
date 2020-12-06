@@ -3,14 +3,14 @@ package com.rodrigmatrix.sigaaufc.ui.view.ru.add_card
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.HapticFeedbackConstants
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.transition.MaterialContainerTransform
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
@@ -19,10 +19,10 @@ import com.rodrigmatrix.sigaaufc.persistence.StudentDao
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedActivity
 import kotlinx.android.synthetic.main.activity_add_card.*
-import kotlinx.android.synthetic.main.activity_add_card.toolbar
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kodein.di.generic.instance
-import java.lang.Exception
 
 class AddCardActivity : ScopedActivity() {
 
@@ -32,17 +32,6 @@ class AddCardActivity : ScopedActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
-        //findViewById(android.R.id.content).transitionName = "shared_element_container"
-        window.sharedElementEnterTransition = MaterialContainerTransform(this).apply {
-            addTarget(android.R.id.content)
-            duration = 300L
-        }
-        window.sharedElementReturnTransition = MaterialContainerTransform(this).apply {
-            addTarget(android.R.id.content)
-            duration = 300L
-        }
-        window.sharedElementEnterTransition = MaterialContainerTransform(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_card)
         loadProfilePic()

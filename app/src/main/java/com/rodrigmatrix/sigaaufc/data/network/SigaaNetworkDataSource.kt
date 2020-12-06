@@ -1,7 +1,6 @@
 package com.rodrigmatrix.sigaaufc.data.network
 
 import com.rodrigmatrix.sigaaufc.persistence.entity.HistoryRU
-import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 
 interface SigaaNetworkDataSource {
 

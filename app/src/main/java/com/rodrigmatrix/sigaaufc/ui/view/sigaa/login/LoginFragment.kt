@@ -2,35 +2,22 @@ package com.rodrigmatrix.sigaaufc.ui.view.sigaa.login
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.igorronner.irinterstitial.init.IRAds
-import com.igorronner.irinterstitial.services.ProductPurchasedListListener
-import com.igorronner.irinterstitial.services.ProductPurchasedListener
-import com.igorronner.irinterstitial.services.ProductsListListener
-import com.igorronner.irinterstitial.services.PurchaseService
 import com.rodrigmatrix.sigaaufc.R
-import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
 import com.rodrigmatrix.sigaaufc.firebase.LOGIN_BUTTON
 import com.rodrigmatrix.sigaaufc.persistence.entity.Vinculo
 import com.rodrigmatrix.sigaaufc.ui.base.ScopedFragment
-import com.rodrigmatrix.sigaaufc.ui.view.ru.add_card.AddCardViewModel
 import com.rodrigmatrix.sigaaufc.ui.view.sigaa.main.SigaaActivity
 import kotlinx.android.synthetic.main.fragment_login.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.runOnUiThread
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.closestKodein
@@ -116,7 +103,7 @@ class LoginFragment : ScopedFragment(R.layout.fragment_login), KodeinAware {
         }
         val array = arrayOfNulls<String>(arrayList.size)
         arrayList.toArray(array)
-        MaterialAlertDialogBuilder(context)
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle("Escolher Vínculo")
             .setSingleChoiceItems(array, -1) { dialogInterface, i ->
                 println(array[i])
