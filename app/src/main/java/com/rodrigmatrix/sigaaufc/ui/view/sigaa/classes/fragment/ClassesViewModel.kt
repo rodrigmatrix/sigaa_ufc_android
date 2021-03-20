@@ -43,7 +43,7 @@ class ClassesViewModel(
         }
     }
 
-    suspend fun getStudentAsync(): Student {
+    suspend fun getStudentAsync(): Student? {
         return withContext(Dispatchers.IO){
             return@withContext sigaaRepository.getStudentAsync()
         }

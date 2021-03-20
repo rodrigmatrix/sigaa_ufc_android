@@ -11,10 +11,10 @@ import com.rodrigmatrix.sigaaufc.persistence.entity.*
 interface StudentDao {
 
     @Query("SELECT * FROM students where id = 0")
-    fun getStudent(): LiveData<Student>
+    fun getStudent(): LiveData<Student?>
 
     @Query("SELECT * FROM students where id = 0")
-    fun getStudentAsync(): Student
+    fun getStudentAsync(): Student?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertStudent(student: Student)
@@ -23,10 +23,10 @@ interface StudentDao {
     fun deleteStudent()
 
     @Query("SELECT * FROM view_faces where id = 0")
-    fun getViewState(): LiveData<JavaxFaces>
+    fun getViewState(): LiveData<JavaxFaces?>
 
     @Query("SELECT * FROM view_faces where id = 0")
-    fun getViewStateAsync(): JavaxFaces
+    fun getViewStateAsync(): JavaxFaces?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertViewState(viewState: JavaxFaces)
@@ -35,7 +35,7 @@ interface StudentDao {
     fun deleteViewState()
 
     @Query("SELECT * FROM ru_card where id = 0")
-    fun getRuCard(): LiveData<RuCard>
+    fun getRuCard(): LiveData<RuCard?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsertRuCard(ruCard: RuCard)
@@ -152,43 +152,4 @@ interface StudentDao {
     @Query("DELETE FROM vinculos")
     fun deleteVinculos()
 
-//
-//
-//
-//    @Query("SELECT * FROM classPlan WHERE classId LIKE :id")
-//    fun getClassPlan(id: String): MutableList<ClassPlan>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertClassPlan(classPlan: ClassPlan)
-//
-//    @Query("DELETE FROM classPlan")
-//    fun deleteClassPlan()
-//
-//    @Query("DELETE FROM classPlan WHERE classId LIKE :id")
-//    fun deleteClassPlanFromClass(id: String)
-//
-//
-//
-//    @Query("SELECT * FROM files WHERE classId LIKE :id")
-//    fun getFiles(id: String): MutableList<File>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertFile(file: File)
-//
-//    @Query("DELETE FROM files")
-//    fun deleteFiles()
-//
-//    @Query("DELETE FROM files WHERE classId LIKE :id")
-//    fun deleteFilesFromClass(id: String)
-//
-//
-//
-//    @Query("SELECT * FROM horasComplementares")
-//    fun getHoras(): MutableList<HoraComplementar>
-//
-//    @Insert(onConflict = OnConflictStrategy.REPLACE)
-//    fun insertHora(hora: HoraComplementar)
-//
-//    @Query("DELETE FROM horasComplementares")
-//    fun deleteHoras()
 }

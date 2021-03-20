@@ -13,13 +13,13 @@
             android:layout_marginTop="80dp"
             android:clickable="false"/>
 
-    <View
-            android:id="@+id/drawer_notifications"
-            android:layout_width="250dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:clickable="false"/>
+<!--    <View-->
+<!--            android:id="@+id/drawer_notifications"-->
+<!--            android:layout_width="250dp"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:layout_marginStart="16dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:clickable="false"/>-->
 
     <View
             android:id="@+id/drawer_ru"

@@ -11,9 +11,9 @@ interface SigaaRepository {
         password: String
     ): String
 
-    suspend fun getStudent(): LiveData<out Student>
+    suspend fun getStudent(): LiveData<out Student?>
 
-    suspend fun getStudentAsync(): Student
+    suspend fun getStudentAsync(): Student?
 
     suspend fun saveLogin(login: String, password: String)
 
@@ -23,7 +23,7 @@ interface SigaaRepository {
 
     suspend fun getHistoryRu(): LiveData<out MutableList<HistoryRU>>
 
-    suspend fun getRuCard(): LiveData<out RuCard>
+    suspend fun getRuCard(): LiveData<out RuCard?>
 
     suspend fun saveRuData(
         numeroCartao: String,

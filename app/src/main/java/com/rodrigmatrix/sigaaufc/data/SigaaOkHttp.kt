@@ -86,7 +86,7 @@ class SigaaOkHttp(
         }
     }
 
-    private suspend fun getViewStateAsync(): JavaxFaces{
+    private suspend fun getViewStateAsync(): JavaxFaces? {
         return withContext(Dispatchers.IO){
             return@withContext studentDatabase.studentDao().getViewStateAsync()
         }
@@ -320,7 +320,7 @@ class SigaaOkHttp(
     }
 
     private suspend fun getIra(id: String, script: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             var status = ""
             var listClasses = mutableListOf<StudentClass>()
@@ -362,46 +362,8 @@ class SigaaOkHttp(
         }
     }
 
-    private suspend fun getAtestado(id: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
-        withContext(Dispatchers.IO){
-            val formBody = FormBody.Builder()
-                .add("menu:form_menu_discente", "menu:form_menu_discente")
-                .add("id", id)
-                .add("jscook_action", "menu_form_menu_discente_j_id_jsp_440181972_4_menu:A]#{ portalDiscente.atestadoMatricula }")
-                .add("javax.faces.ViewState", viewState)
-                .build()
-            val request = Request.Builder()
-                .url("https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
-                .header("Cookie", "JSESSIONID=$cookie")
-                .header("Referer", "https://si3.ufc.br/sigaa/portais/discente/discente.jsf")
-                .post(formBody)
-                .build()
-            try {
-                val response = httpClient
-                    .addInterceptor(connectivityInterceptor)
-                    .build()
-                    .newCall(request)
-                    .execute()
-                if(response.isSuccessful){
-                    val res = response.body?.string()
-                    saveViewState(res)
-                    println(res)
-                }
-                else{
-                }
-            }
-            catch(e: NoConnectivityException){
-                Log.e("Connectivity", "No internet Connection.", e)
-            }
-            catch (e: SocketTimeoutException) {
-                Log.e("Connectivity", "No internet Connection.", e)
-            }
-        }
-    }
-
     suspend fun getHistorico(id: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             val formBody = FormBody.Builder()
                 .add("menu:form_menu_discente", "menu:form_menu_discente")
@@ -454,7 +416,7 @@ class SigaaOkHttp(
 
 
     suspend fun getClass(id: String, idTurma: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             studentDatabase.studentDao().deleteFiles(idTurma)
             val formBody = FormBody.Builder()
@@ -514,7 +476,7 @@ class SigaaOkHttp(
     suspend fun getPreviousClass(id: String, idTurma: String, cookie: String){
         var status = ""
         val list = mutableListOf<StudentClass>()
-        val viewStateId = getViewStateAsync().valueState
+        val viewStateId = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             val formBody = FormBody.Builder()
                 .add("j_id_jsp_1344809141_2", "j_id_jsp_1344809141_2")
@@ -569,7 +531,7 @@ class SigaaOkHttp(
     }
 
     private suspend fun getGrades(requestId: String, idTurma: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
@@ -613,7 +575,7 @@ class SigaaOkHttp(
     }
 
     private suspend fun getAttendance(isPrevious: Boolean, requestId: String, idTurma: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
@@ -662,7 +624,7 @@ class SigaaOkHttp(
     }
 
     suspend fun getNews(idTurma: String, requestId: String, cookie: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             var status = "Tempo de conexão expirou"
             val formBody = FormBody.Builder()
@@ -710,7 +672,7 @@ class SigaaOkHttp(
     }
 
     suspend fun fetchNewsContent(cookie: String, id: String, requestId: String, requestId2: String){
-        val viewState = getViewStateAsync().valueState
+        val viewState = getViewStateAsync()?.valueState.orEmpty()
         withContext(Dispatchers.IO){
             val formBody = FormBody.Builder()
                 .add(requestId, requestId)

@@ -61,7 +61,7 @@
     <string name="onboarding_ru_title">Créditos e histórico do RU</string>
     <string name="onboarding_ru_body">Aqui é possível verificar os créditos e todo o histórico de uso do seu cartão do RU.</string>
     <string name="onboarding_about_title">Informações sobre o app</string>
-    <string name="onboarding_about_body">Agora é possível comprar o app e remover anúncios.</string>
+    <string name="onboarding_about_body">Aqui você pode saber tudo sobre o desenvolvimento do app.</string>
     <string name="onboarding_settings_title">Configurações do app</string>
     <string name="onboarding_settings_body">Aqui você pode alterar o tema do app e ativar novamente esse tutorial quando quiser.</string>
 

@@ -6,8 +6,6 @@ import androidx.preference.PreferenceManager
 import androidx.work.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.igorronner.irinterstitial.init.IRAdsInit
-import com.rodrigmatrix.sigaaufc.BuildConfig.INTERSTITIAL
 import com.rodrigmatrix.sigaaufc.data.SigaaOkHttp
 import com.rodrigmatrix.sigaaufc.data.network.*
 import com.rodrigmatrix.sigaaufc.data.repository.SigaaPreferences
@@ -122,19 +120,8 @@ class SigaaApplication: Application(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
-        setAdsInstance()
         startRemoteConfig()
         setNotificationWorkManager()
-    }
-
-    private fun setAdsInstance(){
-        val adBuilder = IRAdsInit.Builder()
-            .setAppId("ca-app-pub-7958407055458953~7361028198")
-            .setInterstitialId(INTERSTITIAL)
-            .setExpensiveInterstitialId(INTERSTITIAL)
-            .setAppPrefix("sigaa_  ")
-            .enablePurchace("premium")
-        adBuilder.build(this)
     }
 
     private fun startRemoteConfig(){
@@ -146,25 +133,26 @@ class SigaaApplication: Application(), KodeinAware {
     }
 
     private fun setNotificationWorkManager(){
+
         val workManager = WorkManager.getInstance(applicationContext)
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<NotificationsCoroutineWork>().build()
+
         val periodicWorkRequest = PeriodicWorkRequest.Builder(
             NotificationsCoroutineWork::class.java,
             1,
             TimeUnit.HOURS)
             .setConstraints(constraints)
             .build()
+
         workManager.enqueueUniquePeriodicWork(
             NOTIFICATIONS_WORK_ID,
             ExistingPeriodicWorkPolicy.KEEP,
             periodicWorkRequest
         )
-//        if(DEBUG){
-//            workManager.enqueue(oneTimeWorkRequest)
-//        }
+
     }
 
     private fun setTheme(theme: String?){

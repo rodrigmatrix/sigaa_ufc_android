@@ -28,7 +28,6 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE
-import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.firebase.ERRO_ONBOARDING
 import com.rodrigmatrix.sigaaufc.firebase.FINALIZOU_ONBOARDING
@@ -103,16 +102,6 @@ class MainActivity : ScopedActivity(), KodeinAware {
                 grade != null -> {
                     showDialogGrade(grade)
                 }
-                else -> {
-                    if(!sigaaPreferences.showOnboarding()){
-                        loadAd()
-                    }
-                }
-            }
-        }
-        else{
-            if(!sigaaPreferences.showOnboarding()){
-                loadAd()
             }
         }
         val toolbar: Toolbar = findViewById(R.id.toolbar)
@@ -268,15 +257,6 @@ class MainActivity : ScopedActivity(), KodeinAware {
         }
     }
 
-    private fun loadAd(){
-        if(sigaaPreferences.isPremium()){
-            return
-        }
-        if(!IRAds.isPremium(this)){
-            IRAds.newInstance(this).forceShowExpensiveInterstitial(false)
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private fun bindUi(student: Student){
         val profilePic = student.profilePic
@@ -352,19 +332,19 @@ class MainActivity : ScopedActivity(), KodeinAware {
                     .setPrimaryText(getString(R.string.nav_view_title))
                     .setSecondaryText(getString(R.string.nav_view_body))
             )
-            .addPrompt(
-                MaterialTapTargetPrompt.Builder(this@MainActivity)
-                    .setTarget(drawer_notifications)
-                    .setCaptureTouchEventOnFocal(true)
-                    .setCaptureTouchEventOutsidePrompt(true)
-                    .setBackgroundColour(backgroundColor)
-                    .setFocalColour(promptFocalColor)
-                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
-                    .setPromptBackground(FullscreenPromptBackground())
-                    .setPromptFocal(RectanglePromptFocal())
-                    .setPrimaryText(getString(R.string.onboarding_notifications_title))
-                    .setSecondaryText(getString(R.string.onboarding_notifications_body))
-            )
+//            .addPrompt(
+//                MaterialTapTargetPrompt.Builder(this@MainActivity)
+//                    .setTarget(drawer_notifications)
+//                    .setCaptureTouchEventOnFocal(true)
+//                    .setCaptureTouchEventOutsidePrompt(true)
+//                    .setBackgroundColour(backgroundColor)
+//                    .setFocalColour(promptFocalColor)
+//                    .setTextGravity(Gravity.CENTER_HORIZONTAL)
+//                    .setPromptBackground(FullscreenPromptBackground())
+//                    .setPromptFocal(RectanglePromptFocal())
+//                    .setPrimaryText(getString(R.string.onboarding_notifications_title))
+//                    .setSecondaryText(getString(R.string.onboarding_notifications_body))
+//            )
             .addPrompt(
                 MaterialTapTargetPrompt.Builder(this@MainActivity)
                     .setTarget(drawer_ru)

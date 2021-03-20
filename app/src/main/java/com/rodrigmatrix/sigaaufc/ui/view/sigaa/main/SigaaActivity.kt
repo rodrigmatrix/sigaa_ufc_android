@@ -5,7 +5,6 @@ import androidx.core.view.isVisible
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
-import com.igorronner.irinterstitial.init.IRAds
 import com.rodrigmatrix.sigaaufc.R
 import com.rodrigmatrix.sigaaufc.firebase.PROFILE_BUTTON
 import com.rodrigmatrix.sigaaufc.internal.glide.GlideApp
@@ -30,7 +29,6 @@ class SigaaActivity : ScopedActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sigaa)
         loadProfilePic()
-        loadAd()
         sectionsPagerAdapter = SectionsPagerAdapter(
             this,
             supportFragmentManager
@@ -55,12 +53,12 @@ class SigaaActivity : ScopedActivity() {
         progress_sigaa.isVisible = false
     }
 
-    private fun loadProfilePic() = launch{
+    private fun loadProfilePic() = launch {
         try {
             val student = withContext(Dispatchers.IO) {
                 studentDao.getStudentAsync()
             }
-            val profilePic = student.profilePic
+            val profilePic = student?.profilePic
             if(profilePic != "/sigaa/img/no_picture.png"){
                 GlideApp.with(this@SigaaActivity)
                     .load("https://si3.ufc.br/$profilePic")
@@ -71,7 +69,7 @@ class SigaaActivity : ScopedActivity() {
             }
             profile_pic_card.setOnClickListener {
                 events.addEvent(PROFILE_BUTTON)
-                showProfileDialog(profile_pic_card, student)
+                showProfileDialog(profile_pic_card, student ?: return@setOnClickListener)
             }
         }
         catch(e: Exception){
@@ -92,16 +90,6 @@ class SigaaActivity : ScopedActivity() {
                 .setNegativeButton("Não"){_, _ ->
                 }
                 .show()
-        }
-    }
-
-    private fun loadAd(){
-        val irAds = IRAds.newInstance(this)
-        if(sigaaPreferences.isPremium()){
-            return
-        }
-        if(!IRAds.isPremium(this)){
-            irAds.forceShowExpensiveInterstitial(false)
         }
     }
 

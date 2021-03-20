@@ -21,13 +21,13 @@ class SigaaRepositoryImpl(
         return sigaaNetworkDataSource.fetchLogin(cookie, login, password)
     }
 
-    override suspend fun getStudent(): LiveData<out Student> {
+    override suspend fun getStudent(): LiveData<out Student?> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getStudent()
         }
     }
 
-    override suspend fun getStudentAsync(): Student {
+    override suspend fun getStudentAsync(): Student? {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getStudentAsync()
         }
@@ -40,16 +40,16 @@ class SigaaRepositoryImpl(
     override suspend fun getSessionCookie(): String {
         return withContext(Dispatchers.IO){
             val student = getStudentAsync()
-            return@withContext student.jsession
+            return@withContext student?.jsession.orEmpty()
         }
     }
 
     override suspend fun saveLogin(login: String, password: String) {
         withContext(Dispatchers.IO){
             val student = getStudentAsync()
-            student.login = login
-            student.password = password
-            studentDao.upsertStudent(student)
+            student?.login = login
+            student?.password = password
+            studentDao.upsertStudent(student ?: return@withContext)
         }
     }
 
@@ -79,7 +79,7 @@ class SigaaRepositoryImpl(
         return status
     }
 
-    override suspend fun getRuCard(): LiveData<out RuCard> {
+    override suspend fun getRuCard(): LiveData<out RuCard?> {
         return withContext(Dispatchers.IO){
             return@withContext studentDao.getRuCard()
         }
@@ -103,26 +103,26 @@ class SigaaRepositoryImpl(
 
     override suspend fun fetchPreviousClasses() {
         return withContext(Dispatchers.IO){
-            val student = getStudentAsync()
-            return@withContext sigaaNetworkDataSource.fetchPreviousClasses(student.jsession)
+            val jSession = getStudentAsync()?.jsession.orEmpty()
+            return@withContext sigaaNetworkDataSource.fetchPreviousClasses(jSession)
         }
     }
 
     override suspend fun setClass(id: String, idTurma: String) {
-        val cookie = studentDao.getStudentAsync().jsession
-        return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie)
+        val cookie = studentDao.getStudentAsync()?.jsession
+        return sigaaNetworkDataSource.fetchClass(id, idTurma, cookie.orEmpty())
     }
 
     override suspend fun setPreviousClass(id: String, idTurma: String) {
-        val cookie = studentDao.getStudentAsync().jsession
-        return sigaaNetworkDataSource.fetchPreviousClass(id, idTurma, cookie)
+        val cookie = studentDao.getStudentAsync()?.jsession
+        return sigaaNetworkDataSource.fetchPreviousClass(id, idTurma, cookie.orEmpty())
     }
 
     override suspend fun fetchCurrentClasses() {
         withContext(Dispatchers.IO){
             val student = getStudentAsync()
-            val cookie = student.jsession
-            sigaaNetworkDataSource.fetchCurrentClasses(cookie)
+            val cookie = student?.jsession
+            sigaaNetworkDataSource.fetchCurrentClasses(cookie.orEmpty())
         }
     }
 
@@ -176,8 +176,8 @@ class SigaaRepositoryImpl(
 
     override suspend fun fetchNews(newsId: String, requestId: String, requestId2: String) {
         val student = getStudentAsync()
-        val cookie = student.jsession
-        sigaaNetworkDataSource.fetchNews(cookie, newsId, requestId, requestId2)
+        val cookie = student?.jsession
+        sigaaNetworkDataSource.fetchNews(cookie.orEmpty(), newsId, requestId, requestId2)
     }
 
     override suspend fun getNewsWithId(idNews: String): LiveData<out News> {
@@ -190,8 +190,8 @@ class SigaaRepositoryImpl(
         withContext(Dispatchers.IO){
             val student = getStudentAsync()
             val requestId = studentDao.getClassWithIdTurmaAsync(idTurma).code
-            val cookie = student.jsession
-            sigaaNetworkDataSource.fetchNewsPage(idTurma, requestId, cookie)
+            val cookie = student?.jsession
+            sigaaNetworkDataSource.fetchNewsPage(idTurma, requestId, cookie.orEmpty())
         }
     }
 
@@ -203,7 +203,7 @@ class SigaaRepositoryImpl(
 
     override suspend fun getViewStateId(): String {
         return withContext(Dispatchers.IO){
-            return@withContext studentDao.getViewStateAsync().valueState
+            return@withContext studentDao.getViewStateAsync()?.valueState.orEmpty()
         }
     }
 
@@ -234,14 +234,14 @@ class SigaaRepositoryImpl(
     }
 
     override suspend fun setVinculo(vinculo: String) {
-        val cookie = studentDao.getStudentAsync().jsession
-        return sigaaNetworkDataSource.setVinculo(cookie, vinculo)
+        val cookie = studentDao.getStudentAsync()?.jsession
+        return sigaaNetworkDataSource.setVinculo(cookie.orEmpty(), vinculo)
     }
 
     override suspend fun getHistorico() {
         return withContext(Dispatchers.IO){
-            val id = studentDao.getStudentAsync().lastUpdate
-            val cookie = studentDao.getStudentAsync().jsession
+            val id = studentDao.getStudentAsync()?.lastUpdate.orEmpty()
+            val cookie = studentDao.getStudentAsync()?.jsession.orEmpty()
             return@withContext sigaaNetworkDataSource.getHistorico(id, cookie)
         }
 

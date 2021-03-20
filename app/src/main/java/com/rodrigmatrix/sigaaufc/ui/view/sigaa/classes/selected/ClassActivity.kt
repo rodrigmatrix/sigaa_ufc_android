@@ -74,7 +74,7 @@ class ClassActivity : ScopedActivity() {
             val student = withContext(Dispatchers.IO) {
                 studentDao.getStudentAsync()
             }
-            val profilePic = student.profilePic
+            val profilePic = student?.profilePic
             if(profilePic != "/sigaa/img/no_picture.png"){
                 GlideApp.with(this@ClassActivity)
                     .load("https://si3.ufc.br/$profilePic")
@@ -85,7 +85,7 @@ class ClassActivity : ScopedActivity() {
             }
             profile_pic_card.setOnClickListener {
                 events.addEvent(PROFILE_BUTTON)
-                showProfileDialog(profile_pic_card, student)
+                showProfileDialog(profile_pic_card, student ?: return@setOnClickListener)
             }
         }
         catch(e: Exception){

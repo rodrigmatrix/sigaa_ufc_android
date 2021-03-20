@@ -61,7 +61,7 @@ class LoginFragment : ScopedFragment(R.layout.fragment_login), KodeinAware {
                 val login = login_input.text.toString()
                 val password = password_input.text.toString()
                 launch(handler) {
-                    val cookie = viewModel.getStudentAsync().jsession
+                    val cookie = viewModel.getStudentAsync()?.jsession.orEmpty()
                     val loginResponse = viewModel.login(cookie, login, password)
                     handleLogin(login, password, loginResponse)
                 }
